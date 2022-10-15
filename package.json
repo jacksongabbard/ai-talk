@@ -1,0 +1,19 @@
+{
+  "name": "cord-puzzles",
+  "version": "1.0.0",
+  "description": "Puzzles to fascinate and delight.",
+  "main": "index.ts",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/jacksongabbard/cord-puzzles.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/jacksongabbard/cord-puzzles/issues"
+  },
+  "homepage": "https://github.com/jacksongabbard/cord-puzzles#readme"
+}
