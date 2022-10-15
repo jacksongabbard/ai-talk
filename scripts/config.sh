@@ -1,0 +1,5 @@
+export DOCKER_POSTGRES_CONTAINER_NAME="cord-puzzles-postgres"
+export DOCKER_POSTGRES_CONTAINER_PORT=15432
+export DOCKER_POSTGRES_CONTAINER_PASSWORD="such-puzzles-wow"
+
+
