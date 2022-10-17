@@ -11,7 +11,7 @@ if ! docker -v > /dev/null; then
 fi
 
 if ! docker container inspect \
-  $DOCKER_POSTGRES_CONTAINER_NAME > /dev/null; then
+  $DOCKER_POSTGRES_CONTAINER_NAME &> /dev/null; then
 
   echo "Starting Docker postgres container..."
   docker run \
