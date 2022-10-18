@@ -1,0 +1,22 @@
+{
+  "compilerOptions": {
+    // Enable absolute imports
+    "baseUrl": ".",
+    // https://www.sitepoint.com/javascript-decorators-what-they-are/
+    "experimentalDecorators": true,
+    "emitDecoratorMetadata": true,
+    "esModuleInterop": true,
+    "incremental": true,
+    "jsx": "react",
+    "module": "commonjs",
+    "moduleResolution": "node",
+    "noImplicitAny": true,
+    "noImplicitReturns": true,
+    "resolveJsonModule": true,
+    "sourceMap": true,
+    "strict": true,
+    "target": "es2021",
+    "importsNotUsedAsValues": "error"
+  },
+  "exclude": ["opensource", "ops", "cypress"]
+}
