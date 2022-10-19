@@ -42,10 +42,7 @@ export function decryptBase(
   }
 }
 
-export function encryptBase(
-  dataObject: JSONValue, 
-  arbitraryStringKey: string
-) {
+export function encryptBase(dataObject: JSONValue, arbitraryStringKey: string) {
   const jsonString = JSON.stringify(dataObject);
   const nonce = makeRandomBuffer(nonceSize);
   let key = getHash(arbitraryStringKey);
