@@ -1,5 +1,5 @@
 import dotenv from 'dotenv';
-import { hasOwnProperty } from '../../lib/hasOwnProperty';
+import { hasOwnProperty } from './hasOwnProperty';
 
 const config = dotenv.config().parsed;
 

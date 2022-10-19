@@ -1,7 +1,7 @@
 import type { JSONValue } from "../../lib/typeUtilities";
 
-import { encryptBase, decryptBase } from "./cryptoBase";
-import getDotEnv from "./dotenv";
+import { encryptBase, decryptBase } from "../../lib/cryptoBase";
+import getDotEnv from "../../lib/dotenv";
 
 // This file exists to bind the dotenv config to useful crypto functions.
 // All the goodies are in cryptoBase.ts. They are separated to make unit

@@ -1,6 +1,6 @@
 import crypto from 'crypto';
 
-import type { JSONValue } from '../../lib/typeUtilities';
+import type { JSONValue } from './typeUtilities';
 
 const nonceSize = 12;
 const gcmTagSize = 16;
