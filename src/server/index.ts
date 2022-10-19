@@ -1,6 +1,6 @@
 import express from 'express';
 
-import getDotEnv from './lib/dotenv';
+import getDotEnv from '../lib/dotenv';
 
 const config = getDotEnv();
 

@@ -8,7 +8,7 @@ const DUMMY_KEY = 'foo bar baz qux';
   let ciphertext = '';
   let plaintext = '';
   test('encrypting a message succeeds', () => {
-    ciphertext = encryptBase(ciphertext, DUMMY_KEY);
+    ciphertext = encryptBase(JSON.stringify(messageObject), DUMMY_KEY);
     expect(ciphertext).toBeTruthy();
     expect(ciphertext.length).toBeGreaterThan(0);
   });

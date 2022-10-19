@@ -42,9 +42,11 @@ export function decryptBase(
   }
 }
 
-export function encryptBase(dataObject: JSONValue, arbitraryStringKey: string) {
+export function encryptBase(
+  dataObject: JSONValue, 
+  arbitraryStringKey: string
+) {
   const jsonString = JSON.stringify(dataObject);
-  const jsonBuffer = Buffer.from(jsonString, 'utf8');
   const nonce = makeRandomBuffer(nonceSize);
   let key = getHash(arbitraryStringKey);
   const encipher = crypto.createCipheriv('aes-256-gcm', key, nonce);
@@ -52,13 +54,19 @@ export function encryptBase(dataObject: JSONValue, arbitraryStringKey: string) {
   let dataCiphertextBuffer: Buffer;
   let tag: Buffer;
   try {
-    dataCiphertext = encipher.update(jsonBuffer).toString('utf8');
+    dataCiphertext = encipher.update(jsonString, 'utf8', 'hex');
     dataCiphertext += encipher.final('hex');
+    console.log({ jsonString, dataCiphertext });
     dataCiphertextBuffer = Buffer.from(dataCiphertext, 'hex');
     tag = encipher.getAuthTag();
   } catch (ex) {
     console.log('Failed to encrypt message', ex);
     throw new Error('Failed to encrypt message');
   }
+
+  console.log('nonce: ' + nonce.toString('hex'));
+  console.log('cipher: ' + dataCiphertextBuffer.toString('hex'));
+  console.log('tag: ' + tag.toString('hex'));
+
   return Buffer.concat([nonce, dataCiphertextBuffer, tag]).toString('base64');
 }
