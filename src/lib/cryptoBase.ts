@@ -23,11 +23,8 @@ export function decryptBase(
 ) {
   const decoded = Buffer.from(encryptedString, 'base64');
   const nonce = decoded.subarray(0, nonceSize);
-  const ciphertext = decoded.subarray(
-    nonceSize,
-    nonceSize + (decoded.length - gcmTagSize),
-  );
-  const tag = decoded.subarray(nonceSize + (decoded.length - gcmTagSize));
+  const ciphertext = decoded.subarray(nonceSize, decoded.length - gcmTagSize);
+  const tag = decoded.subarray(decoded.length - gcmTagSize);
   const key = getHash(arbitraryStringKey);
   const decipher = crypto.createDecipheriv('aes-256-gcm', key, nonce);
   decipher.setAuthTag(tag);
@@ -60,10 +57,6 @@ export function encryptBase(dataObject: JSONValue, arbitraryStringKey: string) {
     console.log('Failed to encrypt message', ex);
     throw new Error('Failed to encrypt message');
   }
-
-  console.log('nonce: ' + nonce.toString('hex'));
-  console.log('cipher: ' + dataCiphertextBuffer.toString('hex'));
-  console.log('tag: ' + tag.toString('hex'));
 
   return Buffer.concat([nonce, dataCiphertextBuffer, tag]).toString('base64');
 }
