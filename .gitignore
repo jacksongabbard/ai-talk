@@ -1,3 +1,6 @@
+# Local development environment certs
+localhost
+
 # Logs
 logs
 *.log
