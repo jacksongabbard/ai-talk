@@ -19,4 +19,9 @@ if docker container inspect \
   docker container rm $DOCKER_POSTGRES_CONTAINER_NAME 1> /dev/null
 fi
 
+if [ -d "./localhost" ]; then
+  echo "Removing localhost SSL certificates"
+  rm -rf ./localhost
+fi
+
 echo "💀 Everything is dead."
