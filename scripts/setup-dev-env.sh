@@ -31,7 +31,7 @@ else
   echo "Docker Postgres container already running."
 fi
 
-if [ ! -d "./localhost" ]; then
+if [ ! -d "./.localhost" ]; then
   echo "No localhost development SSL certificates detected. Generating them."
   ./scripts/generate-localhost-certificates.sh
 fi
