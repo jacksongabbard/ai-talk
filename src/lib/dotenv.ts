@@ -21,12 +21,22 @@ function getDotEnv() {
     if (
       assertHasKey(config, 'AES_KEY') &&
       assertHasKey(config, 'SERVER_HOST') &&
-      assertHasKey(config, 'SERVER_PORT')
+      assertHasKey(config, 'SERVER_PORT') &&
+      assertHasKey(config, 'POSTGRES_HOST') &&
+      assertHasKey(config, 'POSTGRES_PORT') &&
+      assertHasKey(config, 'POSTGRES_USER') &&
+      assertHasKey(config, 'POSTGRES_DB')
     ) {
-      const { SERVER_PORT } = config;
+      const { SERVER_PORT, POSTGRES_PORT } = config;
       if (!SERVER_PORT.match(/^\d{4,}$/)) {
         throw new Error(
           'invalid SERVER_PORT: should be a positive integer value over 8000',
+        );
+      }
+
+      if (!POSTGRES_PORT.match(/^\d{4,}$/)) {
+        throw new Error(
+          'invalid POSTGRES_PORT: should be a positive integer value (usually 5432)',
         );
       }
 
