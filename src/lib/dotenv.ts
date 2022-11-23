@@ -25,6 +25,7 @@ function getDotEnv() {
       assertHasKey(config, 'POSTGRES_HOST') &&
       assertHasKey(config, 'POSTGRES_PORT') &&
       assertHasKey(config, 'POSTGRES_USER') &&
+      assertHasKey(config, 'POSTGRES_PASSWORD') &&
       assertHasKey(config, 'POSTGRES_DB')
     ) {
       const { SERVER_PORT, POSTGRES_PORT } = config;
@@ -48,6 +49,11 @@ function getDotEnv() {
         AES_KEY: config.AES_KEY,
         SERVER_HOST: config.SERVER_HOST,
         SERVER_PORT,
+        POSTGRES_HOST: config.POSTGRES_HOST,
+        POSTGRES_PORT: config.POSTGRES_PORT,
+        POSTGRES_USER: config.POSTGRES_USER,
+        POSTGRES_PASSWORD: config.POSTGRES_PASSWORD,
+        POSTGRES_DB: config.POSTGRES_DB,
       };
     }
 
