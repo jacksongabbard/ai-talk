@@ -1,7 +1,7 @@
 #!/bin/bash -eu
 
 # Pull in the configuration constants
-source ./scripts/config.sh
+source ./.env
 
 echo "🛑 Stopping local development environment"
 echo ""
