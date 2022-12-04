@@ -18,7 +18,7 @@ module.exports = {
       id UUID DEFAULT uuid_generate_v4() NOT NULL PRIMARY KEY,
       created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
       updated_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
-      github_handle TEXT NULL,
+      nickname TEXT NULL,
       location TEXT NULL,
       team UUID NULL
     );
