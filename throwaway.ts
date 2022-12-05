@@ -6,7 +6,7 @@ import Team from './src/lib/db/Team';
 (async () => {
   const t = Team.build({
     id: uuid(),
-    displayName: 'foo',
+    teamName: 'foo',
     location: 'bar',
   });
 

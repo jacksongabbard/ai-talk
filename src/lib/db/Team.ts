@@ -36,9 +36,9 @@ class Team extends Model {
 
   @Column({
     type: DataType.TEXT,
-    field: 'display_name',
+    field: 'team_name',
   })
-  displayName!: string;
+  teamName!: string;
 
   @Column({
     type: DataType.TEXT,
