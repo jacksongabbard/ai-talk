@@ -18,5 +18,5 @@
     "target": "es2021",
     "importsNotUsedAsValues": "error"
   },
-  "exclude": ["opensource", "ops", "cypress"]
+  "exclude": []
 }

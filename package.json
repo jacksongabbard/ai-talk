@@ -28,13 +28,17 @@
     "pg": "^8.8.0",
     "prettier": "^2.7.1",
     "query-string": "^7.1.1",
-    "sequelize": "^6.25.3",
+    "reflect-metadata": "^0.1.13",
+    "sequelize": "^6.26.0",
+    "sequelize-typescript": "^2.1.5",
     "sqlite3": "^5.1.2",
     "ts-jest": "^29.0.3",
     "ws": "^8.9.0"
   },
   "devDependencies": {
     "@types/cookie-parser": "^1.4.3",
+    "@types/node": "^18.11.10",
+    "@types/validator": "^13.7.10",
     "sequelize-cli": "^6.5.1"
   }
 }
