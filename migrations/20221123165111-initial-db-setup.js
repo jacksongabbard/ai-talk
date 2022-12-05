@@ -19,6 +19,7 @@ module.exports = {
       created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
       updated_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
       display_name TEXT NULL,
+      profile_pic TEXT NULL,
       location TEXT NULL,
       team_id UUID NULL,
       CONSTRAINT fk_team
