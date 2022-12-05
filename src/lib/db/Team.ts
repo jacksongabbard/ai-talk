@@ -20,31 +20,31 @@ class Team extends Model {
     primaryKey: true,
     defaultValue: DataType.UUIDV4,
   })
-  id: string;
+  id!: string;
 
   @CreatedAt
   @Column({
     field: 'created_at',
   })
-  createdAt: Date;
+  createdAt!: Date;
 
   @UpdatedAt
   @Column({
     field: 'updated_at',
   })
-  updatedAt: Date;
+  updatedAt!: Date;
 
   @Column({
     type: DataType.TEXT,
     field: 'display_name',
   })
-  displayName: string;
+  displayName!: string;
 
   @Column({
     type: DataType.TEXT,
     field: 'location',
   })
-  location: string;
+  location!: string;
 }
 
 export default Team;
