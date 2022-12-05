@@ -26,40 +26,33 @@ module.exports = {
 	        REFERENCES teams(id)
     );
     
-    CREATE TABLE puzzles (
-      puzzle_id TEXT NOT NULL PRIMARY KEY,
-      created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
-      updated_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
-      display_name TEXT NULL,
-      description TEXT NULL
-    );
-
     CREATE TABLE puzzle_instances (
       id UUID DEFAULT uuid_generate_v4() NOT NULL PRIMARY KEY,
       puzzle_id TEXT NOT NULL,
       created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
       updated_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
+      team_id UUID NOT NULL,
       solved_at TIMESTAMP WITH TIME ZONE NULL,
       puzzle_payload JSONB NULL,
       solution_payload JSONB NULL,
-      CONSTRAINT fk_puzzle_id
-        FOREIGN KEY(puzzle_id) 
-	        REFERENCES puzzles(puzzle_id)
+      CONSTRAINT fk_team_id
+        FOREIGN KEY(team_id) 
+	        REFERENCES teams(id)
     );
 
     CREATE TABLE puzzle_instance_actions (
       id UUID DEFAULT uuid_generate_v4() NOT NULL PRIMARY KEY,
       puzzle_instance_id UUID NOT NULL,
-      team_id UUID NOT NULL,
+      user_id UUID NOT NULL,
       created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
-      updated_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
+      sequence_number INT NOT NULL,
       payload JSONB NOT NULL,
       CONSTRAINT fk_puzzle_instance_id
         FOREIGN KEY(puzzle_instance_id) 
 	        REFERENCES puzzle_instances(id),
-      CONSTRAINT fk_team_id
-        FOREIGN KEY(team_id) 
-	        REFERENCES teams(id)
+      CONSTRAINT fk_user_id
+        FOREIGN KEY(user_id) 
+	        REFERENCES users(id)
     );
 
     CREATE TABLE puzzle_instance_solution_attempts (
@@ -80,12 +73,11 @@ module.exports = {
 
   async down(queryInterface, Sequelize) {
     await queryInterface.sequelize.query(`
-    DROP TABLE users;
-    DROP TABLE teams;
     DROP TABLE puzzle_instance_solution_attempts;
     DROP TABLE puzzle_instance_actions;
     DROP TABLE puzzle_instances;
-    DROP TABLE puzzles;
+    DROP TABLE users;
+    DROP TABLE teams;
   `);
   },
 };
