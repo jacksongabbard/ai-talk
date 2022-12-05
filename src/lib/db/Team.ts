@@ -6,6 +6,8 @@ import {
   Model,
   CreatedAt,
   DataType,
+  UpdatedAt,
+  Default,
 } from 'sequelize-typescript';
 
 @Table({
@@ -13,21 +15,35 @@ import {
   tableName: 'teams',
 })
 class Team extends Model {
-  @IsUUID(4)
-  @PrimaryKey
-  @Column
+  @Column({
+    type: DataType.UUIDV4,
+    primaryKey: true,
+    defaultValue: DataType.UUIDV4,
+  })
   id: string;
 
   @CreatedAt
-  creationAt: Date;
+  @Column({
+    field: 'created_at',
+  })
+  createdAt: Date;
 
   @UpdatedAt
+  @Column({
+    field: 'updated_at',
+  })
   updatedAt: Date;
 
-  @Column(DataType.TEXT)
+  @Column({
+    type: DataType.TEXT,
+    field: 'display_name',
+  })
   displayName: string;
 
-  @Column(DataType.TEXT)
+  @Column({
+    type: DataType.TEXT,
+    field: 'location',
+  })
   location: string;
 }
 

@@ -1,8 +1,6 @@
 {
   "compilerOptions": {
-    // Enable absolute imports
     "baseUrl": ".",
-    // https://www.sitepoint.com/javascript-decorators-what-they-are/
     "experimentalDecorators": true,
     "emitDecoratorMetadata": true,
     "esModuleInterop": true,
@@ -16,7 +14,9 @@
     "sourceMap": true,
     "strict": true,
     "target": "es2021",
-    "importsNotUsedAsValues": "error"
+    "importsNotUsedAsValues": "error",
+    
+    "outDir": "./build/"
   },
   "exclude": []
 }
