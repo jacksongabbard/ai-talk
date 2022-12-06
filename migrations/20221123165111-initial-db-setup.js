@@ -33,6 +33,7 @@ module.exports = {
       created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
       updated_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
       team_id UUID NOT NULL,
+      started_at TIMESTAMP WITH TIME ZONE NULL,
       solved_at TIMESTAMP WITH TIME ZONE NULL,
       puzzle_payload JSONB NULL,
       solution_payload JSONB NULL,
