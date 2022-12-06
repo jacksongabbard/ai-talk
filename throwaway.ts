@@ -14,4 +14,12 @@ import Team from './src/lib/db/Team';
 
   const teams = await Team.findAll();
   console.log(teams);
+
+  const fromDB = teams[0];
+
+  fromDB.teamName = 'baz';
+
+  await fromDB.save();
+
+  console.log(fromDB);
 })();
