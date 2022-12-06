@@ -5,6 +5,7 @@ import SequelizeInstance from './src/lib/db/SequelizeInstance';
 
 import Team from './src/lib/db/Team';
 import User from './src/lib/db/User';
+import PuzzleInstance from './src/lib/db/PuzzleInstance';
 
 (async () => {
   const t = Team.build({
@@ -31,4 +32,18 @@ import User from './src/lib/db/User';
   });
 
   await user.save();
+
+  const pi = PuzzleInstance.build({
+    id: uuid(),
+    puzzleId: 'foobarbaz',
+    teamId: t.id,
+    startedAt: new Date(),
+    puzzlePayload: { foo: 'bar' },
+    solutionPayload: { baz: 'qux' },
+  });
+
+  await pi.save();
+
+  const pis = await PuzzleInstance.findAll();
+  console.log(pis);
 })();

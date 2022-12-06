@@ -33,7 +33,7 @@ module.exports = {
       created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
       updated_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
       team_id UUID NOT NULL,
-      started_at TIMESTAMP WITH TIME ZONE NULL,
+      started_at TIMESTAMP WITH TIME ZONE NOT NULL,
       solved_at TIMESTAMP WITH TIME ZONE NULL,
       puzzle_payload JSONB NULL,
       solution_payload JSONB NULL,
@@ -59,6 +59,7 @@ module.exports = {
 
     CREATE TABLE puzzle_instance_solution_attempts (
       id UUID DEFAULT uuid_generate_v4() NOT NULL PRIMARY KEY,
+      created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
       puzzle_instance_id UUID NOT NULL,
       user_id UUID NOT NULL,
       solution_attempt_payload JSONB NOT NULL,

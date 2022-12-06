@@ -13,13 +13,19 @@ import User from './User';
   timestamps: true,
   tableName: 'puzzle_instance_actions',
 })
-class PuzzleInstanceAction extends Model {
+class PuzzleInstanceSolutionAttempt extends Model {
   @Column({
     type: DataType.UUIDV4,
     primaryKey: true,
     defaultValue: DataType.UUIDV4,
   })
   id!: string;
+
+  @CreatedAt
+  @Column({
+    field: 'created_at',
+  })
+  createdAt!: Date;
 
   @Column({
     type: DataType.UUIDV4,
@@ -38,23 +44,11 @@ class PuzzleInstanceAction extends Model {
   })
   userId!: string;
 
-  @CreatedAt
-  @Column({
-    field: 'created_at',
-  })
-  createdAt!: Date;
-
-  @Column({
-    type: DataType.INTEGER,
-    field: 'sequence_number',
-  })
-  sequenceNumber!: string;
-
   @Column({
     type: DataType.JSONB,
-    field: 'payload',
+    field: 'solution_attempt_payload',
   })
-  payload!: object;
+  solutionAttemptPayload!: object;
 }
 
-export default PuzzleInstanceAction;
+export default PuzzleInstanceSolutionAttempt;

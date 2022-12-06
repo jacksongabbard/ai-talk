@@ -66,13 +66,13 @@ class PuzzleInstance extends Model {
     type: DataType.JSONB,
     field: 'puzzle_payload',
   })
-  puzzle_payload!: string;
+  puzzlePayload!: object;
 
   @Column({
     type: DataType.JSONB,
     field: 'solution_payload',
   })
-  solution_payload!: string;
+  solutionPayload!: object;
 }
 
 export default PuzzleInstance;
