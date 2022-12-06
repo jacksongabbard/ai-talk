@@ -1,54 +1,65 @@
-import { Column, IsUUID, PrimaryKey, Table, Model } from 'sequelize-typescript';
+import {
+  Column,
+  Table,
+  Model,
+  CreatedAt,
+  DataType,
+  UpdatedAt,
+} from 'sequelize-typescript';
+import Team from './Team';
 
-@Table
-export class User extends Model {
-  @IsUUID(4)
-  @PrimaryKey
-  @Column
-  id: string;
+@Table({
+  timestamps: true,
+  tableName: 'users',
+})
+class User extends Model {
+  @Column({
+    type: DataType.UUIDV4,
+    primaryKey: true,
+    defaultValue: DataType.UUIDV4,
+  })
+  id!: string;
+
+  @CreatedAt
+  @Column({
+    field: 'created_at',
+  })
+  createdAt!: Date;
+
+  @UpdatedAt
+  @Column({
+    field: 'updated_at',
+  })
+  updatedAt!: Date;
+
+  @Column({
+    type: DataType.TEXT,
+    field: 'user_name',
+  })
+  userName!: string;
+
+  @Column({
+    type: DataType.TEXT,
+    field: 'profile_pic',
+  })
+  profilePic!: string;
+
+  @Column({
+    type: DataType.TEXT,
+    field: 'location',
+  })
+  location!: string;
+
+  @Column({
+    type: DataType.UUIDV4,
+    primaryKey: true,
+    defaultValue: DataType.UUIDV4,
+    references: {
+      model: Team,
+      key: 'id',
+    },
+  })
+  teamId!: string;
 }
 
-/*
-type User extends Model {}
-User.init(
-  {
-    // Model attributes are defined here
-    id: {
-      type: DataTypes.UUID,
-      defaultValue: DataTypes.UUIDV4,
-      primaryKey: true,
-    },
-    createdAt: {
-      type: DataTypes.DATE,
-      field: 'created_at',
-    },
-    updatedAt: {
-      type: DataTypes.DATE,
-      field: 'updated_at',
-    },
-    displayName: {
-      type: DataTypes.STRING,
-      allowNull: false,
-      field: 'display_name',
-    },
-    profilePic: {
-      type: DataTypes.STRING,
-      field: 'profile_pic',
-    },
-    location: {
-      type: DataTypes.STRING,
-      field: 'location',
-    },
-    teamId: {
-      type: DataTypes.UUID,
-      field: 'team_id',
-    },
-  },
-  {
-    // Other model options go here
-    SequelizeInstance, // We need to pass the connection instance
-    tableName: 'users',
-    modelName: 'User', // We need to choose the model name
-  },
-);
-*/
+export default User;
