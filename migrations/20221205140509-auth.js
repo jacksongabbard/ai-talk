@@ -8,7 +8,8 @@ module.exports = {
         id UUID DEFAULT uuid_generate_v4() NOT NULL PRIMARY KEY,
         created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
         updated_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
-        token_value TEXT NOT NULL,
+        expires_at TIMESTAMP WITH TIME ZONE NOT NULL CURRENT_TIMESTAMP,
+        token_value JSONB NOT NULL,
         user_id UUID NOT NULL,
       CONSTRAINT fk_user_id
         FOREIGN KEY(user_id) 

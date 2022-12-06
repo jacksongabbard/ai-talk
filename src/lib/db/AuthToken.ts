@@ -6,13 +6,14 @@ import {
   DataType,
   UpdatedAt,
 } from 'sequelize-typescript';
-import Team from './Team';
+
+import User from './User';
 
 @Table({
   timestamps: true,
-  tableName: 'users',
+  tableName: 'puzzle_instance_actions',
 })
-class User extends Model {
+class AuthToken extends Model {
   @Column({
     type: DataType.UUIDV4,
     primaryKey: true,
@@ -33,39 +34,26 @@ class User extends Model {
   updatedAt!: Date;
 
   @Column({
-    type: DataType.TEXT,
-    field: 'user_name',
+    field: 'expires_at',
   })
-  userName!: string;
+  expiresAt!: Date;
 
   @Column({
-    type: DataType.TEXT,
-    field: 'email_address',
+    type: DataType.JSONB,
+    field: 'token_value',
   })
-  emailAddress!: string;
-
-  @Column({
-    type: DataType.TEXT,
-    field: 'profile_pic',
-  })
-  profilePic!: string;
-
-  @Column({
-    type: DataType.TEXT,
-    field: 'location',
-  })
-  location!: string;
+  tokenValue!: object;
 
   @Column({
     type: DataType.UUIDV4,
     defaultValue: DataType.UUIDV4,
-    field: 'team_id',
+    field: 'user_id',
     references: {
-      model: Team,
+      model: User,
       key: 'id',
     },
   })
-  teamId!: string;
+  userId!: string;
 }
 
-export default User;
+export default AuthToken;

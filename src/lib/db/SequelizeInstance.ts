@@ -5,6 +5,8 @@ import Team from './Team';
 import User from './User';
 import PuzzleInstance from './PuzzleInstance';
 import PuzzleInstanceAction from './PuzzleInstanceAction';
+import PuzzleInstanceSolutionAttempt from './PuzzleInstanceSolutionAttempt';
+import AuthToken from './AuthToken';
 
 const config = getDotEnv();
 
@@ -29,6 +31,13 @@ const SequelizeInstance = new Sequelize(
   },
 );
 
-SequelizeInstance.addModels([Team, User, PuzzleInstance, PuzzleInstanceAction]);
+SequelizeInstance.addModels([
+  Team,
+  User,
+  PuzzleInstance,
+  PuzzleInstanceAction,
+  PuzzleInstanceSolutionAttempt,
+  AuthToken,
+]);
 
 export default SequelizeInstance;
