@@ -1,13 +1,10 @@
 import {
   Column,
-  IsUUID,
-  PrimaryKey,
   Table,
   Model,
   CreatedAt,
   DataType,
   UpdatedAt,
-  Default,
 } from 'sequelize-typescript';
 
 @Table({
