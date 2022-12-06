@@ -54,6 +54,7 @@ class User extends Model {
     type: DataType.UUIDV4,
     primaryKey: true,
     defaultValue: DataType.UUIDV4,
+    field: 'team_id',
     references: {
       model: Team,
       key: 'id',

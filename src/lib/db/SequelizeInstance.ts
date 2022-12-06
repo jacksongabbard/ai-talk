@@ -2,6 +2,7 @@ import { Sequelize } from 'sequelize-typescript';
 import getDotEnv from '../dotenv';
 
 import Team from './Team';
+import User from './User';
 
 const config = getDotEnv();
 
@@ -26,6 +27,6 @@ const SequelizeInstance = new Sequelize(
   },
 );
 
-SequelizeInstance.addModels([Team]);
+SequelizeInstance.addModels([Team, User]);
 
 export default SequelizeInstance;
