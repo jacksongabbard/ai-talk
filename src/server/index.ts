@@ -7,10 +7,9 @@ import CookieParser from 'cookie-parser';
 import path from 'path';
 
 import getDotEnv from '../lib/dotenv';
+import { confirmDBConnection } from '../lib/db/util';
 
 const config = getDotEnv();
-
-console.log(config);
 
 const app = express();
 const router = express.Router();
@@ -18,7 +17,11 @@ app.use(express.json({ limit: '100kb' }));
 app.use(CookieParser());
 app.use('/', router);
 
+console.log('Bootstrapping the server...');
+
 (async () => {
+  await confirmDBConnection();
+
   let server;
   if (config.SERVER_HOST === 'localhost') {
     const privateKey = fs.readFileSync(
