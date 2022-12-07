@@ -4,7 +4,6 @@ import {
   Model,
   CreatedAt,
   DataType,
-  UpdatedAt,
 } from 'sequelize-typescript';
 
 import User from './User';
