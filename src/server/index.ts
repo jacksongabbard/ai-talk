@@ -8,6 +8,7 @@ import path from 'path';
 
 import getDotEnv from '../lib/dotenv';
 import { confirmDBConnection } from '../lib/db/util';
+import { home } from './routes/home';
 
 const config = getDotEnv();
 
@@ -21,6 +22,8 @@ console.log('Bootstrapping the server...');
 
 (async () => {
   await confirmDBConnection();
+
+  router.get('/', home);
 
   let server;
   if (config.SERVER_HOST === 'localhost') {
