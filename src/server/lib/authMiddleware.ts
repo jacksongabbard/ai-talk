@@ -1,10 +1,16 @@
 import { decrypt } from './crypto';
 import User from 'src/lib/db/User';
 import AuthToken from 'src/lib/db/AuthToken';
-import type { RequestHandler } from 'express';
+import type { RequestHandler, Request, Response, NextFunction } from 'express';
 import Team from 'src/lib/db/Team';
+import { nextTick } from 'process';
 
 export async function authFromDatr(datr: string) {
+  console.log(datr);
+  if (!datr) {
+    throw new Error('Request had no datr');
+  }
+
   const datrData = (await decrypt(datr)) || {};
   if (!datrData || !datrData.tv) {
     throw new Error('Unidentified puzzler');
@@ -43,9 +49,20 @@ export async function authFromDatr(datr: string) {
   return { user, team };
 }
 
+function redirectIfNecessary(req: Request, res: Response, next: NextFunction) {
+  // Only redirect if we're not already on the auth path
+  if (req.path !== '/auth') {
+    res.status(403);
+    res.redirect('/auth');
+  } else {
+    next();
+  }
+}
+
 export const authMiddleware: RequestHandler = async (req, res, next) => {
   const { datr } = req.cookies;
 
+  const { path, url } = req;
   let user;
   let team;
   try {
@@ -53,15 +70,13 @@ export const authMiddleware: RequestHandler = async (req, res, next) => {
     user = res.user;
     team = res.team;
   } catch (e) {
-    console.log((e as Error).message);
-    res.status(403);
-    res.redirect('/auth');
+    console.log(e);
+    redirectIfNecessary(req, res, next);
     return;
   }
 
   if (!user) {
-    res.status(403);
-    res.redirect('/auth');
+    redirectIfNecessary(req, res, next);
     return;
   }
 

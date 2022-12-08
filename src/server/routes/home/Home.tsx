@@ -3,7 +3,7 @@ import Chrome from 'src/server/ui/Chrome';
 
 const Home: React.FC = () => {
   return (
-    <Chrome>
+    <Chrome title="Foo">
       <h1>ohai there</h1>
     </Chrome>
   );

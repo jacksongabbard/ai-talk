@@ -26,7 +26,9 @@ function getDotEnv() {
       assertHasKey(config, 'POSTGRES_PORT') &&
       assertHasKey(config, 'POSTGRES_USER') &&
       assertHasKey(config, 'POSTGRES_PASSWORD') &&
-      assertHasKey(config, 'POSTGRES_DB')
+      assertHasKey(config, 'POSTGRES_DB') &&
+      assertHasKey(config, 'GOOGLE_CLIENT_ID') &&
+      assertHasKey(config, 'GOOGLE_CLIENT_SECRET')
     ) {
       const { SERVER_PORT, POSTGRES_PORT } = config;
       if (!SERVER_PORT.match(/^\d{4,}$/)) {
@@ -42,8 +44,8 @@ function getDotEnv() {
       }
 
       // If there is other junk in the config, we exclude it from the extracted
-      // configuration.  This is a preventative measure against silly security
-      // vulnerability caused by crufty old, undocmunted config stuff lingering
+      // configuration. This is a preventative measure against silly security
+      // vulnerabilities caused by crufty old, undocumented config stuff lingering
       // in the system.
       return {
         AES_KEY: config.AES_KEY,
@@ -54,6 +56,8 @@ function getDotEnv() {
         POSTGRES_USER: config.POSTGRES_USER,
         POSTGRES_PASSWORD: config.POSTGRES_PASSWORD,
         POSTGRES_DB: config.POSTGRES_DB,
+        GOOGLE_CLIENT_ID: config.GOOGLE_CLIENT_ID,
+        GOOGLE_CLIENT_SECRET: config.GOOGLE_CLIENT_SECRET,
       };
     }
 

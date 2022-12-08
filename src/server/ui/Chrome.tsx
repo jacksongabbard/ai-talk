@@ -1,15 +1,25 @@
-import e from 'express';
 import React from 'react';
-import type { ContainerProps } from './type';
 
-const Chrome: React.FC<ContainerProps> = ({ children }) => {
+interface ChromeProps {
+  children: React.ReactNode;
+  title?: string;
+}
+
+const Chrome = ({ children, title }: ChromeProps): JSX.Element => {
   return (
     <html>
       <head>
-        <title>Puzzles</title>
+        <title>{title || 'Puzzles'}</title>
       </head>
       <body>
-        <div>{children}</div>
+        <div id="react-root">{children}</div>
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `
+          const rr = document.getElementById('react-root');
+        `,
+          }}
+        ></script>
       </body>
     </html>
   );

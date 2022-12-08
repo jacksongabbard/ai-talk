@@ -3,6 +3,7 @@ build
 
 # Local development environment certs
 .localhost
+.local.ohffs.io
 
 # Logs
 logs

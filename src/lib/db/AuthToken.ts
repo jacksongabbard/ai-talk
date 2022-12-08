@@ -11,7 +11,7 @@ import User from './User';
 
 @Table({
   timestamps: true,
-  tableName: 'puzzle_instance_actions',
+  tableName: 'auth_tokens',
 })
 class AuthToken extends Model {
   @Column({

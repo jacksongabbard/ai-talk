@@ -9,6 +9,8 @@ import path from 'path';
 import getDotEnv from '../lib/dotenv';
 import { confirmDBConnection } from '../lib/db/util';
 import { home } from './routes/home';
+import { authMiddleware } from './lib/authMiddleware';
+import { auth } from './routes/auth';
 
 const config = getDotEnv();
 
@@ -16,6 +18,7 @@ const app = express();
 const router = express.Router();
 app.use(express.json({ limit: '100kb' }));
 app.use(CookieParser());
+app.use(authMiddleware);
 app.use('/', router);
 
 console.log('Bootstrapping the server...');
@@ -24,25 +27,22 @@ console.log('Bootstrapping the server...');
   await confirmDBConnection();
 
   router.get('/', home);
+  router.get('/auth', auth);
 
   let server;
-  if (config.SERVER_HOST === 'localhost') {
-    const privateKey = fs.readFileSync(
-      path.resolve('./.localhost/', 'localhost.key'),
-    );
-    const certificate = fs.readFileSync(
-      path.resolve('./.localhost/', 'localhost.crt'),
-    );
-    server = https.createServer(
-      {
-        key: privateKey,
-        cert: certificate,
-      },
-      app,
-    );
-  } else {
-    server = http.createServer(app);
-  }
+  const privateKey = fs.readFileSync(
+    path.resolve('./.' + config.SERVER_HOST + '/', config.SERVER_HOST + '.key'),
+  );
+  const certificate = fs.readFileSync(
+    path.resolve('./.' + config.SERVER_HOST + '/', config.SERVER_HOST + '.crt'),
+  );
+  server = https.createServer(
+    {
+      key: privateKey,
+      cert: certificate,
+    },
+    app,
+  );
 
   // initWebSockets(server);
 
