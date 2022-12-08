@@ -1,7 +1,7 @@
-import type { JSONValue } from "../../lib/typeUtilities";
+import type { JSONValue } from '../../lib/typeUtilities';
 
-import { encryptBase, decryptBase } from "../../lib/cryptoBase";
-import getDotEnv from "../../lib/dotenv";
+import { encryptBase, decryptBase } from '../../lib/cryptoBase';
+import getDotEnv from '../../lib/dotenv';
 
 // This file exists to bind the dotenv config to useful crypto functions.
 // All the goodies are in cryptoBase.ts. They are separated to make unit
@@ -10,16 +10,10 @@ import getDotEnv from "../../lib/dotenv";
 
 const { AES_KEY } = getDotEnv();
 
-export function decrypt(
-  encryptedString: string,
-  arbitraryStringKey: string | undefined
-) {
+export function decrypt(encryptedString: string, arbitraryStringKey?: string) {
   return decryptBase(encryptedString, arbitraryStringKey || AES_KEY);
 }
 
-export function encrypt(
-  dataObject: JSONValue,
-  arbitraryStringKey: string | undefined
-) {
+export function encrypt(dataObject: JSONValue, arbitraryStringKey?: string) {
   return encryptBase(dataObject, arbitraryStringKey || AES_KEY);
 }
