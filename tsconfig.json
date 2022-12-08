@@ -6,15 +6,15 @@
     "esModuleInterop": true,
     "incremental": true,
     "jsx": "react",
-    "module": "commonjs",
+    "module": "CommonJS",
     "moduleResolution": "node",
     "noImplicitAny": true,
     "noImplicitReturns": true,
     "resolveJsonModule": true,
     "sourceMap": true,
     "strict": true,
-    "target": "es2021",
-    "importsNotUsedAsValues": "error", 
+    "target": "ES2020",
+    "importsNotUsedAsValues": "error",
     "outDir": "./build"
   },
   "exclude": []

@@ -5,6 +5,7 @@ const Home: React.FC = () => {
   return (
     <Chrome title="Foo">
       <h1>ohai there</h1>
+      <script type="module" src="/home/hydrate.js"></script>
     </Chrome>
   );
 };
