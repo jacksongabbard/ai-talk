@@ -1,12 +1,15 @@
-import React from 'react';
-import Chrome from 'src/server/ui/Chrome';
+import React, { useEffect } from 'react';
 
 const Home: React.FC = () => {
+  useEffect(() => {
+    console.log('Omg, did this just work?!');
+  }, []);
+
   return (
-    <Chrome title="Foo">
+    <>
       <h1>ohai there</h1>
-      <script type="module" src="/home/hydrate.js"></script>
-    </Chrome>
+      <script src="/home/hydrate.js"></script>
+    </>
   );
 };
 

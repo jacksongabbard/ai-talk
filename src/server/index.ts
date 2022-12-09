@@ -13,6 +13,7 @@ import { authMiddleware } from './lib/authMiddleware';
 import { home } from './routes/home';
 import { auth } from './routes/auth';
 import hydrate from './routes/hydrate';
+import staticResource from './routes/staticResource';
 
 const config = getDotEnv();
 
@@ -31,6 +32,7 @@ console.log('Bootstrapping the server...');
   router.get('/', home);
   router.get('/auth', auth);
   router.get(/.*hydrate(\.js|\.js\.map)$/, hydrate);
+  router.get(/.*(\.js|\.js\.map)$/, staticResource);
 
   let server;
   const privateKey = fs.readFileSync(

@@ -13,13 +13,6 @@ const Chrome = ({ children, title }: ChromeProps): JSX.Element => {
       </head>
       <body>
         <div id="react-root">{children}</div>
-        <script
-          dangerouslySetInnerHTML={{
-            __html: `
-          const rr = document.getElementById('react-root');
-        `,
-          }}
-        ></script>
       </body>
     </html>
   );
