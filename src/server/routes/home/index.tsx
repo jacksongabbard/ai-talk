@@ -12,6 +12,7 @@ export const home: RequestHandler = (req: Request, res: Response) => {
     renderPage(
       <Chrome title="Foo">
         <Home />
+        <script src="/home/hydrate.js"></script>
       </Chrome>,
     ),
   );
