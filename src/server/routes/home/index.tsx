@@ -11,7 +11,9 @@ export const home: RequestHandler = (req: Request, res: Response) => {
   res.send(
     renderPage(
       <Chrome title="Foo">
-        <Home />
+        <div id="react-root">
+          <Home />
+        </div>
         <script src="/home/hydrate.js"></script>
       </Chrome>,
     ),

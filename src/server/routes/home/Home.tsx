@@ -8,7 +8,6 @@ const Home: React.FC = () => {
   return (
     <>
       <h1>ohai there puzzler</h1>
-      <script src="/home/hydrate.js"></script>
     </>
   );
 };

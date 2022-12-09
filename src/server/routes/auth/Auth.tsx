@@ -1,31 +1,29 @@
-import React, { useEffect, useState } from 'react';
+import React, { useCallback } from 'react';
 
 declare var google: any;
+declare var GOOGLE_CLIENT_ID: string;
+declare var DTSG_TOKEN: string;
 
 const Auth: React.FC = () => {
-  const [doAuth, setDoAuth] = useState<(() => void) | undefined>(undefined);
-
   // Where did I leave off?
   //
-  // I'd just figured out that my code is pretty risky because
-  // I believe the output of getDotenv() can very easily get
-  // compiled into the bundles used to hydrate React on
-  // the client. So... that's scary.
+  // Need to fix up the scope to be the right thing (just email) and then add
+  // the google-oauth-redirect end point to actually do the handshake.
   //
-  // Related to that new problem, I was just about to wire up
-  // the Google OAuth flow.
-
-  useEffect(() => {
+  // Also, the DTSG generation is super cheeseball. It's too easy to generate
+  // instances of ciphertext, which makes it much easier to recover the key
+  // through cryptanalysis. Need to change the way those values are generated.
+  const doAuth = useCallback(() => {
     const client = google.accounts.oauth2.initCodeClient({
-      client_id: 'YOUR_GOOGLE_CLIENT_ID',
+      client_id: GOOGLE_CLIENT_ID,
       scope: 'https://www.googleapis.com/auth/calendar.readonly',
       ux_mode: 'redirect',
-      redirect_uri: 'https://local.ohffs.io/code_callback_endpoint',
-      state: 'YOUR_BINDING_VALUE',
+      redirect_uri: 'https://local.ohffs.io/google-oauth-redirect',
+      state: DTSG_TOKEN,
     });
     console.log(client);
-    setDoAuth(() => client.requestCode());
-  }, [setDoAuth]);
+    client.requestCode();
+  }, []);
 
   return (
     <>

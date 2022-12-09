@@ -11,9 +11,7 @@ const Chrome = ({ children, title }: ChromeProps): JSX.Element => {
       <head>
         <title>{title || 'Puzzles'}</title>
       </head>
-      <body>
-        <div id="react-root">{children}</div>
-      </body>
+      <body>{children}</body>
     </html>
   );
 };
