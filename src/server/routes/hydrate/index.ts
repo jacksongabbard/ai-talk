@@ -4,7 +4,7 @@ import path from 'path';
 
 import getDotEnv from 'src/lib/dotenv';
 
-const hydrate: RequestHandler = (req, res, next) => {
+export const hydrate: RequestHandler = (req, res, next) => {
   if (!req.path.includes('hydrate.js')) {
     res.status(500);
     res.send('Bad hydration request');
@@ -46,5 +46,3 @@ const hydrate: RequestHandler = (req, res, next) => {
     return;
   }
 };
-
-export default hydrate;

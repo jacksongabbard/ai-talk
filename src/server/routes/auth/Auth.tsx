@@ -16,9 +16,9 @@ const Auth: React.FC = () => {
   const doAuth = useCallback(() => {
     const client = google.accounts.oauth2.initCodeClient({
       client_id: GOOGLE_CLIENT_ID,
-      scope: 'https://www.googleapis.com/auth/calendar.readonly',
+      scope: 'https://www.googleapis.com/auth/userinfo.email',
       ux_mode: 'redirect',
-      redirect_uri: 'https://local.ohffs.io/google-oauth-redirect',
+      redirect_uri: 'https://local.ohffs.io:8197/google-oauth-redirect',
       state: DTSG_TOKEN,
     });
     console.log(client);

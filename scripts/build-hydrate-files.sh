@@ -5,5 +5,6 @@ find . -name '*hydrate.js' \
     ./node_modules/.bin/esbuild "{}" \
     --bundle \
     --minify \
+    --sourcemap=linked \
     --outfile="{}" \
     --allow-overwrite \;

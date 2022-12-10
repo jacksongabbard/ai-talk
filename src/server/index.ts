@@ -12,8 +12,9 @@ import { authMiddleware } from './lib/authMiddleware';
 // Routes
 import { home } from './routes/home';
 import { auth } from './routes/auth';
-import hydrate from './routes/hydrate';
-import staticResource from './routes/staticResource';
+import { hydrate } from './routes/hydrate';
+import { staticResource } from './routes/staticResource';
+import { googleOAuthRedirect } from './routes/googleOAuthRedirect';
 
 const config = getDotEnv();
 
@@ -31,6 +32,7 @@ console.log('Bootstrapping the server...');
 
   router.get('/', home);
   router.get('/auth', auth);
+  router.get('/google-oauth-redirect', googleOAuthRedirect);
   router.get(/.*hydrate(\.js|\.js\.map)$/, hydrate);
   router.get(/.*(\.js|\.js\.map)$/, staticResource);
 

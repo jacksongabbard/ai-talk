@@ -2,7 +2,7 @@ import type { RequestHandler } from 'express';
 import fs from 'fs';
 import path from 'path';
 
-const staticResource: RequestHandler = (req, res, next) => {
+export const staticResource: RequestHandler = (req, res, next) => {
   if (!req.path.match(/(?:\.js|\.js\.map)$/)) {
     res.status(500);
     res.send('Bad request');
@@ -39,5 +39,3 @@ const staticResource: RequestHandler = (req, res, next) => {
     return;
   }
 };
-
-export default staticResource;
