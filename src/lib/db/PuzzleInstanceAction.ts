@@ -10,6 +10,7 @@ import User from './User';
 
 @Table({
   timestamps: true,
+  updatedAt: false,
   tableName: 'puzzle_instance_actions',
 })
 class PuzzleInstanceAction extends Model {

@@ -1,7 +1,15 @@
 const values: string[] = [];
 
-// Populate an array with every printable ASCII character
-for (let ii = 33; ii <= 126; ii++) {
+// 0-9,A-Z, and a-z
+for (let ii = 48; ii <= 57; ii++) {
+  const s: string = String.fromCharCode(ii);
+  values.push(s);
+}
+for (let ii = 65; ii <= 90; ii++) {
+  const s: string = String.fromCharCode(ii);
+  values.push(s);
+}
+for (let ii = 97; ii <= 122; ii++) {
   const s: string = String.fromCharCode(ii);
   values.push(s);
 }

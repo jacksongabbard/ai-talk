@@ -7,15 +7,12 @@ import { renderPage } from 'src/server/ui/util';
 import Auth from './Auth';
 import Chrome from 'src/server/ui/Chrome';
 import getDotEnv from 'src/lib/dotenv';
-import { encrypt } from 'src/server/lib/crypto';
-import getRandomFill from 'src/server/lib/getRandomFill';
+import { makeDTSG } from 'src/server/lib/dtsg';
 
 const dotenv = getDotEnv();
 
-export const auth: RequestHandler = (req: Request, res: Response) => {
-  const dtsgKey = getRandomFill(12);
-  const dtsgKeyCipherText = encrypt({ dtsgKey });
-  const dtsgValueCipherText = encrypt({ ts: Date.now() }, dtsgKey);
+export const auth: RequestHandler = async (req: Request, res: Response) => {
+  const dtsgKey = await makeDTSG(req);
 
   res.send(
     renderPage(
@@ -24,7 +21,7 @@ export const auth: RequestHandler = (req: Request, res: Response) => {
           dangerouslySetInnerHTML={{
             __html: `
               window.GOOGLE_CLIENT_ID="${dotenv.GOOGLE_CLIENT_ID}";
-              window.DTSG_TOKEN="${dtsgKeyCipherText}${dtsgValueCipherText}";
+              window.DTSG_TOKEN="${dtsgKey}";
             `,
           }}
         ></script>

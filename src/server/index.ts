@@ -19,6 +19,9 @@ import { googleOAuthRedirect } from './routes/googleOAuthRedirect';
 const config = getDotEnv();
 
 const app = express();
+
+app.enable('trust proxy');
+
 const router = express.Router();
 app.use(express.json({ limit: '100kb' }));
 app.use(CookieParser());

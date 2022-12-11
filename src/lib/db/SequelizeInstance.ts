@@ -7,6 +7,7 @@ import PuzzleInstance from './PuzzleInstance';
 import PuzzleInstanceAction from './PuzzleInstanceAction';
 import PuzzleInstanceSolutionAttempt from './PuzzleInstanceSolutionAttempt';
 import AuthToken from './AuthToken';
+import DTSGToken from './DTSGToken';
 
 const config = getDotEnv();
 
@@ -38,6 +39,7 @@ SequelizeInstance.addModels([
   PuzzleInstanceAction,
   PuzzleInstanceSolutionAttempt,
   AuthToken,
+  DTSGToken,
 ]);
 
 export default SequelizeInstance;
