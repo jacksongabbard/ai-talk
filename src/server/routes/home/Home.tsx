@@ -7,7 +7,8 @@ const Home: React.FC = () => {
 
   return (
     <>
-      <h1>ohai there puzzler</h1>
+      <h1>Hi there puzzler</h1>
+      <p>The party is just getting started</p>
     </>
   );
 };

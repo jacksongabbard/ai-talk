@@ -1,5 +1,6 @@
 import type { Request, RequestHandler, Response } from 'express';
 import { OAuth2Client } from 'googleapis-common';
+import { google } from 'googleapis';
 
 import getDotEnv from 'src/lib/dotenv';
 import { hasOwnProperty } from 'src/lib/hasOwnProperty';
@@ -48,8 +49,9 @@ export const googleOAuthRedirect: RequestHandler = async (
       // Get access and refresh tokens (if access_type is offline)
       let { tokens } = await client.getToken(req.query.code);
 
-      console.log(tokens);
       client.setCredentials(tokens);
+
+      // google.auth.
 
       res.status(200);
       res.send('Looking good');

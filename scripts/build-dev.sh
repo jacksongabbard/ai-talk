@@ -1,6 +1,6 @@
 #!/bin/bash -eu
 
-nodemon -e ts,tsx \
+nodemon -e ts,tsx,css \
   --watch src/ \
   --exec "rm -rf build && \
     tsc -p tsconfig.json && \

@@ -34,6 +34,7 @@ console.log('Bootstrapping the server...');
   await confirmDBConnection();
 
   router.get('/', home);
+  router.get('/home', home);
   router.get('/auth', auth);
   router.get('/google-oauth-redirect', googleOAuthRedirect);
   router.get(/.*hydrate(\.js|\.js\.map)$/, hydrate);
