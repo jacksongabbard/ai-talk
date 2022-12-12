@@ -51,7 +51,11 @@ export const googleOAuthRedirect: RequestHandler = async (
 
       client.setCredentials(tokens);
 
-      // google.auth.
+      google.options({ auth: client });
+      const oauth2 = google.oauth2('v2');
+      const userInfoResponse = await oauth2.userinfo.get({});
+
+      console.log(userInfoResponse);
 
       res.status(200);
       res.send('Looking good');
