@@ -11,7 +11,8 @@ module.exports = {
       created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
       updated_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
       team_name TEXT NOT NULL UNIQUE,
-      location TEXT NULL
+      location TEXT NULL,
+      active BOOLEAN NOT NULL DEFAULT TRUE
     );
 
     CREATE TABLE users (
@@ -23,6 +24,7 @@ module.exports = {
       profile_pic TEXT NULL,
       location TEXT NULL,
       team_id UUID NULL,
+      active BOOLEAN NOT NULL DEFAULT TRUE,
       CONSTRAINT fk_team
         FOREIGN KEY(team_id) 
 	        REFERENCES teams(id)

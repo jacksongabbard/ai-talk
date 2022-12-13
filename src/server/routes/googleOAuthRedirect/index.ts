@@ -5,6 +5,11 @@ import { google } from 'googleapis';
 import getDotEnv from 'src/lib/dotenv';
 import { hasOwnProperty } from 'src/lib/hasOwnProperty';
 import { validateDTSG } from 'src/server/lib/dtsg';
+import User from 'src/lib/db/User';
+import { Sequelize } from 'sequelize';
+import cookieParser from 'cookie-parser';
+import getRandomAdjective from 'src/lib/usernameUtils/getRandomAdjective';
+import makeUserNameFromEmail from 'src/lib/usernameUtils/makeUserNameFromEmail';
 
 const config = getDotEnv();
 
@@ -55,11 +60,51 @@ export const googleOAuthRedirect: RequestHandler = async (
       const oauth2 = google.oauth2('v2');
       const userInfoResponse = await oauth2.userinfo.get({});
 
-      console.log(userInfoResponse);
+      if (
+        userInfoResponse &&
+        userInfoResponse.data &&
+        userInfoResponse.data.email
+      ) {
+        const { email, picture } = userInfoResponse.data;
 
-      res.status(200);
-      res.send('Looking good');
-      return;
+        const user = await User.findOne({
+          where: {
+            emailAddress: email.toLowerCase().trim(),
+          },
+        });
+
+        // If we don't have a user, we need to go through the user
+        // creation flow.
+        if (!user) {
+          console.log('No user!');
+          const userName = makeUserNameFromEmail(email);
+          const newUser = User.build({
+            userName,
+            emailAddress: email,
+            location: 'Puzzlembourg City, Puzzlembourg, Terra',
+            profilePic: picture || '',
+            active: false,
+            teamId: null,
+          });
+
+          await newUser.save();
+
+          res.status(200);
+          res.send('User created!');
+
+          // TODO: Redirect to the profile page?
+        } else {
+          // Do a login + redirect
+          console.log('User already exists!');
+        }
+
+        res.status(200);
+        res.send('Looking good');
+        return;
+      } else {
+        bail(res);
+        return;
+      }
     }
   } catch (e) {
     console.log('Failed Google OAuth authentication: ', e);

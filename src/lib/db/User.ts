@@ -58,7 +58,6 @@ class User extends Model {
 
   @Column({
     type: DataType.UUIDV4,
-    defaultValue: DataType.UUIDV4,
     field: 'team_id',
     references: {
       model: Team,
@@ -66,6 +65,13 @@ class User extends Model {
     },
   })
   teamId!: string;
+
+  @Column({
+    type: DataType.BOOLEAN,
+    field: 'active',
+    defaultValue: true,
+  })
+  active!: boolean;
 }
 
 export default User;
