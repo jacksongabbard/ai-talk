@@ -29,7 +29,8 @@ function getDotEnv() {
       assertHasKey(config, 'POSTGRES_DB') &&
       assertHasKey(config, 'GOOGLE_CLIENT_ID') &&
       assertHasKey(config, 'GOOGLE_CLIENT_SECRET') &&
-      assertHasKey(config, 'BUILD_DIR')
+      assertHasKey(config, 'BUILD_DIR') &&
+      assertHasKey(config, 'COOKIE_PARSER_SECRET')
     ) {
       const { SERVER_PORT, POSTGRES_PORT } = config;
       if (!SERVER_PORT.match(/^\d{4,}$/)) {
@@ -60,6 +61,7 @@ function getDotEnv() {
         GOOGLE_CLIENT_ID: config.GOOGLE_CLIENT_ID,
         GOOGLE_CLIENT_SECRET: config.GOOGLE_CLIENT_SECRET,
         BUILD_DIR: config.BUILD_DIR,
+        COOKIE_PARSER_SECRET: config.COOKIE_PARSER_SECRET,
       };
     }
 

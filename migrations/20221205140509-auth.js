@@ -9,11 +9,8 @@ module.exports = {
         created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
         updated_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
         expires_at TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT CURRENT_TIMESTAMP,
-        token_value JSONB NOT NULL,
-        user_id UUID NOT NULL,
-      CONSTRAINT fk_user_id
-        FOREIGN KEY(user_id) 
-	        REFERENCES users(id)
+        token_value TEXT NOT NULL,
+        user_id UUID NOT NULL REFERENCES users(id) ON DELETE CASCADE
       );
    `);
   },

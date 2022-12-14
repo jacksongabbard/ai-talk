@@ -39,10 +39,10 @@ class AuthToken extends Model {
   expiresAt!: Date;
 
   @Column({
-    type: DataType.JSONB,
+    type: DataType.STRING,
     field: 'token_value',
   })
-  tokenValue!: object;
+  tokenValue!: string;
 
   @Column({
     type: DataType.UUIDV4,

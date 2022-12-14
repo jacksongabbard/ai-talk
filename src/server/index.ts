@@ -24,7 +24,7 @@ app.enable('trust proxy');
 
 const router = express.Router();
 app.use(express.json({ limit: '100kb' }));
-app.use(CookieParser());
+app.use(CookieParser(config.COOKIE_PARSER_SECRET));
 // app.use(authMiddleware);
 app.use('/', router);
 

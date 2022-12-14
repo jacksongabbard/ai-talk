@@ -10,6 +10,7 @@ import { Sequelize } from 'sequelize';
 import cookieParser from 'cookie-parser';
 import getRandomAdjective from 'src/lib/usernameUtils/getRandomAdjective';
 import makeUserNameFromEmail from 'src/lib/usernameUtils/makeUserNameFromEmail';
+import setDatrCookie from 'src/server/lib/setDatrCookie';
 
 const config = getDotEnv();
 
@@ -89,8 +90,16 @@ export const googleOAuthRedirect: RequestHandler = async (
 
           await newUser.save();
 
+          try {
+            setDatrCookie(newUser, req, res);
+          } catch (e) {
+            console.log((e as Error).message);
+            return;
+          }
+
           res.status(200);
           res.send('User created!');
+          return;
 
           // TODO: Redirect to the profile page?
         } else {

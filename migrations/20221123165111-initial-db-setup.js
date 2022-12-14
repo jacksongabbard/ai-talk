@@ -23,11 +23,8 @@ module.exports = {
       email_address TEXT NOT NULL UNIQUE,
       profile_pic TEXT NULL,
       location TEXT NULL,
-      team_id UUID NULL,
-      active BOOLEAN NOT NULL DEFAULT TRUE,
-      CONSTRAINT fk_team
-        FOREIGN KEY(team_id) 
-	        REFERENCES teams(id)
+      team_id UUID NULL REFERENCES teams(id) ON DELETE CASCADE,
+      active BOOLEAN NOT NULL DEFAULT TRUE
     );
     
     CREATE TABLE puzzle_instances (
