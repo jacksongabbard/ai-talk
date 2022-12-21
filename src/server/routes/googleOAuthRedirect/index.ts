@@ -77,12 +77,11 @@ export const googleOAuthRedirect: RequestHandler = async (
         // If we don't have a user, we need to go through the user
         // creation flow.
         if (!user) {
-          console.log('No user!');
           const userName = makeUserNameFromEmail(email);
           const newUser = User.build({
             userName,
             emailAddress: email,
-            location: 'Puzzlembourg City, Puzzlembourg, Terra',
+            location: 'Puzzletown, Terra',
             profilePic: picture || '',
             active: false,
             teamId: null,
@@ -91,7 +90,7 @@ export const googleOAuthRedirect: RequestHandler = async (
           await newUser.save();
 
           try {
-            setDatrCookie(newUser, req, res);
+            await setDatrCookie(newUser, req, res);
           } catch (e) {
             console.log((e as Error).message);
             return;
@@ -100,15 +99,12 @@ export const googleOAuthRedirect: RequestHandler = async (
           res.status(200);
           res.send('User created!');
           return;
-
-          // TODO: Redirect to the profile page?
         } else {
           // Do a login + redirect
-          console.log('User already exists!');
+          await setDatrCookie(user, req, res);
+          res.redirect('/home');
         }
 
-        res.status(200);
-        res.send('Looking good');
         return;
       } else {
         bail(res);

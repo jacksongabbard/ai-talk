@@ -25,7 +25,7 @@ app.enable('trust proxy');
 const router = express.Router();
 app.use(express.json({ limit: '100kb' }));
 app.use(CookieParser(config.COOKIE_PARSER_SECRET));
-// app.use(authMiddleware);
+//app.use(authMiddleware);
 app.use('/', router);
 
 console.log('Bootstrapping the server...');
@@ -33,10 +33,11 @@ console.log('Bootstrapping the server...');
 (async () => {
   await confirmDBConnection();
 
-  router.get('/', home);
-  router.get('/home', home);
+  router.get('/', authMiddleware, home);
+  router.get('/home', authMiddleware, home);
   router.get('/auth', auth);
   router.get('/google-oauth-redirect', googleOAuthRedirect);
+  // Must come before the generic static resource route
   router.get(/.*hydrate(\.js|\.js\.map)$/, hydrate);
   router.get(/.*(\.js|\.js\.map)$/, staticResource);
 

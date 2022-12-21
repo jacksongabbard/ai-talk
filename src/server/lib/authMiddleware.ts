@@ -53,7 +53,7 @@ function redirectIfNecessary(req: Request, res: Response, next: NextFunction) {
 }
 
 export const authMiddleware: RequestHandler = async (req, res, next) => {
-  const { datr } = req.cookies;
+  const { datr } = req.signedCookies;
 
   let user;
   let team;
@@ -71,6 +71,8 @@ export const authMiddleware: RequestHandler = async (req, res, next) => {
     redirectIfNecessary(req, res, next);
     return;
   }
+
+  console.log({ user, team });
 
   req.context = { ...req.context, user, team };
 
