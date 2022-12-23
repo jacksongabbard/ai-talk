@@ -4,23 +4,23 @@ import type { Request, RequestHandler, Response } from 'express';
 
 import { renderPage } from 'src/server/ui/util';
 
-import Home from './Home';
+import Profile from './Profile';
 import Chrome from 'src/server/ui/Chrome';
-import { makeHomePropsFromRequest } from './HomeProps';
+import { makeProfilePropsFromRequest } from './ProfileProps';
 
-export const home: RequestHandler = (req: Request, res: Response) => {
-  const props = makeHomePropsFromRequest(req);
+export const profile: RequestHandler = (req: Request, res: Response) => {
+  const props = makeProfilePropsFromRequest(req);
   res.send(
     renderPage(
-      <Chrome title="Home">
+      <Chrome title="Profile">
         <div id="react-root">
-          <Home {...props} />
+          <Profile {...props} />
         </div>
         <div
           id="hydration-bilge"
           data-hydration-state={JSON.stringify(props)}
         />
-        <script src="/home/hydrate.js"></script>
+        <script src="/profile/hydrate.js"></script>
       </Chrome>,
     ),
   );

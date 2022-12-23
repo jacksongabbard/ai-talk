@@ -44,9 +44,9 @@ export async function authFromDatr(datr: string) {
 
 function redirectIfNecessary(req: Request, res: Response, next: NextFunction) {
   // Only redirect if we're not already on the auth path
-  if (req.path !== '/auth') {
+  if (req.path !== '/logout') {
     res.status(403);
-    res.redirect('/auth');
+    res.redirect('/logout');
   } else {
     next();
   }

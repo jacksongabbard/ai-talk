@@ -16,7 +16,7 @@ export const auth: RequestHandler = async (req: Request, res: Response) => {
 
   res.send(
     renderPage(
-      <Chrome>
+      <Chrome title="Login">
         <script
           dangerouslySetInnerHTML={{
             __html: `
