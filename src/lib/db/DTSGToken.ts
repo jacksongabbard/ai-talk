@@ -21,11 +21,13 @@ class DTSGToken extends Model {
 
   @CreatedAt
   @Column({
+    type: DataType.DATE,
     field: 'created_at',
   })
   createdAt!: Date;
 
   @Column({
+    type: DataType.DATE,
     field: 'expires_at',
   })
   expiresAt!: Date;

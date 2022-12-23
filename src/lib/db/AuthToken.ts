@@ -23,17 +23,20 @@ class AuthToken extends Model {
 
   @CreatedAt
   @Column({
+    type: DataType.DATE,
     field: 'created_at',
   })
   createdAt!: Date;
 
   @UpdatedAt
   @Column({
+    type: DataType.DATE,
     field: 'updated_at',
   })
   updatedAt!: Date;
 
   @Column({
+    type: DataType.DATE,
     field: 'expires_at',
   })
   expiresAt!: Date;

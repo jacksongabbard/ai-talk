@@ -40,6 +40,7 @@ class PuzzleInstanceAction extends Model {
 
   @CreatedAt
   @Column({
+    type: DataType.DATE,
     field: 'created_at',
   })
   createdAt!: Date;
