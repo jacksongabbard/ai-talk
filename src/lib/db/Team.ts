@@ -42,6 +42,13 @@ class Team extends Model {
     field: 'location',
   })
   location!: string;
+
+  @Column({
+    type: DataType.BOOLEAN,
+    field: 'active',
+    defaultValue: true,
+  })
+  active!: boolean;
 }
 
 export default Team;
