@@ -7,7 +7,7 @@ nodemon -e ts,tsx,css \
       --platform=node \
       --target=es2019 \
       --minify=false \
-      --outfile=build/server-build.js \
+      --outfile=build/server.js \
     && \
       ./scripts/build-hydrate-files.sh && \
       NODE_PATH=./build node ./build/server.js;"
