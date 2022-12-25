@@ -21,7 +21,6 @@ const Auth: React.FC = () => {
       redirect_uri: 'https://local.ohffs.io:8197/google-oauth-redirect',
       state: DTSG_TOKEN,
     });
-    console.log(client);
     client.requestCode();
   }, []);
 

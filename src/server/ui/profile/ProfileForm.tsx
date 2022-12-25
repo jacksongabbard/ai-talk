@@ -26,10 +26,14 @@ const ProfileForm: React.FC<ProfileFormProps> = ({ user }) => {
       <Paper square>
         <div
           css={{
-            padding: 'var(--spacing-massive)',
+            padding: 'var(--spacing-xlarge)',
           }}
         >
-          <div className="phm pvl">
+          <div
+            css={{
+              paddingBottom: 'var(--spacing-large)',
+            }}
+          >
             <TextField
               value={user.userName}
               label="User Name"
@@ -37,7 +41,12 @@ const ProfileForm: React.FC<ProfileFormProps> = ({ user }) => {
               fullWidth={true}
             />
           </div>
-          <div className="phm pvl">
+          <div
+            css={{
+              paddingBottom: 'var(--spacing-large)',
+              paddingTop: 'var(--spacing-large)',
+            }}
+          >
             <TextField
               value={user.location}
               label="Location"

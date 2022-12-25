@@ -70,6 +70,13 @@ body {
   --spacing-tiny: 2px;
   --spacing-small: 4px;
   --spacing-medium: 8px;
-  --spacing-large: 12px;
+  --spacing-large: 16px;
+  --spacing-xlarge: 24px;
   --spacing-massive: 36px;
+
+  --theme-charcoal: #2e2c1e;
+  --theme-tan: #b0ac8b;
+  --theme-orange: #e3b64f;
+  --theme-sky: #8abfe6;
+  --theme-sea: #2c9bb0;
 }
