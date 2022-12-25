@@ -65,8 +65,6 @@ const ProfileForm: React.FC<ProfileFormProps> = ({ user }) => {
           </div>
         </div>
       </Paper>
-      <br />
-      <pre>{JSON.stringify(user, null, 4)}</pre>
     </div>
   );
 };

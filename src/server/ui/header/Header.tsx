@@ -1,4 +1,9 @@
+import AppBar from '@mui/material/AppBar';
 import Avatar from '@mui/material/Avatar';
+import IconButton from '@mui/material/IconButton';
+import MenuIcon from '@mui/icons-material/Menu';
+import Toolbar from '@mui/material/Toolbar';
+import Typography from '@mui/material/Typography';
 
 import type Team from 'src/lib/db/Team';
 import type User from 'src/lib/db/User';
@@ -11,20 +16,24 @@ type HeaderProps = {
 
 const Header: React.FC<HeaderProps> = ({ title, user, team }) => {
   return (
-    <div
-      css={{
-        alignItems: 'center',
-        backgroundColor: 'var(--theme-charcoal)',
-        color: 'white',
-        display: 'flex',
-        height: '40px',
-        justifyContent: 'space-between',
-        padding: 'var(--spacing-large)',
-      }}
-    >
-      {title ? <h1>{title}</h1> : <span />}
-      <span>{user && <Avatar>IDK</Avatar>}</span>
-    </div>
+    <AppBar position="static">
+      <Toolbar>
+        <IconButton
+          size="large"
+          edge="start"
+          color="inherit"
+          aria-label="menu"
+          sx={{ mr: 2 }}
+        >
+          <MenuIcon />
+        </IconButton>
+        {title && (
+          <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
+            {title}
+          </Typography>
+        )}
+      </Toolbar>
+    </AppBar>
   );
 };
 
