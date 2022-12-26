@@ -6,7 +6,7 @@ echo "$PATHS"
 
 ./node_modules/.bin/esbuild $PATHS \
   --bundle \
-  --minify \
+  --minify=false \
   --sourcemap=linked \
   --outdir=build/src/server/routes \
   --platform="browser" \

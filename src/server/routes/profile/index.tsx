@@ -1,4 +1,5 @@
 import React from 'react';
+import { StaticRouter } from 'react-router-dom/server';
 
 import type { Request, RequestHandler, Response } from 'express';
 
@@ -7,6 +8,7 @@ import { renderPage } from 'src/server/ui/util';
 import Profile from './Profile';
 import Chrome from 'src/server/ui/Chrome';
 import { makeProfilePropsFromRequest } from './ProfileProps';
+import App from 'src/server/App';
 
 export const profile: RequestHandler = (req: Request, res: Response) => {
   const props = makeProfilePropsFromRequest(req);
@@ -14,7 +16,9 @@ export const profile: RequestHandler = (req: Request, res: Response) => {
     renderPage(
       <Chrome title="Profile">
         <div id="react-root">
-          <Profile {...props} />
+          <StaticRouter location={req.path}>
+            <App />
+          </StaticRouter>
         </div>
         <div
           id="hydration-bilge"
