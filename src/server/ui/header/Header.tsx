@@ -35,9 +35,14 @@ const Header: React.FC<HeaderProps> = ({ title, user, team }) => {
     <AppBar position="static">
       <Toolbar>
         {title && (
-          <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
-            O.H.F.F.S.
-          </Typography>
+          <div css={{ flexGrow: 1 }}>
+            <Link
+              href="/"
+              css={{ color: '#fff', textDecoration: 'none', display: 'block' }}
+            >
+              <Typography variant="h6">O.H.F.F.S.</Typography>
+            </Link>
+          </div>
         )}
         {user && (
           <>
