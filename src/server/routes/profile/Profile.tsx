@@ -10,7 +10,11 @@ const Profile: React.FC<ProfileProps> = ({ user, team }) => {
     console.log({ user, team });
   }, []);
 
-  return <Shell title="Profile">{user && <ProfileForm user={user} />}</Shell>;
+  return (
+    <Shell title="Profile" user={user}>
+      {user && <ProfileForm user={user} />}
+    </Shell>
+  );
 };
 
 export default Profile;

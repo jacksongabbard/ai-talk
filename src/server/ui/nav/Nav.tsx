@@ -13,7 +13,7 @@ const Nav: React.FC = () => {
     <Paper
       css={{
         margin: 'var(--spacing-xlarge)',
-        width: 256,
+        width: 240,
       }}
     >
       <MenuList>
@@ -28,12 +28,6 @@ const Nav: React.FC = () => {
             <Person fontSize="small" />
           </ListItemIcon>
           <ListItemText>Profile</ListItemText>
-        </MenuItem>
-        <MenuItem href="/logout" component={Link}>
-          <ListItemIcon>
-            <Logout fontSize="small" />
-          </ListItemIcon>
-          <ListItemText>Logout</ListItemText>
         </MenuItem>
       </MenuList>
     </Paper>

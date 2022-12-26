@@ -20,10 +20,9 @@ const ProfileForm: React.FC<ProfileFormProps> = ({ user }) => {
     <div
       css={{
         maxWidth: '768px',
-        margin: '0 auto',
       }}
     >
-      <Paper square>
+      <Paper>
         <div
           css={{
             padding: 'var(--spacing-xlarge)',

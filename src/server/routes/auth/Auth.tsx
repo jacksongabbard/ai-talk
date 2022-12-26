@@ -1,4 +1,5 @@
 import React, { useCallback } from 'react';
+import Shell from 'src/server/ui/shell/Shell';
 
 declare var google: any;
 declare var GOOGLE_CLIENT_ID: string;
@@ -25,10 +26,9 @@ const Auth: React.FC = () => {
   }, []);
 
   return (
-    <>
-      <h1>Login</h1>
+    <Shell title="Login" showNavigation={false}>
       {doAuth && <button onClick={doAuth}>Login with Google</button>}
-    </>
+    </Shell>
   );
 };
 

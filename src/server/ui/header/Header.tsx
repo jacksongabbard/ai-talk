@@ -1,7 +1,13 @@
+import React, { useState } from 'react';
 import AppBar from '@mui/material/AppBar';
-import Avatar from '@mui/material/Avatar';
 import IconButton from '@mui/material/IconButton';
-import MenuIcon from '@mui/icons-material/Menu';
+import Avatar from '@mui/material/Avatar';
+import Link from '@mui/material/Link';
+import ListItemIcon from '@mui/material/ListItemIcon';
+import ListItemText from '@mui/material/ListItemText';
+import LogoutIcon from '@mui/icons-material/Logout';
+import Menu from '@mui/material/Menu';
+import MenuItem from '@mui/material/MenuItem';
 import Toolbar from '@mui/material/Toolbar';
 import Typography from '@mui/material/Typography';
 
@@ -15,22 +21,62 @@ type HeaderProps = {
 };
 
 const Header: React.FC<HeaderProps> = ({ title, user, team }) => {
+  const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
+
+  const showMenu = (event: React.MouseEvent<HTMLElement>) => {
+    setAnchorEl(event.currentTarget);
+  };
+
+  const handleClose = () => {
+    setAnchorEl(null);
+  };
+
   return (
     <AppBar position="static">
       <Toolbar>
-        <IconButton
-          size="large"
-          edge="start"
-          color="inherit"
-          aria-label="menu"
-          sx={{ mr: 2 }}
-        >
-          <MenuIcon />
-        </IconButton>
         {title && (
           <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
             O.H.F.F.S.
           </Typography>
+        )}
+        {user && (
+          <>
+            <IconButton
+              size="large"
+              color="inherit"
+              aria-label="menu"
+              edge={'end'}
+              onClick={showMenu}
+            >
+              {user.profilePic ? (
+                <Avatar src={user.profilePic} />
+              ) : (
+                <Avatar>{user.userName[0]}</Avatar>
+              )}
+            </IconButton>
+            <Menu
+              id="menu-appbar"
+              anchorEl={anchorEl}
+              anchorOrigin={{
+                vertical: 'bottom',
+                horizontal: 'right',
+              }}
+              keepMounted
+              transformOrigin={{
+                vertical: 'top',
+                horizontal: 'right',
+              }}
+              open={Boolean(anchorEl)}
+              onClose={handleClose}
+            >
+              <MenuItem component={Link} href="/logout">
+                <ListItemIcon>
+                  <LogoutIcon fontSize="small" />
+                </ListItemIcon>
+                <ListItemText>Logout</ListItemText>
+              </MenuItem>
+            </Menu>
+          </>
         )}
       </Toolbar>
     </AppBar>
