@@ -29,7 +29,7 @@ const Header: React.FC<HeaderProps> = ({ title, user, team }) => {
         </IconButton>
         {title && (
           <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
-            {title}
+            O.H.F.F.S.
           </Typography>
         )}
       </Toolbar>

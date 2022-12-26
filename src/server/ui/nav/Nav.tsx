@@ -1,4 +1,3 @@
-import Divider from '@mui/material/Divider';
 import Home from '@mui/icons-material/Home';
 import Link from '@mui/material/Link';
 import ListItemIcon from '@mui/material/ListItemIcon';
@@ -11,7 +10,12 @@ import Person from '@mui/icons-material/Person';
 
 const Nav: React.FC = () => {
   return (
-    <Paper css={{ marginTop: 'var(--spacing-xlarge)' }}>
+    <Paper
+      css={{
+        margin: 'var(--spacing-xlarge)',
+        width: 256,
+      }}
+    >
       <MenuList>
         <MenuItem href="/home" component={Link}>
           <ListItemIcon>
