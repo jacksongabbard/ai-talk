@@ -25,11 +25,7 @@ const Auth: React.FC = () => {
     client.requestCode();
   }, []);
 
-  return (
-    <Shell title="Login" showNavigation={false}>
-      {doAuth && <button onClick={doAuth}>Login with Google</button>}
-    </Shell>
-  );
+  return <>{doAuth && <button onClick={doAuth}>Login with Google</button>}</>;
 };
 
 export default Auth;

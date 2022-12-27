@@ -5,26 +5,25 @@ import type { Request, RequestHandler, Response } from 'express';
 
 import { renderPage } from 'src/server/ui/util';
 
-import Profile from './Profile';
 import Chrome from 'src/server/ui/Chrome';
-import { makeProfilePropsFromRequest } from './ProfileProps';
 import App from 'src/server/App';
+import { AppContextProvider } from 'src/server/state/AppContext';
+import { makeAppStateFromRequest } from '../../lib/makeAppStateFromRequest';
+import HydrationBilge from 'src/server/state/HydrationBilge';
 
 export const profile: RequestHandler = (req: Request, res: Response) => {
-  const props = makeProfilePropsFromRequest(req);
+  const props = makeAppStateFromRequest(req);
   res.send(
     renderPage(
       <Chrome title="Profile">
         <div id="react-root">
-          <StaticRouter location={req.path}>
-            <App />
-          </StaticRouter>
+          <AppContextProvider {...props}>
+            <StaticRouter location={req.path}>
+              <App />
+            </StaticRouter>
+          </AppContextProvider>
         </div>
-        <div
-          id="hydration-bilge"
-          data-hydration-state={JSON.stringify(props)}
-        />
-        <script src="/profile/hydrate.js"></script>
+        <HydrationBilge props={props} />
       </Chrome>,
     ),
   );

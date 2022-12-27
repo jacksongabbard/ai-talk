@@ -1,8 +1,11 @@
-import React, { useEffect } from 'react';
-import type { HomeProps } from './HomeProps';
-import Shell from 'src/server/ui/shell/Shell';
+import React, { useContext, useEffect } from 'react';
+import { AppContext } from 'src/server/state/AppContext';
 
-const Home: React.FC<HomeProps> = ({ user, team }) => {
+const Home: React.FC = () => {
+  const appContext = useContext(AppContext);
+  const user = appContext?.user;
+  const team = appContext?.team;
+
   useEffect(() => {
     console.log('Omg, did this just work?!');
     console.log({ user, team });

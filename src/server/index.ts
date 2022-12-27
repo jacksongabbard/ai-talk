@@ -14,7 +14,6 @@ import { home } from './routes/home';
 import { profile } from './routes/profile';
 import { auth } from './routes/auth';
 import { logout } from './routes/logout';
-import { hydrate } from './routes/hydrate';
 import { staticResource } from './routes/staticResource';
 import { googleOAuthRedirect } from './routes/googleOAuthRedirect';
 
@@ -40,8 +39,6 @@ console.log('Bootstrapping the server...');
   router.get('/auth', auth);
   router.get('/logout', logout);
   router.get('/google-oauth-redirect', googleOAuthRedirect);
-  // Hydrate must come before the generic static resource route
-  router.get(/.*hydrate(\.js|\.js\.map)$/, hydrate);
   router.get(/.*(\.js|\.js\.map)$/, staticResource);
 
   let server;

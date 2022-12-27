@@ -8,6 +8,6 @@ echo "$PATHS"
   --bundle \
   --minify=false \
   --sourcemap=linked \
-  --outdir=build/src/server/routes \
+  --outdir=build/src/static \
   --platform="browser" \
   --allow-overwrite

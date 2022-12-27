@@ -3,10 +3,19 @@ import Home from './routes/home/Home';
 import Profile from './routes/profile/Profile';
 import Auth from './routes/auth/Auth';
 import Shell from './ui/shell/Shell';
+import { useContext } from 'react';
+import { AppContext } from './state/AppContext';
 
-const App: React.FC = () => {
+type AppProps = {
+  showNavigation?: boolean;
+};
+
+const App: React.FC<AppProps> = ({ showNavigation }) => {
+  const appContext = useContext(AppContext);
+  const user = appContext?.user;
+  const team = appContext?.team;
   return (
-    <Shell>
+    <Shell user={user} team={team} showNavigation={showNavigation}>
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/home" element={<Home />} />

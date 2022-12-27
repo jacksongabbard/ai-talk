@@ -23,7 +23,11 @@ export const staticResource: RequestHandler = (req, res, next) => {
   const fileName = match[1];
   const fileExt = match[2].toLowerCase();
 
-  const filePath = path.join(process.cwd(), 'src/static/', fileName + fileExt);
+  const filePath = path.join(
+    process.cwd(),
+    'build/src/static/',
+    fileName + fileExt,
+  );
 
   try {
     const bytes = fs.readFileSync(filePath).toString();

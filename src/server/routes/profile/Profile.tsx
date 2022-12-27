@@ -1,11 +1,12 @@
-import React, { useEffect } from 'react';
-import type { ProfileProps } from './ProfileProps';
-import Nav from 'src/server/ui/nav/Nav';
+import React, { useContext, useEffect } from 'react';
+import { AppContext } from 'src/server/state/AppContext';
 import ProfileForm from 'src/server/ui/profile/ProfileForm';
-import Header from 'src/server/ui/header/Header';
-import Shell from 'src/server/ui/shell/Shell';
 
-const Profile: React.FC<ProfileProps> = ({ user, team }) => {
+const Profile: React.FC = () => {
+  const appContext = useContext(AppContext);
+  const user = appContext?.user;
+  const team = appContext?.team;
+
   useEffect(() => {
     console.log({ user, team });
   }, []);

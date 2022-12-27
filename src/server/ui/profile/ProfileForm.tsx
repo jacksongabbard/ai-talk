@@ -36,6 +36,7 @@ const ProfileForm: React.FC<ProfileFormProps> = ({ user }) => {
             <TextField
               value={user.userName}
               label="User Name"
+              id="userName"
               disabled={!editingProfile}
               fullWidth={true}
             />
@@ -49,6 +50,7 @@ const ProfileForm: React.FC<ProfileFormProps> = ({ user }) => {
             <TextField
               value={user.location}
               label="Location"
+              id="location"
               disabled={!editingProfile}
               fullWidth={true}
             />

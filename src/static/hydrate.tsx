@@ -2,8 +2,8 @@ import React from 'react';
 import * as ReactDOMClient from 'react-dom/client';
 import { BrowserRouter } from 'react-router-dom';
 
-import Profile from './Profile';
 import App from 'src/server/App';
+import { AppContextProvider } from 'src/server/state/AppContext';
 
 const rr = document.getElementById('react-root');
 if (!rr) {
@@ -13,10 +13,16 @@ const bilge = document.getElementById('hydration-bilge');
 if (!bilge) {
   throw new Error('Could not find React bilge element)');
 }
-const props = JSON.parse(bilge.dataset.hydrationState || '');
+let props = JSON.parse(bilge.dataset.hydrationState || '');
+if (!props || typeof props !== 'object') {
+  props = {};
+}
+
 ReactDOMClient.hydrateRoot(
   rr,
-  <BrowserRouter>
-    <App />
-  </BrowserRouter>,
+  <AppContextProvider {...props}>
+    <BrowserRouter>
+      <App />
+    </BrowserRouter>
+  </AppContextProvider>,
 );
