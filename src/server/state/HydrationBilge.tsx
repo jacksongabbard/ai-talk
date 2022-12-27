@@ -1,4 +1,8 @@
-type HydrationBilgeProps = any;
+import type { TAppContext, TAppContextExport } from './AppContext';
+
+type HydrationBilgeProps = {
+  props: TAppContextExport;
+};
 
 const HydrationBilge: React.FC<HydrationBilgeProps> = ({ props }) => {
   return (

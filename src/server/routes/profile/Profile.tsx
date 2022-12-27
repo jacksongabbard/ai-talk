@@ -6,6 +6,9 @@ const Profile: React.FC = () => {
   const appContext = useContext(AppContext);
   const user = appContext?.user;
   const team = appContext?.team;
+  useEffect(() => {
+    appContext?.setShowNavigation(true);
+  }, [appContext?.setShowNavigation]);
 
   useEffect(() => {
     console.log({ user, team });

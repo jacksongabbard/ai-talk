@@ -16,7 +16,7 @@ const dotenv = getDotEnv();
 
 export const auth: RequestHandler = async (req: Request, res: Response) => {
   const dtsgKey = await makeDTSG(req);
-  const props = makeAppStateFromRequest(req);
+  const props = makeAppStateFromRequest(req, { showNavigation: false });
   res.send(
     renderPage(
       <Chrome title="Login">

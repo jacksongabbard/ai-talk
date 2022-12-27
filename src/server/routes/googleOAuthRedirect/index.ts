@@ -6,9 +6,6 @@ import getDotEnv from 'src/lib/dotenv';
 import { hasOwnProperty } from 'src/lib/hasOwnProperty';
 import { validateDTSG } from 'src/server/lib/dtsg';
 import User from 'src/lib/db/User';
-import { Sequelize } from 'sequelize';
-import cookieParser from 'cookie-parser';
-import getRandomAdjective from 'src/lib/usernameUtils/getRandomAdjective';
 import makeUserNameFromEmail from 'src/lib/usernameUtils/makeUserNameFromEmail';
 import setDatrCookie from 'src/server/lib/setDatrCookie';
 

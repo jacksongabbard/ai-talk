@@ -15,7 +15,7 @@ const App: React.FC<AppProps> = ({ showNavigation }) => {
   const user = appContext?.user;
   const team = appContext?.team;
   return (
-    <Shell user={user} team={team} showNavigation={showNavigation}>
+    <Shell>
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/home" element={<Home />} />

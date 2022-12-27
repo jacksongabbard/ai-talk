@@ -1,4 +1,5 @@
-import React, { useCallback } from 'react';
+import React, { useCallback, useContext, useEffect } from 'react';
+import { AppContext } from 'src/server/state/AppContext';
 import Shell from 'src/server/ui/shell/Shell';
 
 declare var google: any;
@@ -6,6 +7,11 @@ declare var GOOGLE_CLIENT_ID: string;
 declare var DTSG_TOKEN: string;
 
 const Auth: React.FC = () => {
+  const appContext = useContext(AppContext);
+  useEffect(() => {
+    appContext?.setShowNavigation(false);
+  }, [appContext?.setShowNavigation]);
+
   // Where did I leave off?
   //
   // Need to fix up the scope to be the right thing (just email) and then add

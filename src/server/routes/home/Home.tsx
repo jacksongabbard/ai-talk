@@ -7,6 +7,10 @@ const Home: React.FC = () => {
   const team = appContext?.team;
 
   useEffect(() => {
+    appContext?.setShowNavigation(true);
+  }, [appContext?.setShowNavigation]);
+
+  useEffect(() => {
     console.log('Omg, did this just work?!');
     console.log({ user, team });
   }, []);

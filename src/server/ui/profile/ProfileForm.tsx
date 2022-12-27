@@ -5,6 +5,7 @@ import Paper from '@mui/material/Paper';
 import TextField from '@mui/material/TextField';
 
 import type User from 'src/lib/db/User';
+import callAPI from 'src/client/lib/callAPI';
 
 type ProfileFormProps = {
   user: User;
@@ -15,6 +16,17 @@ const ProfileForm: React.FC<ProfileFormProps> = ({ user }) => {
   const setEditingProfile = useCallback(() => {
     _setEditingProfile(true);
   }, [editingProfile]);
+
+  const cancelEdit = useCallback(() => {
+    _setEditingProfile(false);
+  }, [user, editingProfile, _setEditingProfile]);
+
+  const save = useCallback(async () => {
+    await callAPI('save-profile', {
+      foo: 'bar',
+      // TODO: send the username and location
+    });
+  }, [user]);
 
   return (
     <div
@@ -57,7 +69,17 @@ const ProfileForm: React.FC<ProfileFormProps> = ({ user }) => {
           </div>
           <div>
             {editingProfile ? (
-              <Button onClick={() => {}}>Save</Button>
+              <div>
+                <Button onClick={save} variant="contained">
+                  Save
+                </Button>
+                <Button
+                  onClick={cancelEdit}
+                  css={{ marginLeft: 'var(--spacing-medium)' }}
+                >
+                  Cancel
+                </Button>
+              </div>
             ) : (
               <Button variant="text" onClick={setEditingProfile}>
                 Edit profile

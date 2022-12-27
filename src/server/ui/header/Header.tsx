@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useContext, useState } from 'react';
 import AppBar from '@mui/material/AppBar';
 import IconButton from '@mui/material/IconButton';
 import Avatar from '@mui/material/Avatar';
@@ -11,16 +11,17 @@ import MenuItem from '@mui/material/MenuItem';
 import Toolbar from '@mui/material/Toolbar';
 import Typography from '@mui/material/Typography';
 
-import type Team from 'src/lib/db/Team';
-import type User from 'src/lib/db/User';
+import { AppContext } from 'src/server/state/AppContext';
 
 type HeaderProps = {
   title?: string;
-  user?: User;
-  team?: Team;
 };
 
-const Header: React.FC<HeaderProps> = ({ title, user, team }) => {
+const Header: React.FC<HeaderProps> = ({ title }) => {
+  const appContext = useContext(AppContext);
+  const user = appContext?.user;
+  const team = appContext?.team;
+
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
 
   const showMenu = (event: React.MouseEvent<HTMLElement>) => {
@@ -74,7 +75,7 @@ const Header: React.FC<HeaderProps> = ({ title, user, team }) => {
               open={Boolean(anchorEl)}
               onClose={handleClose}
             >
-              <MenuItem component={Link} href="/logout">
+              <MenuItem href="/logout" component={Link}>
                 <ListItemIcon>
                   <LogoutIcon fontSize="small" />
                 </ListItemIcon>

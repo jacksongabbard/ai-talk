@@ -16,6 +16,7 @@ import { auth } from './routes/auth';
 import { logout } from './routes/logout';
 import { staticResource } from './routes/staticResource';
 import { googleOAuthRedirect } from './routes/googleOAuthRedirect';
+import { saveProfile } from './routes/api/profile';
 
 const config = getDotEnv();
 
@@ -33,12 +34,18 @@ console.log('Bootstrapping the server...');
 (async () => {
   await confirmDBConnection();
 
+  // Pages
   router.get('/', authMiddleware, home);
   router.get('/home', authMiddleware, home);
   router.get('/profile', authMiddleware, profile);
   router.get('/auth', auth);
   router.get('/logout', logout);
   router.get('/google-oauth-redirect', googleOAuthRedirect);
+
+  // API endpoints
+  router.post('/api/save-profile', authMiddleware, saveProfile);
+
+  // Static resources
   router.get(/.*(\.js|\.js\.map)$/, staticResource);
 
   let server;
