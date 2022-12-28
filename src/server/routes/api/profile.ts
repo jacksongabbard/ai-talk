@@ -23,15 +23,59 @@ export const saveProfile: RequestHandler = async (
       hasOwnProperty(req.body, 'data') &&
       typeof req.body.data === 'object'
     ) {
-      hasOwnProperty(req.body.data, 'userName') &&
-        typeof req.body.data.userName === 'string' &&
-        hasOwnProperty(req.body.data, 'location') &&
-        typeof req.body.data.userName === 'string';
+      if (
+        hasOwnProperty(req.body.data, 'userID') &&
+        typeof req.body.data.userID === 'string'
+      ) {
+        if (req.body.data.userID !== req?.context?.user?.id) {
+          throw new Error('Permission denied');
+        }
 
-      console.log(req.body.data);
-      res.status(200);
-      res.send(JSON.stringify({ success: true }));
-      return;
+        const user = await User.findOne({
+          where: {
+            id: req.body.data.userID,
+          },
+        });
+
+        if (!user) {
+          throw new Error('No such user');
+        }
+
+        console.log(req.body.data);
+
+        if (
+          hasOwnProperty(req.body.data, 'userName') &&
+          typeof req.body.data.userName === 'string'
+        ) {
+          if (
+            req.body.data.userName.length < 2 &&
+            req.body.data.userName.length > 48
+          ) {
+            throw new Error('Invalid user name');
+          }
+          user.set('userName', req.body.data.userName);
+        }
+
+        if (
+          hasOwnProperty(req.body.data, 'location') &&
+          typeof req.body.data.location === 'string'
+        ) {
+          if (req.body.data.location.length > 48) {
+            throw new Error('Invalid location');
+          }
+          user.set('location', req.body.data.location);
+        }
+
+        await user.save();
+
+        const { id, userName, location } = user;
+        res.status(200);
+        res.send(JSON.stringify({ success: true, id, userName, location }));
+        return;
+      } else {
+        bail400('Bad request', res);
+        return;
+      }
     } else {
       bail400('Request contained no data', res);
       return;
@@ -41,8 +85,6 @@ export const saveProfile: RequestHandler = async (
     bail400('Unexpected error: ' + (e as Error).message, res);
     return;
   }
-
-  bail400('Unexpected error', res);
 };
 
 export const checkUserNameIsAvailable: RequestHandler = async (
@@ -56,7 +98,8 @@ export const checkUserNameIsAvailable: RequestHandler = async (
       typeof req.body.data === 'object' &&
       hasOwnProperty(req.body.data, 'userName') &&
       typeof req.body.data.userName === 'string' &&
-      req.body.data.userName.length <= 32 // arbitrary
+      req.body.data.userName.length >= 2 && // enforced at the DB as well
+      req.body.data.userName.length <= 48 // enforced at the DB as well
     ) {
       const userCount = await User.count({
         where: {
@@ -69,11 +112,11 @@ export const checkUserNameIsAvailable: RequestHandler = async (
       res.send(JSON.stringify({ available }));
       return;
     } else {
-      bail400('Request contained no data', res);
+      bail400('Bad request', res);
       return;
     }
   } catch (e) {
-    console.log('Failed to save profile: ', e);
+    console.log('Failed to fetch count for username: ', e);
     bail400('Unexpected error: ' + (e as Error).message, res);
     return;
   }

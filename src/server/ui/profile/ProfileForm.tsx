@@ -34,14 +34,18 @@ const ProfileForm: React.FC<ProfileFormProps> = ({ user }) => {
   }, [user, editingProfile, _setEditingProfile]);
 
   const save = useCallback(async () => {
-    await callAPI('save-profile', {
-      foo: 'bar',
-      // TODO: send the username and location
+    const resp = await callAPI('save-profile', {
+      userID: user.id,
+      userName,
+      location,
     });
-  }, [user]);
+
+    console.log(resp);
+  }, [user, userName, location]);
 
   const onUserNameChange = useCallback(
     (u: string) => {
+      console.log({ u });
       setUserName(u);
     },
     [setUserName],
@@ -65,6 +69,7 @@ const ProfileForm: React.FC<ProfileFormProps> = ({ user }) => {
             }}
           >
             <UserNameTextField
+              actualUserName={user.userName}
               value={userName}
               onTextChange={onUserNameChange}
               label="User Name"

@@ -11,7 +11,7 @@ module.exports = {
       created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
       updated_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
       team_name TEXT NOT NULL UNIQUE CHECK (LENGTH(team_name) >= 2 AND LENGTH(team_name) <= 48),
-      location TEXT NULL,
+      location TEXT NULL CHECK LENGTH(location) <= 48,
       active BOOLEAN NOT NULL DEFAULT TRUE
     );
 
@@ -22,7 +22,7 @@ module.exports = {
       user_name TEXT NOT NULL UNIQUE CHECK (LENGTH(user_name) >= 2 AND LENGTH(user_name) <= 48),
       email_address TEXT NOT NULL UNIQUE,
       profile_pic TEXT NULL,
-      location TEXT NULL,
+      location TEXT NULL CHECK LENGTH(location) <= 48,
       team_id UUID NULL REFERENCES teams(id) ON DELETE CASCADE,
       active BOOLEAN NOT NULL DEFAULT TRUE
     );

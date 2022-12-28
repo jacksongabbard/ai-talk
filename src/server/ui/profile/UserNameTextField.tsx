@@ -6,13 +6,14 @@ import callAPI from 'src/client/lib/callAPI';
 import { hasOwnProperty } from 'src/lib/hasOwnProperty';
 
 type UserNameTextFieldProps = {
+  actualUserName: string;
   onTextChange: (t: string) => void;
 };
 
 const UserNameTextField: React.FC<TextFieldProps & UserNameTextFieldProps> = (
   props,
 ) => {
-  const { onChange, onTextChange, value, ...rest } = props;
+  const { onChange, onTextChange, actualUserName, value, ...rest } = props;
 
   if (typeof value !== 'string') {
     throw new Error('User name value must be a string');
@@ -52,6 +53,12 @@ const UserNameTextField: React.FC<TextFieldProps & UserNameTextFieldProps> = (
     checkingRef.current && clearTimeout(checkingRef.current);
     setCheckingName(false);
 
+    if (_value === actualUserName) {
+      setAvailable(undefined);
+      setErrorMessage(undefined);
+      return;
+    }
+
     if (value === _value) {
       return;
     }
@@ -85,7 +92,14 @@ const UserNameTextField: React.FC<TextFieldProps & UserNameTextFieldProps> = (
         checkingRef.current = undefined;
       })();
     }, 1000);
-  }, [_value, value, setCheckingName, setAvailable, onTextChange]);
+  }, [
+    _value,
+    value,
+    setCheckingName,
+    setAvailable,
+    onTextChange,
+    actualUserName,
+  ]);
 
   return (
     <>
