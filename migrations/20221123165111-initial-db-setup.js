@@ -10,7 +10,7 @@ module.exports = {
       id UUID DEFAULT uuid_generate_v4() NOT NULL PRIMARY KEY,
       created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
       updated_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
-      team_name TEXT NOT NULL UNIQUE,
+      team_name TEXT NOT NULL UNIQUE CHECK (LENGTH(team_name) >= 2 AND LENGTH(team_name) <= 48),
       location TEXT NULL,
       active BOOLEAN NOT NULL DEFAULT TRUE
     );
@@ -19,7 +19,7 @@ module.exports = {
       id UUID DEFAULT uuid_generate_v4() NOT NULL PRIMARY KEY,
       created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
       updated_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
-      user_name TEXT NOT NULL UNIQUE,
+      user_name TEXT NOT NULL UNIQUE CHECK (LENGTH(user_name) >= 2 AND LENGTH(user_name) <= 48),
       email_address TEXT NOT NULL UNIQUE,
       profile_pic TEXT NULL,
       location TEXT NULL,

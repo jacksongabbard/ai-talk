@@ -1,4 +1,4 @@
-import { useCallback, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 
 import Button from '@mui/material/Button';
 import Paper from '@mui/material/Paper';
@@ -6,6 +6,7 @@ import TextField from '@mui/material/TextField';
 
 import type User from 'src/lib/db/User';
 import callAPI from 'src/client/lib/callAPI';
+import UserNameTextField from './UserNameTextField';
 
 type ProfileFormProps = {
   user: User;
@@ -13,11 +14,22 @@ type ProfileFormProps = {
 
 const ProfileForm: React.FC<ProfileFormProps> = ({ user }) => {
   const [editingProfile, _setEditingProfile] = useState(false);
+
+  const [userName, setUserName] = useState(user.userName);
+  const [location, setLocation] = useState(user.location);
+
+  useEffect(() => {
+    setUserName(user.userName);
+    setLocation(user.location);
+  }, [user, setUserName, setLocation]);
+
   const setEditingProfile = useCallback(() => {
     _setEditingProfile(true);
   }, [editingProfile]);
 
   const cancelEdit = useCallback(() => {
+    setUserName(user.userName);
+    setLocation(user.location);
     _setEditingProfile(false);
   }, [user, editingProfile, _setEditingProfile]);
 
@@ -27,6 +39,13 @@ const ProfileForm: React.FC<ProfileFormProps> = ({ user }) => {
       // TODO: send the username and location
     });
   }, [user]);
+
+  const onUserNameChange = useCallback(
+    (u: string) => {
+      setUserName(u);
+    },
+    [setUserName],
+  );
 
   return (
     <div
@@ -45,8 +64,9 @@ const ProfileForm: React.FC<ProfileFormProps> = ({ user }) => {
               paddingBottom: 'var(--spacing-large)',
             }}
           >
-            <TextField
-              value={user.userName}
+            <UserNameTextField
+              value={userName}
+              onTextChange={onUserNameChange}
               label="User Name"
               id="userName"
               disabled={!editingProfile}
@@ -60,7 +80,7 @@ const ProfileForm: React.FC<ProfileFormProps> = ({ user }) => {
             }}
           >
             <TextField
-              value={user.location}
+              value={location}
               label="Location"
               id="location"
               disabled={!editingProfile}
