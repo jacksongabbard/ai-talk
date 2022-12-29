@@ -9,6 +9,7 @@ export type ClientUser = {
   emailAddress?: string;
   profilePic?: string;
   active: boolean;
+  public: boolean;
 };
 
 export function userToClientUser(u: User): ClientUser {
@@ -20,5 +21,6 @@ export function userToClientUser(u: User): ClientUser {
     location: u.location,
     profilePic: u.profilePic,
     active: u.active,
+    public: u.public,
   };
 }

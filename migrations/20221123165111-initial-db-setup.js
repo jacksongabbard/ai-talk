@@ -17,6 +17,7 @@ module.exports = {
       ),
       location TEXT NULL CHECK (LENGTH(location) <= 48),
       active BOOLEAN NOT NULL DEFAULT TRUE
+      public BOOLEAN DEFAULT TRUE
     );
     CREATE UNIQUE INDEX team_name_upper_idx ON teams (UPPER(team_name));
 
@@ -34,6 +35,7 @@ module.exports = {
       location TEXT NULL CHECK (LENGTH(location) <= 48),
       team_id UUID NULL REFERENCES teams(id) ON DELETE CASCADE,
       active BOOLEAN NOT NULL DEFAULT TRUE
+      public BOOLEAN DEFAULT TRUE
     );
     CREATE UNIQUE INDEX user_name_upper_idx ON users (UPPER(user_name));
 

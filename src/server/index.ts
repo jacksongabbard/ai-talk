@@ -12,6 +12,7 @@ import { authMiddleware } from './lib/authMiddleware';
 // Routes
 import { home } from './routes/home';
 import { profile } from './routes/profile';
+import { team } from './routes/team';
 import { auth } from './routes/auth';
 import { logout } from './routes/logout';
 import { staticResource } from './routes/staticResource';
@@ -38,6 +39,7 @@ console.log('Bootstrapping the server...');
   router.get('/', authMiddleware, home);
   router.get('/home', authMiddleware, home);
   router.get('/profile', authMiddleware, profile);
+  router.get('/team', authMiddleware, team);
   router.get('/auth', auth);
   router.get('/logout', logout);
   router.get('/google-oauth-redirect', googleOAuthRedirect);

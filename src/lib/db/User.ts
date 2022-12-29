@@ -74,6 +74,13 @@ class User extends Model {
     defaultValue: true,
   })
   active!: boolean;
+
+  @Column({
+    type: DataType.BOOLEAN,
+    field: 'public',
+    defaultValue: true,
+  })
+  public!: boolean;
 }
 
 export default User;

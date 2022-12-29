@@ -8,6 +8,7 @@ export type ClientTeam = {
   location: string;
   profilePic?: string;
   active: boolean;
+  public: boolean;
 };
 
 export function teamToClientTeam(t: Team): ClientTeam {
@@ -17,5 +18,6 @@ export function teamToClientTeam(t: Team): ClientTeam {
     teamName: t.teamName,
     location: t.location,
     active: t.active,
+    public: t.public,
   };
 }

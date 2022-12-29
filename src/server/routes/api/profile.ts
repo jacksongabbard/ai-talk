@@ -64,6 +64,13 @@ export const saveProfile: RequestHandler = async (
           user.set('location', req.body.data.location);
         }
 
+        if (
+          hasOwnProperty(req.body.data, 'public') &&
+          typeof req.body.data.public === 'boolean'
+        ) {
+          user.set('public', req.body.data.public);
+        }
+
         await user.save();
 
         const { id, userName, location } = user;

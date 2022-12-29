@@ -5,6 +5,7 @@ import Auth from './routes/auth/Auth';
 import Shell from './ui/shell/Shell';
 import { useContext } from 'react';
 import { AppContext } from './state/AppContext';
+import Team from './routes/team/Team';
 
 type AppProps = {
   showNavigation?: boolean;
@@ -20,6 +21,7 @@ const App: React.FC<AppProps> = ({ showNavigation }) => {
         <Route path="/" element={<Home />} />
         <Route path="/home" element={<Home />} />
         <Route path="/profile" element={<Profile />} />
+        <Route path="/Team" element={<Team />} />
         <Route path="/auth" element={<Auth />} />
       </Routes>
     </Shell>

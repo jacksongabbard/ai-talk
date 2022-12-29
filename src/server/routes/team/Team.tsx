@@ -1,9 +1,9 @@
 import React, { useContext, useEffect } from 'react';
-import { AppContext } from 'src/server/state/AppContext';
-import ProfileForm from 'src/server/ui/profile/ProfileForm';
 import Typography from '@mui/material/Typography';
 
-const Profile: React.FC = () => {
+import { AppContext } from 'src/server/state/AppContext';
+
+const Team: React.FC = () => {
   const appContext = useContext(AppContext);
   const user = appContext?.user;
   const team = appContext?.team;
@@ -14,9 +14,8 @@ const Profile: React.FC = () => {
   return (
     <>
       <Typography variant="h6">Team</Typography>
-      {user && <ProfileForm />}
     </>
   );
 };
 
-export default Profile;
+export default Team;

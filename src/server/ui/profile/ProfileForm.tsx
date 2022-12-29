@@ -170,6 +170,12 @@ const ProfileForm: React.FC = () => {
               fullWidth={true}
             />
           </div>
+          {/*
+
+          WHERE DID YOU LEAVE OFF?
+          YOU WERE ABOUT TO ADD A PUBLIC CHECKBOX HERE
+
+          */}
           <div>
             {editingProfile ? (
               <div>
