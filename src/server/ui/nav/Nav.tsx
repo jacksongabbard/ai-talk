@@ -1,10 +1,8 @@
-import React from 'react';
 import Home from '@mui/icons-material/Home';
-import { Link, LinkProps } from 'react-router-dom';
 import ListItemIcon from '@mui/material/ListItemIcon';
 import ListItemText from '@mui/material/ListItemText';
-import MenuItem from '@mui/material/MenuItem';
 import MenuList from '@mui/material/MenuList';
+import Group from '@mui/icons-material/Group';
 import Paper from '@mui/material/Paper';
 import Person from '@mui/icons-material/Person';
 import NavMenuItem from '../navMenuItem/NavMenuItem';
@@ -29,6 +27,12 @@ const Nav: React.FC = () => {
             <Person fontSize="small" />
           </ListItemIcon>
           <ListItemText>Profile</ListItemText>
+        </NavMenuItem>
+        <NavMenuItem to="/team">
+          <ListItemIcon>
+            <Group fontSize="small" />
+          </ListItemIcon>
+          <ListItemText>Team</ListItemText>
         </NavMenuItem>
       </MenuList>
     </Paper>

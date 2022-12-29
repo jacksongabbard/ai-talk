@@ -110,6 +110,36 @@ const ProfileForm: React.FC = () => {
             padding: 'var(--spacing-xlarge)',
           }}
         >
+          {successMessage !== '' && (
+            <Paper
+              css={{
+                background: 'var(--theme-sea)',
+                padding: 'var(--spacing-medium)',
+                paddingLeft: 'var(--spacing-large)',
+                paddingRight: 'var(--spacing-large)',
+                marginTop: 'var(--spacing-medium)',
+                marginBottom: 'var(--spacing-xlarge)',
+                color: '#fff',
+              }}
+            >
+              {successMessage}
+            </Paper>
+          )}
+          {errorMessage !== '' && (
+            <Paper
+              css={{
+                background: 'var(--theme-orange)',
+                padding: 'var(--spacing-medium)',
+                paddingLeft: 'var(--spacing-large)',
+                paddingRight: 'var(--spacing-large)',
+                marginTop: 'var(--spacing-medium)',
+                marginBottom: 'var(--spacing-xlarge)',
+                color: '#fff',
+              }}
+            >
+              {errorMessage}
+            </Paper>
+          )}
           <div
             css={{
               paddingBottom: 'var(--spacing-large)',
@@ -167,32 +197,6 @@ const ProfileForm: React.FC = () => {
               </Button>
             )}
           </div>
-          {successMessage !== '' && (
-            <Paper
-              css={{
-                background: 'var(--theme-sea)',
-                padding: 'var(--spacing-medium)',
-                marginTop: 'var(--spacing-medium)',
-                marginBottom: 'var(--spacing-medium)',
-                color: '#fff',
-              }}
-            >
-              {successMessage}
-            </Paper>
-          )}
-          {errorMessage !== '' && (
-            <Paper
-              css={{
-                background: 'var(--theme-orange)',
-                padding: 'var(--spacing-medium)',
-                marginTop: 'var(--spacing-medium)',
-                marginBottom: 'var(--spacing-medium)',
-                color: '#fff',
-              }}
-            >
-              {errorMessage}
-            </Paper>
-          )}
         </div>
       </Paper>
     </div>
