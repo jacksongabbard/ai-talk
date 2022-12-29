@@ -90,11 +90,12 @@ export const googleOAuthRedirect: RequestHandler = async (
             await setDatrCookie(newUser, req, res);
           } catch (e) {
             console.log((e as Error).message);
+            res.status(500);
+            res.send('Unexpected error');
             return;
           }
 
-          res.status(200);
-          res.send('User created!');
+          res.redirect('/home');
           return;
         } else {
           // Do a login + redirect

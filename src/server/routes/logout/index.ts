@@ -4,8 +4,6 @@ import AuthToken from 'src/lib/db/AuthToken';
 export const logout: RequestHandler = async (req: Request, res: Response) => {
   const { datr } = req.signedCookies;
 
-  console.log({ datr });
-
   if (!datr) {
     console.log('No DATR on logout');
     res.redirect('/auth');

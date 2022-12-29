@@ -50,7 +50,6 @@ export function encryptBase(dataObject: JSONValue, arbitraryStringKey: string) {
   try {
     dataCiphertext = encipher.update(jsonString, 'utf8', 'hex');
     dataCiphertext += encipher.final('hex');
-    console.log({ jsonString, dataCiphertext });
     dataCiphertextBuffer = Buffer.from(dataCiphertext, 'hex');
     tag = encipher.getAuthTag();
   } catch (ex) {

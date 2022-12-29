@@ -5,6 +5,8 @@ import Typography from '@mui/material/Typography';
 import callAPI from 'src/client/lib/callAPI';
 import { hasOwnProperty } from 'src/lib/hasOwnProperty';
 
+const userNameRegex = /^(?:[a-zA-Z0-9][a-zA-Z0-9_-]{0,46}[a-zA-Z0-9])$/;
+
 type UserNameTextFieldProps = {
   actualUserName: string;
   onTextChange: (t: string) => void;
@@ -30,7 +32,7 @@ const UserNameTextField: React.FC<TextFieldProps & UserNameTextFieldProps> = (
 
   const _onChange = useCallback(
     (e: React.ChangeEvent<HTMLInputElement>) => {
-      setValue(e.target.value.substring(0, 32));
+      setValue(e.target.value.substring(0, 48));
     },
     [setValue],
   );
@@ -68,6 +70,13 @@ const UserNameTextField: React.FC<TextFieldProps & UserNameTextFieldProps> = (
 
     if (_value.length < 2) {
       setErrorMessage('User names must be at least 2 characters long');
+      return;
+    }
+
+    if (!_value.match(userNameRegex)) {
+      setErrorMessage(
+        'User names must start and end with an alphabet letter or number. They can contain only underscores or dashes (_ or -).',
+      );
       return;
     }
 

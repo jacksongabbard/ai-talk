@@ -10,11 +10,6 @@ const Home: React.FC = () => {
     appContext?.setShowNavigation(true);
   }, [appContext?.setShowNavigation]);
 
-  useEffect(() => {
-    console.log('Omg, did this just work?!');
-    console.log({ user, team });
-  }, []);
-
   return (
     <>
       {user && user.profilePic && (

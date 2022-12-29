@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from 'react';
+import React, { useCallback, useContext, useEffect, useState } from 'react';
 
 import Button from '@mui/material/Button';
 import Paper from '@mui/material/Paper';
@@ -7,16 +7,24 @@ import TextField from '@mui/material/TextField';
 import type User from 'src/lib/db/User';
 import callAPI from 'src/client/lib/callAPI';
 import UserNameTextField from './UserNameTextField';
+import { hasOwnProperty } from 'src/lib/hasOwnProperty';
+import { AppContext } from 'src/server/state/AppContext';
 
-type ProfileFormProps = {
-  user: User;
-};
+const ProfileForm: React.FC = () => {
+  const appContext = useContext(AppContext);
+  const user = appContext?.user;
+  const setUser = appContext?.setUser;
 
-const ProfileForm: React.FC<ProfileFormProps> = ({ user }) => {
+  if (!user || !setUser) {
+    throw new Error('No user');
+  }
+
   const [editingProfile, _setEditingProfile] = useState(false);
 
   const [userName, setUserName] = useState(user.userName);
   const [location, setLocation] = useState(user.location);
+  const [successMessage, setSuccessMessage] = useState('');
+  const [errorMessage, setErrorMessage] = useState('');
 
   useEffect(() => {
     setUserName(user.userName);
@@ -28,27 +36,66 @@ const ProfileForm: React.FC<ProfileFormProps> = ({ user }) => {
   }, [editingProfile]);
 
   const cancelEdit = useCallback(() => {
+    setSuccessMessage('');
+    setErrorMessage('');
     setUserName(user.userName);
     setLocation(user.location);
     _setEditingProfile(false);
   }, [user, editingProfile, _setEditingProfile]);
 
   const save = useCallback(async () => {
+    setSuccessMessage('');
+    setErrorMessage('');
+
     const resp = await callAPI('save-profile', {
       userID: user.id,
       userName,
       location,
     });
 
-    console.log(resp);
-  }, [user, userName, location]);
+    if (hasOwnProperty(resp, 'success') && typeof resp.success === 'boolean') {
+      setSuccessMessage('Profile updated successfully!');
+      _setEditingProfile(false);
+      if (
+        hasOwnProperty(resp, 'userName') &&
+        typeof resp.userName === 'string'
+      ) {
+        user.userName = resp.userName;
+      }
+      if (
+        hasOwnProperty(resp, 'location') &&
+        typeof resp.location === 'string'
+      ) {
+        user.location = resp.location;
+      }
+      setUser({ ...user });
+    }
+
+    if (hasOwnProperty(resp, 'error') && typeof resp.error === 'string') {
+      setSuccessMessage('Update failed: ' + resp.error);
+    }
+  }, [
+    user,
+    setUser,
+    userName,
+    location,
+    setSuccessMessage,
+    setErrorMessage,
+    _setEditingProfile,
+  ]);
 
   const onUserNameChange = useCallback(
     (u: string) => {
-      console.log({ u });
       setUserName(u);
     },
     [setUserName],
+  );
+
+  const onLocationChange = useCallback(
+    (e: React.ChangeEvent<HTMLInputElement>) => {
+      setLocation(e.target.value);
+    },
+    [setLocation],
   );
 
   return (
@@ -86,6 +133,7 @@ const ProfileForm: React.FC<ProfileFormProps> = ({ user }) => {
           >
             <TextField
               value={location}
+              onChange={onLocationChange}
               label="Location"
               id="location"
               disabled={!editingProfile}
@@ -95,7 +143,15 @@ const ProfileForm: React.FC<ProfileFormProps> = ({ user }) => {
           <div>
             {editingProfile ? (
               <div>
-                <Button onClick={save} variant="contained">
+                <Button
+                  onClick={save}
+                  variant="contained"
+                  disabled={
+                    (userName === user.userName &&
+                      location === user.location) ||
+                    errorMessage != ''
+                  }
+                >
                   Save
                 </Button>
                 <Button
@@ -111,6 +167,32 @@ const ProfileForm: React.FC<ProfileFormProps> = ({ user }) => {
               </Button>
             )}
           </div>
+          {successMessage !== '' && (
+            <Paper
+              css={{
+                background: 'var(--theme-sea)',
+                padding: 'var(--spacing-medium)',
+                marginTop: 'var(--spacing-medium)',
+                marginBottom: 'var(--spacing-medium)',
+                color: '#fff',
+              }}
+            >
+              {successMessage}
+            </Paper>
+          )}
+          {errorMessage !== '' && (
+            <Paper
+              css={{
+                background: 'var(--theme-orange)',
+                padding: 'var(--spacing-medium)',
+                marginTop: 'var(--spacing-medium)',
+                marginBottom: 'var(--spacing-medium)',
+                color: '#fff',
+              }}
+            >
+              {errorMessage}
+            </Paper>
+          )}
         </div>
       </Paper>
     </div>

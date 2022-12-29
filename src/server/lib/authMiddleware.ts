@@ -72,8 +72,6 @@ export const authMiddleware: RequestHandler = async (req, res, next) => {
     return;
   }
 
-  console.log({ user, team });
-
   req.context = { ...req.context, user, team };
 
   next();

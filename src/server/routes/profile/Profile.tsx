@@ -10,11 +10,7 @@ const Profile: React.FC = () => {
     appContext?.setShowNavigation(true);
   }, [appContext?.setShowNavigation]);
 
-  useEffect(() => {
-    console.log({ user, team });
-  }, []);
-
-  return <>{user && <ProfileForm user={user} />}</>;
+  return <>{user && <ProfileForm />}</>;
 };
 
 export default Profile;

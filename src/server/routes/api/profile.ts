@@ -4,6 +4,7 @@ import getDotEnv from 'src/lib/dotenv';
 import { hasOwnProperty } from 'src/lib/hasOwnProperty';
 import { validateDTSG } from 'src/server/lib/dtsg';
 import User from 'src/lib/db/User';
+import { Op } from 'sequelize';
 
 const config = getDotEnv();
 
@@ -16,7 +17,6 @@ export const saveProfile: RequestHandler = async (
   req: Request,
   res: Response,
 ) => {
-  console.log(req.body);
   try {
     if (
       req.query &&
@@ -40,8 +40,6 @@ export const saveProfile: RequestHandler = async (
         if (!user) {
           throw new Error('No such user');
         }
-
-        console.log(req.body.data);
 
         if (
           hasOwnProperty(req.body.data, 'userName') &&
@@ -101,9 +99,10 @@ export const checkUserNameIsAvailable: RequestHandler = async (
       req.body.data.userName.length >= 2 && // enforced at the DB as well
       req.body.data.userName.length <= 48 // enforced at the DB as well
     ) {
+      console.log(Op.iLike);
       const userCount = await User.count({
         where: {
-          userName: req.body.data.userName,
+          userName: { [Op.iLike]: req.body.data.userName },
         },
       });
       const available = userCount === 0;

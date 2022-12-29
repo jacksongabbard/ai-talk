@@ -10,23 +10,33 @@ module.exports = {
       id UUID DEFAULT uuid_generate_v4() NOT NULL PRIMARY KEY,
       created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
       updated_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
-      team_name TEXT NOT NULL UNIQUE CHECK (LENGTH(team_name) >= 2 AND LENGTH(team_name) <= 48),
-      location TEXT NULL CHECK LENGTH(location) <= 48,
+      team_name TEXT NOT NULL UNIQUE CHECK (
+        LENGTH(team_name) >= 2 
+        AND LENGTH(team_name) <= 48
+        AND team_name ~* '^(?:[a-zA-Z0-9][a-zA-Z0-9_-]{0,46}[a-zA-Z0-9])$'
+      ),
+      location TEXT NULL CHECK (LENGTH(location) <= 48),
       active BOOLEAN NOT NULL DEFAULT TRUE
     );
+    CREATE UNIQUE INDEX team_name_upper_idx ON teams (UPPER(team_name));
 
     CREATE TABLE users (
       id UUID DEFAULT uuid_generate_v4() NOT NULL PRIMARY KEY,
       created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
       updated_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
-      user_name TEXT NOT NULL UNIQUE CHECK (LENGTH(user_name) >= 2 AND LENGTH(user_name) <= 48),
+      user_name TEXT NOT NULL UNIQUE CHECK (
+        LENGTH(user_name) >= 2
+        AND LENGTH(user_name) <= 48
+        AND user_name ~* '^(?:[a-zA-Z0-9][a-zA-Z0-9_-]{0,46}[a-zA-Z0-9])$'
+      ),
       email_address TEXT NOT NULL UNIQUE,
       profile_pic TEXT NULL,
-      location TEXT NULL CHECK LENGTH(location) <= 48,
+      location TEXT NULL CHECK (LENGTH(location) <= 48),
       team_id UUID NULL REFERENCES teams(id) ON DELETE CASCADE,
       active BOOLEAN NOT NULL DEFAULT TRUE
     );
-    
+    CREATE UNIQUE INDEX user_name_upper_idx ON users (UPPER(user_name));
+
     CREATE TABLE puzzle_instances (
       id UUID DEFAULT uuid_generate_v4() NOT NULL PRIMARY KEY,
       puzzle_id TEXT NOT NULL,
@@ -70,7 +80,6 @@ module.exports = {
         FOREIGN KEY(user_id) 
 	        REFERENCES users(id)
     );
-
    `);
   },
 
