@@ -55,7 +55,7 @@ export const saveProfile: RequestHandler = async (
           if (req.body.data.location.length > 48) {
             throw new Error('Invalid location');
           }
-          user.set('location', req.body.data.location);
+          user.set('location', req.body.data.location.trim());
         }
 
         if (

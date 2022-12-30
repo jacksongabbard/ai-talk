@@ -33,7 +33,7 @@ module.exports = {
       email_address TEXT NOT NULL UNIQUE,
       profile_pic TEXT NULL,
       location TEXT NULL CHECK (LENGTH(location) <= 48),
-      team_id UUID NULL REFERENCES teams(id) ON DELETE CASCADE,
+      team_id UUID NULL REFERENCES teams(id) ON DELETE SET NULL,
       active BOOLEAN NOT NULL DEFAULT TRUE,
       public BOOLEAN DEFAULT TRUE
     );
@@ -52,6 +52,7 @@ module.exports = {
       CONSTRAINT fk_team_id
         FOREIGN KEY(team_id) 
 	        REFERENCES teams(id)
+            ON DELETE CASCADE
     );
 
     CREATE TABLE puzzle_instance_actions (
@@ -63,10 +64,12 @@ module.exports = {
       payload JSONB NOT NULL,
       CONSTRAINT fk_puzzle_instance_id
         FOREIGN KEY(puzzle_instance_id) 
-	        REFERENCES puzzle_instances(id),
+	        REFERENCES puzzle_instances(id)
+            ON DELETE CASCADE,
       CONSTRAINT fk_user_id
         FOREIGN KEY(user_id) 
 	        REFERENCES users(id)
+            ON DELETE CASCADE
     );
 
     CREATE TABLE puzzle_instance_solution_attempts (
@@ -77,10 +80,13 @@ module.exports = {
       solution_attempt_payload JSONB NOT NULL,
       CONSTRAINT fk_puzzle_instance_id
         FOREIGN KEY(puzzle_instance_id) 
-	        REFERENCES puzzle_instances(id),
+	        REFERENCES puzzle_instances(id)
+            ON DELETE CASCADE,
       CONSTRAINT fk_user_id
         FOREIGN KEY(user_id) 
 	        REFERENCES users(id)
+            ON DELETE CASCADE
+
     );
    `);
   },

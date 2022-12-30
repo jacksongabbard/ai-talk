@@ -87,7 +87,7 @@ export const createTeam: RequestHandler = async (
         if (req.body.data.location.length > 48) {
           throw new Error('Invalid location');
         }
-        team.set('location', req.body.data.location);
+        team.set('location', req.body.data.location.trim());
       }
 
       if (
@@ -117,6 +117,7 @@ export const createTeam: RequestHandler = async (
         JSON.stringify({
           success: true,
           id,
+          createdAt: team.createdAt.toISOString(),
           teamName,
           location,
           public: team.public,

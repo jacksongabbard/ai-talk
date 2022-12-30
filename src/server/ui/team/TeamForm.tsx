@@ -1,4 +1,5 @@
 import { useCallback, useContext, useEffect, useState } from 'react';
+import { redirect, useNavigate } from 'react-router-dom';
 
 import { AppContext } from 'src/server/state/AppContext';
 import TeamNameTextField from './TeamNameTextField';
@@ -18,9 +19,11 @@ const TeamForm = () => {
   const appContext = useContext(AppContext);
   const team = appContext?.team;
   const setTeam = appContext?.setTeam;
+  const user = appContext?.user;
+  const setUser = appContext?.setUser;
 
-  if (!setTeam) {
-    throw new Error('No setTeam function on AppContext. Something is broken.');
+  if (!setTeam || !user || !setUser) {
+    throw new Error('Something is broken. AppContext is missing key things.');
   }
 
   const [teamName, setTeamName] = useState(team ? team.teamName : '');
@@ -34,6 +37,10 @@ const TeamForm = () => {
     if (!team) {
       return;
     }
+
+    setTeamName(team.teamName);
+    setTeamLocation(team.location);
+    setPublicTeam(team.public);
   }, [team, setTeamName, setTeamLocation, setPublicTeam]);
 
   const onTeamNameChange = useCallback(
@@ -64,6 +71,7 @@ const TeamForm = () => {
     [setPublicTeam],
   );
 
+  const navigate = useNavigate();
   const save = useCallback(async () => {
     setSuccessMessage('');
     setErrorMessage('');
@@ -87,6 +95,11 @@ const TeamForm = () => {
         public: true,
         active: true,
       };
+
+      if (hasOwnProperty(resp, 'id') && typeof resp.id === 'string') {
+        t.id = resp.id;
+      }
+
       if (
         hasOwnProperty(resp, 'teamName') &&
         typeof resp.teamName === 'string'
@@ -104,10 +117,17 @@ const TeamForm = () => {
         t.public = resp.public;
       }
 
-      if (team) {
-        setTeam(t);
-      } else {
-        // Do a redirect to the team profile page
+      if (
+        hasOwnProperty(resp, 'createdAt') &&
+        typeof resp.createdAt === 'string'
+      ) {
+        t.createdAt = new Date(resp.createdAt);
+      }
+
+      setTeam(t);
+      setUser({ ...user, teamId: t.id });
+      if (!team) {
+        navigate('/team', { replace: true });
       }
     }
 
