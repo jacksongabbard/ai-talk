@@ -12,8 +12,14 @@ import UserNameTextField from './UserNameTextField';
 import { hasOwnProperty } from 'src/lib/hasOwnProperty';
 import { AppContext } from 'src/server/state/AppContext';
 import ValidNameRegex from 'src/lib/validation/ValidNameRegex';
+import type { ClientUser } from 'src/types/ClientUser';
 
-const ProfileForm: React.FC = () => {
+type ProfileFormProps = {
+  onUpdate: (user: ClientUser) => void;
+  onCancel: () => void;
+};
+
+const ProfileForm: React.FC<ProfileFormProps> = ({ onUpdate, onCancel }) => {
   const appContext = useContext(AppContext);
   const user = appContext?.user;
   const setUser = appContext?.setUser;
@@ -21,8 +27,6 @@ const ProfileForm: React.FC = () => {
   if (!user || !setUser) {
     throw new Error('No user');
   }
-
-  const [editingProfile, _setEditingProfile] = useState(false);
 
   const [userName, setUserName] = useState(user.userName);
   const [location, setLocation] = useState(user.location);
@@ -35,17 +39,20 @@ const ProfileForm: React.FC = () => {
     setLocation(user.location);
   }, [user, setUserName, setLocation]);
 
-  const setEditingProfile = useCallback(() => {
-    _setEditingProfile(true);
-  }, [editingProfile]);
-
   const cancelEdit = useCallback(() => {
     setSuccessMessage('');
     setErrorMessage('');
     setUserName(user.userName);
     setLocation(user.location);
-    _setEditingProfile(false);
-  }, [user, editingProfile, _setEditingProfile]);
+    onCancel();
+  }, [
+    user,
+    setSuccessMessage,
+    setErrorMessage,
+    setUserName,
+    setLocation,
+    onCancel,
+  ]);
 
   const save = useCallback(async () => {
     setSuccessMessage('');
@@ -60,7 +67,6 @@ const ProfileForm: React.FC = () => {
 
     if (hasOwnProperty(resp, 'success') && typeof resp.success === 'boolean') {
       setSuccessMessage('Profile updated successfully!');
-      _setEditingProfile(false);
       if (
         hasOwnProperty(resp, 'userName') &&
         typeof resp.userName === 'string'
@@ -78,7 +84,9 @@ const ProfileForm: React.FC = () => {
         user.public = resp.public;
       }
 
-      setUser({ ...user });
+      const u = { ...user };
+      setUser(u);
+      onUpdate(u);
     }
 
     if (hasOwnProperty(resp, 'error') && typeof resp.error === 'string') {
@@ -92,7 +100,6 @@ const ProfileForm: React.FC = () => {
     publicProfile,
     setSuccessMessage,
     setErrorMessage,
-    _setEditingProfile,
   ]);
 
   const onUserNameChange = useCallback(
@@ -167,7 +174,6 @@ const ProfileForm: React.FC = () => {
           onTextChange={onUserNameChange}
           label="User Name"
           id="userName"
-          disabled={!editingProfile}
           fullWidth={true}
         />
       </div>
@@ -182,7 +188,6 @@ const ProfileForm: React.FC = () => {
           onChange={onLocationChange}
           label="Location"
           id="location"
-          disabled={!editingProfile}
           fullWidth={true}
         />
       </div>
@@ -192,73 +197,57 @@ const ProfileForm: React.FC = () => {
           paddingTop: 'var(--spacing-large)',
         }}
       >
-        {!editingProfile && (
-          <>
-            <Typography variant="body1">
-              Visibility <strong>{user.public ? 'Public' : 'Private'}</strong>
-            </Typography>
-          </>
-        )}
-        {editingProfile && (
-          <>
-            <FormControlLabel
-              control={
-                <Checkbox checked={publicProfile} onChange={onPublicChange} />
-              }
-              label="Public"
-            />
-            <br />
-            <FormControlLabel
-              control={
-                <Checkbox checked={!publicProfile} onChange={onPrivateChange} />
-              }
-              label="Private"
-            />
-            <Typography
-              variant="subtitle2"
-              css={{ marginBottom: 'var(--spacing-medium)' }}
-            >
-              Selecting <em>Public</em> allows your profile to be seen by people
-              on this site. If you are a part of a team, your user name will
-              also be listed as part of the team (if that team is itself
-              public).
-            </Typography>
-            <Typography variant="subtitle2">
-              Selecting <em>Private</em> means your profile will not be seen by
-              people on this site. If you are a part of a team, your user name
-              will still be shown to members of that team.
-            </Typography>
-          </>
-        )}
+        <>
+          <FormControlLabel
+            control={
+              <Checkbox checked={publicProfile} onChange={onPublicChange} />
+            }
+            label="Public"
+          />
+          <br />
+          <FormControlLabel
+            control={
+              <Checkbox checked={!publicProfile} onChange={onPrivateChange} />
+            }
+            label="Private"
+          />
+          <Typography
+            variant="subtitle2"
+            css={{ marginBottom: 'var(--spacing-medium)' }}
+          >
+            Selecting <em>Public</em> allows your profile to be seen by people
+            on this site. If you are a part of a team, your user name will also
+            be listed as part of the team (if that team is itself public).
+          </Typography>
+          <Typography variant="subtitle2">
+            Selecting <em>Private</em> means your profile will not be seen by
+            people on this site. If you are a part of a team, your user name
+            will still be shown to members of that team.
+          </Typography>
+        </>
       </div>
       <div css={{ display: 'flex', justifyContent: 'flex-end' }}>
-        {editingProfile ? (
-          <div>
-            <Button
-              onClick={save}
-              variant="contained"
-              disabled={
-                (userName === user.userName &&
-                  !userName.match(ValidNameRegex) &&
-                  location === user.location &&
-                  publicProfile === user.public) ||
-                errorMessage != ''
-              }
-            >
-              Save
-            </Button>
-            <Button
-              onClick={cancelEdit}
-              css={{ marginLeft: 'var(--spacing-medium)' }}
-            >
-              Cancel
-            </Button>
-          </div>
-        ) : (
-          <Button variant="text" onClick={setEditingProfile}>
-            Edit profile
+        <div>
+          <Button
+            onClick={save}
+            variant="contained"
+            disabled={
+              (userName === user.userName &&
+                !userName.match(ValidNameRegex) &&
+                location === user.location &&
+                publicProfile === user.public) ||
+              errorMessage != ''
+            }
+          >
+            Save
           </Button>
-        )}
+          <Button
+            onClick={cancelEdit}
+            css={{ marginLeft: 'var(--spacing-medium)' }}
+          >
+            Cancel
+          </Button>
+        </div>
       </div>
     </>
   );

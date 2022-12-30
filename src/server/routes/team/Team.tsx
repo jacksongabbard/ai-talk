@@ -1,10 +1,11 @@
-import React, { useContext, useEffect } from 'react';
+import React, { useCallback, useContext, useEffect, useState } from 'react';
 import Button from '@mui/material/Button';
 import Typography from '@mui/material/Typography';
 
 import { AppContext } from 'src/server/state/AppContext';
 import Page from 'src/server/ui/page/Page';
-import useRouterLink from 'src/server/ui/routerLink/useRouterLink';
+import { Divider } from '@mui/material';
+import NoTeam from './NoTeam';
 
 // For some godforsaken reason, if I call this component 'Team', I get
 // hydration errors. Specifically, the error:
@@ -29,71 +30,12 @@ const TeamPage: React.FC = () => {
     appContext?.setShowNavigation(true);
   }, [appContext?.setShowNavigation]);
 
-  const CreateTeamRouterLink = useRouterLink('/create-team');
-  const JoinTeamRouterLink = useRouterLink('/join-team');
+  const [editing, setEditing] = useState(false);
+  const startEditingTeam = useCallback(() => {}, []);
+
   return (
     <Page title="Team">
-      {!team && (
-        <>
-          <div css={{ marginBottom: 'var(--spacing-medium)' }}>
-            <Typography variant="h5">
-              😿 You're not currently on a team.
-            </Typography>
-          </div>
-          <div>
-            <Typography variant="body2">
-              OHFFS is best with a team. You need a team in order to take part
-              in puzzle competitions. You also need a team to complete many of
-              the best puzzles. You can join an existing team or create a team
-              and invite your puzzle pals to join it.
-            </Typography>
-          </div>
-          <Button
-            component={CreateTeamRouterLink}
-            variant="contained"
-            fullWidth
-            css={{
-              marginTop: 'var(--spacing-large)',
-              marginBottom: 'var(--spacing-medium)',
-            }}
-          >
-            <div
-              css={{
-                textTransform: 'none',
-
-                flex: 1,
-              }}
-            >
-              <Typography variant="h6">Create a team</Typography>
-              <Typography variant="subtitle2">
-                Start your own team and invite people to join you
-              </Typography>
-            </div>
-          </Button>
-          <Button
-            component={JoinTeamRouterLink}
-            variant="contained"
-            fullWidth
-            css={{
-              marginTop: 'var(--spacing-medium)',
-              marginBottom: 'var(--spacing-large)',
-            }}
-          >
-            <div
-              css={{
-                textTransform: 'none',
-
-                flex: 1,
-              }}
-            >
-              <Typography variant="h6">Join a team</Typography>
-              <Typography variant="subtitle2">
-                Find and join an existing team
-              </Typography>
-            </div>
-          </Button>
-        </>
-      )}
+      {!team && <NoTeam />}
       {team && (
         <>
           <div css={{ marginBottom: 'var(--spacing-large)' }}>
@@ -101,10 +43,26 @@ const TeamPage: React.FC = () => {
             <Typography variant="h5">{team.teamName}</Typography>
           </div>
           {team.location && (
-            <div css={{ marginBottom: 'var(--spacing-medium)' }}>
+            <div css={{ marginBottom: 'var(--spacing-large)' }}>
               <Typography variant="overline">Location</Typography>
               <Typography variant="body1">{team.location}</Typography>
             </div>
+          )}
+          {user?.teamId === team.id && (
+            <>
+              <Divider />
+              <div
+                css={{
+                  marginBottom: 'var(--spacing-large)',
+                  display: 'flex',
+                  justifyContent: 'end',
+                }}
+              >
+                <Button variant="text" onClick={startEditingTeam}>
+                  Edit team
+                </Button>
+              </div>
+            </>
           )}
         </>
       )}
