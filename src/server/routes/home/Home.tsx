@@ -1,4 +1,6 @@
 import React, { useContext, useEffect } from 'react';
+import Helmet from 'react-helmet';
+
 import { AppContext } from 'src/server/state/AppContext';
 
 const Home: React.FC = () => {
@@ -12,6 +14,9 @@ const Home: React.FC = () => {
 
   return (
     <>
+      <Helmet>
+        <title>Home</title>
+      </Helmet>
       {user && user.profilePic && (
         <p>
           <img

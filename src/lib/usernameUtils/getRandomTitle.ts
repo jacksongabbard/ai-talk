@@ -26,7 +26,6 @@ const titles = [
   'Ayatollah',
   'Baivarapatish',
   'Bapu',
-  'Beauty',
   'Begum',
   'Bishop',
   'Blessed',

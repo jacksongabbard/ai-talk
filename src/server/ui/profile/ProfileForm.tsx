@@ -1,10 +1,12 @@
 import React, { useCallback, useContext, useEffect, useState } from 'react';
 
 import Button from '@mui/material/Button';
+import Checkbox from '@mui/material/Checkbox';
+import FormControlLabel from '@mui/material/FormControlLabel';
 import Paper from '@mui/material/Paper';
 import TextField from '@mui/material/TextField';
+import Typography from '@mui/material/Typography';
 
-import type User from 'src/lib/db/User';
 import callAPI from 'src/client/lib/callAPI';
 import UserNameTextField from './UserNameTextField';
 import { hasOwnProperty } from 'src/lib/hasOwnProperty';
@@ -23,6 +25,7 @@ const ProfileForm: React.FC = () => {
 
   const [userName, setUserName] = useState(user.userName);
   const [location, setLocation] = useState(user.location);
+  const [publicProfile, setPublicProfile] = useState(user.public);
   const [successMessage, setSuccessMessage] = useState('');
   const [errorMessage, setErrorMessage] = useState('');
 
@@ -51,6 +54,7 @@ const ProfileForm: React.FC = () => {
       userID: user.id,
       userName,
       location,
+      public: publicProfile,
     });
 
     if (hasOwnProperty(resp, 'success') && typeof resp.success === 'boolean') {
@@ -68,6 +72,11 @@ const ProfileForm: React.FC = () => {
       ) {
         user.location = resp.location;
       }
+
+      if (hasOwnProperty(resp, 'public') && typeof resp.public === 'boolean') {
+        user.public = resp.public;
+      }
+
       setUser({ ...user });
     }
 
@@ -79,6 +88,7 @@ const ProfileForm: React.FC = () => {
     setUser,
     userName,
     location,
+    publicProfile,
     setSuccessMessage,
     setErrorMessage,
     _setEditingProfile,
@@ -96,6 +106,13 @@ const ProfileForm: React.FC = () => {
       setLocation(e.target.value);
     },
     [setLocation],
+  );
+
+  const onPublicChange = useCallback(
+    (e: React.ChangeEvent<HTMLInputElement>) => {
+      setPublicProfile(e.target.checked);
+    },
+    [setPublicProfile],
   );
 
   return (
@@ -142,7 +159,7 @@ const ProfileForm: React.FC = () => {
           )}
           <div
             css={{
-              paddingBottom: 'var(--spacing-large)',
+              paddingBottom: 'var(--spacing-xlarge)',
             }}
           >
             <UserNameTextField
@@ -157,7 +174,7 @@ const ProfileForm: React.FC = () => {
           </div>
           <div
             css={{
-              paddingBottom: 'var(--spacing-large)',
+              paddingBottom: 'var(--spacing-medium)',
               paddingTop: 'var(--spacing-large)',
             }}
           >
@@ -170,13 +187,31 @@ const ProfileForm: React.FC = () => {
               fullWidth={true}
             />
           </div>
-          {/*
-
-          WHERE DID YOU LEAVE OFF?
-          YOU WERE ABOUT TO ADD A PUBLIC CHECKBOX HERE
-
-          */}
-          <div>
+          <div
+            css={{
+              paddingBottom: 'var(--spacing-xlarge)',
+              paddingTop: 'var(--spacing-large)',
+            }}
+          >
+            <FormControlLabel
+              control={
+                <Checkbox
+                  checked={publicProfile}
+                  onChange={onPublicChange}
+                  disabled={!editingProfile}
+                />
+              }
+              label="Public"
+            />
+            {editingProfile && (
+              <Typography variant="subtitle2">
+                Checking this box allows your profile to be seen by people on
+                this site. If you are a part of a team, your user name will also
+                be listed as part of the team (if that team is itself public).
+              </Typography>
+            )}
+          </div>
+          <div css={{ display: 'flex', justifyContent: 'flex-end' }}>
             {editingProfile ? (
               <div>
                 <Button
@@ -184,7 +219,8 @@ const ProfileForm: React.FC = () => {
                   variant="contained"
                   disabled={
                     (userName === user.userName &&
-                      location === user.location) ||
+                      location === user.location &&
+                      publicProfile === user.public) ||
                     errorMessage != ''
                   }
                 >

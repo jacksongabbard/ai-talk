@@ -1,6 +1,7 @@
 import React, { useCallback, useContext, useEffect } from 'react';
+import Helmet from 'react-helmet';
+
 import { AppContext } from 'src/server/state/AppContext';
-import Shell from 'src/server/ui/shell/Shell';
 
 declare var google: any;
 declare var GOOGLE_CLIENT_ID: string;
@@ -31,7 +32,14 @@ const Auth: React.FC = () => {
     client.requestCode();
   }, []);
 
-  return <>{doAuth && <button onClick={doAuth}>Login with Google</button>}</>;
+  return (
+    <>
+      <Helmet>
+        <title>Login</title>
+      </Helmet>
+      {doAuth && <button onClick={doAuth}>Login with Google</button>}
+    </>
+  );
 };
 
 export default Auth;

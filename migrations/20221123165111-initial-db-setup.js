@@ -16,7 +16,7 @@ module.exports = {
         AND team_name ~* '^(?:[a-zA-Z0-9][a-zA-Z0-9_-]{0,46}[a-zA-Z0-9])$'
       ),
       location TEXT NULL CHECK (LENGTH(location) <= 48),
-      active BOOLEAN NOT NULL DEFAULT TRUE
+      active BOOLEAN NOT NULL DEFAULT TRUE,
       public BOOLEAN DEFAULT TRUE
     );
     CREATE UNIQUE INDEX team_name_upper_idx ON teams (UPPER(team_name));
@@ -34,7 +34,7 @@ module.exports = {
       profile_pic TEXT NULL,
       location TEXT NULL CHECK (LENGTH(location) <= 48),
       team_id UUID NULL REFERENCES teams(id) ON DELETE CASCADE,
-      active BOOLEAN NOT NULL DEFAULT TRUE
+      active BOOLEAN NOT NULL DEFAULT TRUE,
       public BOOLEAN DEFAULT TRUE
     );
     CREATE UNIQUE INDEX user_name_upper_idx ON users (UPPER(user_name));
