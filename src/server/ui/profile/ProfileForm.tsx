@@ -110,89 +110,96 @@ const ProfileForm: React.FC = () => {
 
   const onPublicChange = useCallback(
     (e: React.ChangeEvent<HTMLInputElement>) => {
-      setPublicProfile(e.target.checked);
+      setPublicProfile(true);
+    },
+    [setPublicProfile],
+  );
+
+  const onPrivateChange = useCallback(
+    (e: React.ChangeEvent<HTMLInputElement>) => {
+      setPublicProfile(false);
     },
     [setPublicProfile],
   );
 
   return (
-    <div
-      css={{
-        maxWidth: '768px',
-      }}
-    >
-      <Paper>
-        <div
+    <>
+      {successMessage !== '' && (
+        <Paper
           css={{
-            padding: 'var(--spacing-xlarge)',
+            background: 'var(--theme-sea)',
+            padding: 'var(--spacing-medium)',
+            paddingLeft: 'var(--spacing-large)',
+            paddingRight: 'var(--spacing-large)',
+            marginTop: 'var(--spacing-medium)',
+            marginBottom: 'var(--spacing-massive)',
+            color: '#fff',
           }}
         >
-          {successMessage !== '' && (
-            <Paper
-              css={{
-                background: 'var(--theme-sea)',
-                padding: 'var(--spacing-medium)',
-                paddingLeft: 'var(--spacing-large)',
-                paddingRight: 'var(--spacing-large)',
-                marginTop: 'var(--spacing-medium)',
-                marginBottom: 'var(--spacing-xlarge)',
-                color: '#fff',
-              }}
-            >
-              {successMessage}
-            </Paper>
-          )}
-          {errorMessage !== '' && (
-            <Paper
-              css={{
-                background: 'var(--theme-orange)',
-                padding: 'var(--spacing-medium)',
-                paddingLeft: 'var(--spacing-large)',
-                paddingRight: 'var(--spacing-large)',
-                marginTop: 'var(--spacing-medium)',
-                marginBottom: 'var(--spacing-xlarge)',
-                color: '#fff',
-              }}
-            >
-              {errorMessage}
-            </Paper>
-          )}
-          <div
-            css={{
-              paddingBottom: 'var(--spacing-xlarge)',
-            }}
-          >
-            <UserNameTextField
-              actualUserName={user.userName}
-              value={userName}
-              onTextChange={onUserNameChange}
-              label="User Name"
-              id="userName"
-              disabled={!editingProfile}
-              fullWidth={true}
-            />
-          </div>
-          <div
-            css={{
-              paddingBottom: 'var(--spacing-medium)',
-              paddingTop: 'var(--spacing-large)',
-            }}
-          >
-            <TextField
-              value={location}
-              onChange={onLocationChange}
-              label="Location"
-              id="location"
-              disabled={!editingProfile}
-              fullWidth={true}
-            />
-          </div>
-          <div
-            css={{
-              paddingBottom: 'var(--spacing-xlarge)',
-              paddingTop: 'var(--spacing-large)',
-            }}
-          >
+          {successMessage}
+        </Paper>
+      )}
+      {errorMessage !== '' && (
+        <Paper
+          css={{
+            background: 'var(--theme-orange)',
+            padding: 'var(--spacing-medium)',
+            paddingLeft: 'var(--spacing-large)',
+            paddingRight: 'var(--spacing-large)',
+            marginTop: 'var(--spacing-medium)',
+            marginBottom: 'var(--spacing-massive)',
+            color: '#fff',
+          }}
+        >
+          {errorMessage}
+        </Paper>
+      )}
+      <div
+        css={{
+          paddingTop: 'var(--spacing-large)',
+          paddingBottom: 'var(--spacing-xlarge)',
+        }}
+      >
+        <UserNameTextField
+          actualUserName={user.userName}
+          value={userName}
+          onTextChange={onUserNameChange}
+          label="User Name"
+          id="userName"
+          disabled={!editingProfile}
+          fullWidth={true}
+        />
+      </div>
+      <div
+        css={{
+          paddingBottom: 'var(--spacing-medium)',
+          paddingTop: 'var(--spacing-large)',
+        }}
+      >
+        <TextField
+          value={location}
+          onChange={onLocationChange}
+          label="Location"
+          id="location"
+          disabled={!editingProfile}
+          fullWidth={true}
+        />
+      </div>
+      <div
+        css={{
+          paddingBottom: 'var(--spacing-xlarge)',
+          paddingTop: 'var(--spacing-large)',
+        }}
+      >
+        {!editingProfile && (
+          <>
+            <Typography variant="body1">
+              Visibility <strong>{user.public ? 'Public' : 'Private'}</strong>
+            </Typography>
+          </>
+        )}
+        {editingProfile && (
+          <>
             <FormControlLabel
               control={
                 <Checkbox
@@ -203,45 +210,62 @@ const ProfileForm: React.FC = () => {
               }
               label="Public"
             />
-            {editingProfile && (
+            <br />
+            <FormControlLabel
+              control={
+                <Checkbox
+                  checked={!publicProfile}
+                  onChange={onPrivateChange}
+                  disabled={!editingProfile}
+                />
+              }
+              label="Private"
+            />
+            <>
               <Typography variant="subtitle2">
-                Checking this box allows your profile to be seen by people on
-                this site. If you are a part of a team, your user name will also
-                be listed as part of the team (if that team is itself public).
+                Selecting <em>Public</em> allows your profile to be seen by
+                people on this site. If you are a part of a team, your user name
+                will also be listed as part of the team (if that team is itself
+                public).
               </Typography>
-            )}
+              <Typography variant="subtitle2">
+                Selecting <em>Private</em> means your profile will not be seen
+                by people on this site. If you are a part of a team, your user
+                name will still be shown to members of that team.
+              </Typography>
+            </>
+          </>
+        )}
+      </div>
+      <div css={{ display: 'flex', justifyContent: 'flex-end' }}>
+        {editingProfile ? (
+          <div>
+            <Button
+              onClick={save}
+              variant="contained"
+              disabled={
+                (userName === user.userName &&
+                  location === user.location &&
+                  publicProfile === user.public) ||
+                errorMessage != ''
+              }
+            >
+              Save
+            </Button>
+            <Button
+              onClick={cancelEdit}
+              css={{ marginLeft: 'var(--spacing-medium)' }}
+            >
+              Cancel
+            </Button>
           </div>
-          <div css={{ display: 'flex', justifyContent: 'flex-end' }}>
-            {editingProfile ? (
-              <div>
-                <Button
-                  onClick={save}
-                  variant="contained"
-                  disabled={
-                    (userName === user.userName &&
-                      location === user.location &&
-                      publicProfile === user.public) ||
-                    errorMessage != ''
-                  }
-                >
-                  Save
-                </Button>
-                <Button
-                  onClick={cancelEdit}
-                  css={{ marginLeft: 'var(--spacing-medium)' }}
-                >
-                  Cancel
-                </Button>
-              </div>
-            ) : (
-              <Button variant="text" onClick={setEditingProfile}>
-                Edit profile
-              </Button>
-            )}
-          </div>
-        </div>
-      </Paper>
-    </div>
+        ) : (
+          <Button variant="text" onClick={setEditingProfile}>
+            Edit profile
+          </Button>
+        )}
+      </div>
+    </>
   );
 };
 

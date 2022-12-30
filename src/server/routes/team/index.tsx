@@ -1,4 +1,3 @@
-import React from 'react';
 import { StaticRouter } from 'react-router-dom/server';
 
 import type { Request, RequestHandler, Response } from 'express';

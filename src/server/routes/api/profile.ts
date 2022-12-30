@@ -75,7 +75,15 @@ export const saveProfile: RequestHandler = async (
 
         const { id, userName, location } = user;
         res.status(200);
-        res.send(JSON.stringify({ success: true, id, userName, location }));
+        res.send(
+          JSON.stringify({
+            success: true,
+            id,
+            userName,
+            location,
+            public: user.public,
+          }),
+        );
         return;
       } else {
         bail400('Bad request', res);

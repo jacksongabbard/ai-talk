@@ -2,6 +2,7 @@ import React, { useContext, useEffect } from 'react';
 import Helmet from 'react-helmet';
 
 import { AppContext } from 'src/server/state/AppContext';
+import Page from 'src/server/ui/page/Page';
 
 const Home: React.FC = () => {
   const appContext = useContext(AppContext);
@@ -13,10 +14,7 @@ const Home: React.FC = () => {
   }, [appContext?.setShowNavigation]);
 
   return (
-    <>
-      <Helmet>
-        <title>Home</title>
-      </Helmet>
+    <Page title="Home">
       {user && user.profilePic && (
         <p>
           <img
@@ -26,9 +24,11 @@ const Home: React.FC = () => {
           />
         </p>
       )}
-      <h2>Hi there {user ? user.userName : 'unknown puzzler'}</h2>
+      <h2 css={{ marginBottom: 'var(--spacing-large)' }}>
+        Hi there {user ? user.userName : 'unknown puzzler'}
+      </h2>
       <p>The party is just getting started</p>
-    </>
+    </Page>
   );
 };
 
