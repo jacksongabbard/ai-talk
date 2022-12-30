@@ -96,7 +96,16 @@ const TeamPage: React.FC = () => {
       )}
       {team && (
         <>
-          <pre>{JSON.stringify(team, null, 4)}</pre>
+          <div css={{ marginBottom: 'var(--spacing-large)' }}>
+            <Typography variant="overline">Team</Typography>
+            <Typography variant="h5">{team.teamName}</Typography>
+          </div>
+          {team.location && (
+            <div css={{ marginBottom: 'var(--spacing-medium)' }}>
+              <Typography variant="overline">Location</Typography>
+              <Typography variant="body1">{team.location}</Typography>
+            </div>
+          )}
         </>
       )}
     </Page>
