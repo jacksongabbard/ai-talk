@@ -6,18 +6,18 @@ import callAPI from 'src/client/lib/callAPI';
 import { hasOwnProperty } from 'src/lib/hasOwnProperty';
 import ValidNameRegex from 'src/lib/validation/ValidNameRegex';
 
-type UserNameTextFieldProps = {
-  actualUserName: string;
+type TeamNameTextFieldProps = {
+  actualTeamName: string;
   onTextChange: (t: string) => void;
 };
 
-const UserNameTextField: React.FC<TextFieldProps & UserNameTextFieldProps> = (
+const TeamNameTextField: React.FC<TextFieldProps & TeamNameTextFieldProps> = (
   props,
 ) => {
-  const { onChange, onTextChange, actualUserName, value, ...rest } = props;
+  const { onChange, onTextChange, actualTeamName, value, ...rest } = props;
 
   if (typeof value !== 'string') {
-    throw new Error('User name value must be a string');
+    throw new Error('Team name value must be a string');
   }
 
   const [_value, setValue] = useState<string>(value);
@@ -54,7 +54,7 @@ const UserNameTextField: React.FC<TextFieldProps & UserNameTextFieldProps> = (
     checkingRef.current && clearTimeout(checkingRef.current);
     setCheckingName(false);
 
-    if (_value === actualUserName) {
+    if (_value === actualTeamName) {
       setAvailable(undefined);
       setErrorMessage(undefined);
       return;
@@ -68,13 +68,13 @@ const UserNameTextField: React.FC<TextFieldProps & UserNameTextFieldProps> = (
     setErrorMessage(undefined);
 
     if (_value.length < 2) {
-      setErrorMessage('User names must be at least 2 characters long');
+      setErrorMessage('Team names must be at least 2 characters long');
       return;
     }
 
     if (!_value.match(ValidNameRegex)) {
       setErrorMessage(
-        'User names must start and end with an alphabet letter or number. They can contain only underscores or dashes (_ or -).',
+        'Team names must start and end with an alphabet letter or number. They can contain only underscores or dashes (_ or -).',
       );
       return;
     }
@@ -83,8 +83,8 @@ const UserNameTextField: React.FC<TextFieldProps & UserNameTextFieldProps> = (
       (async () => {
         setCheckingName(true);
         setAvailable(undefined);
-        const resp = await callAPI('check-user-name-is-available', {
-          userName: _value,
+        const resp = await callAPI('check-team-name-is-available', {
+          teamName: _value,
         });
 
         setCheckingName(false);
@@ -106,7 +106,7 @@ const UserNameTextField: React.FC<TextFieldProps & UserNameTextFieldProps> = (
     setCheckingName,
     setAvailable,
     onTextChange,
-    actualUserName,
+    actualTeamName,
   ]);
 
   return (
@@ -122,12 +122,12 @@ const UserNameTextField: React.FC<TextFieldProps & UserNameTextFieldProps> = (
       )}
       {available === true && (
         <Typography variant="subtitle2" css={{ color: 'var(--theme-sea)' }}>
-          Hooray, that user name is available!
+          Hooray, that team name is available!
         </Typography>
       )}
       {available === false && (
         <Typography variant="subtitle2" css={{ color: 'var(--theme-orange)' }}>
-          Sorry, that user name is not available.
+          Sorry, that team name is not available.
         </Typography>
       )}
       {errorMessage !== undefined && (
@@ -139,4 +139,4 @@ const UserNameTextField: React.FC<TextFieldProps & UserNameTextFieldProps> = (
   );
 };
 
-export default UserNameTextField;
+export default TeamNameTextField;

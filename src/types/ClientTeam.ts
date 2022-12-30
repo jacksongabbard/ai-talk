@@ -1,4 +1,3 @@
-import type User from 'src/lib/db/User';
 import type Team from 'src/lib/db/Team';
 
 export type ClientTeam = {

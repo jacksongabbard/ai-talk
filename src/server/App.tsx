@@ -5,6 +5,7 @@ import Profile from './routes/profile/Profile';
 import Auth from './routes/auth/Auth';
 import Shell from './ui/shell/Shell';
 import Team from './routes/team/Team';
+import CreateTeam from './routes/createTeam/CreateTeam';
 
 const App: React.FC = () => {
   return (
@@ -14,6 +15,7 @@ const App: React.FC = () => {
         <Route path="/home" element={<Home />} />
         <Route path="/profile" element={<Profile />} />
         <Route path="/team" element={<Team />} />
+        <Route path="/create-team" element={<CreateTeam />} />
         <Route path="/auth" element={<Auth />} />
       </Routes>
     </Shell>

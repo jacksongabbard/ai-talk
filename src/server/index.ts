@@ -13,11 +13,16 @@ import { authMiddleware } from './lib/authMiddleware';
 import { home } from './routes/home';
 import { profile } from './routes/profile';
 import { team } from './routes/team';
+import { createTeam } from './routes/createTeam';
 import { auth } from './routes/auth';
 import { logout } from './routes/logout';
 import { staticResource } from './routes/staticResource';
 import { googleOAuthRedirect } from './routes/googleOAuthRedirect';
 import { saveProfile, checkUserNameIsAvailable } from './routes/api/profile';
+import {
+  checkTeamNameIsAvailable,
+  createTeam as createTeamAPI,
+} from './routes/api/team';
 
 const config = getDotEnv();
 
@@ -40,6 +45,7 @@ console.log('Bootstrapping the server...');
   router.get('/home', authMiddleware, home);
   router.get('/profile', authMiddleware, profile);
   router.get('/team', authMiddleware, team);
+  router.get('/create-team', authMiddleware, createTeam);
   router.get('/auth', auth);
   router.get('/logout', logout);
   router.get('/google-oauth-redirect', googleOAuthRedirect);
@@ -51,6 +57,14 @@ console.log('Bootstrapping the server...');
     authMiddleware,
     checkUserNameIsAvailable,
   );
+
+  router.post(
+    '/api/check-team-name-is-available',
+    authMiddleware,
+    checkTeamNameIsAvailable,
+  );
+
+  router.post('/api/create-team', authMiddleware, createTeamAPI);
 
   // Static resources
   router.get(/.*(\.js|\.js\.map)$/, staticResource);

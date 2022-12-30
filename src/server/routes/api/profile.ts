@@ -1,17 +1,10 @@
 import type { Request, RequestHandler, Response } from 'express';
 
-import getDotEnv from 'src/lib/dotenv';
 import { hasOwnProperty } from 'src/lib/hasOwnProperty';
-import { validateDTSG } from 'src/server/lib/dtsg';
 import User from 'src/lib/db/User';
 import { Op } from 'sequelize';
-
-const config = getDotEnv();
-
-function bail400(errorMessage: string, res: Response) {
-  res.status(400);
-  res.send(JSON.stringify({ error: errorMessage }));
-}
+import { bail400 } from './util';
+import ValidNameRegex from 'src/lib/validation/ValidNameRegex';
 
 export const saveProfile: RequestHandler = async (
   req: Request,
@@ -47,7 +40,8 @@ export const saveProfile: RequestHandler = async (
         ) {
           if (
             req.body.data.userName.length < 2 &&
-            req.body.data.userName.length > 48
+            req.body.data.userName.length > 48 &&
+            req.body.data.userName.match(ValidNameRegex)
           ) {
             throw new Error('Invalid user name');
           }
@@ -114,7 +108,6 @@ export const checkUserNameIsAvailable: RequestHandler = async (
       req.body.data.userName.length >= 2 && // enforced at the DB as well
       req.body.data.userName.length <= 48 // enforced at the DB as well
     ) {
-      console.log(Op.iLike);
       const userCount = await User.count({
         where: {
           userName: { [Op.iLike]: req.body.data.userName },

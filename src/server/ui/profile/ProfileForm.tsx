@@ -11,6 +11,7 @@ import callAPI from 'src/client/lib/callAPI';
 import UserNameTextField from './UserNameTextField';
 import { hasOwnProperty } from 'src/lib/hasOwnProperty';
 import { AppContext } from 'src/server/state/AppContext';
+import ValidNameRegex from 'src/lib/validation/ValidNameRegex';
 
 const ProfileForm: React.FC = () => {
   const appContext = useContext(AppContext);
@@ -103,7 +104,7 @@ const ProfileForm: React.FC = () => {
 
   const onLocationChange = useCallback(
     (e: React.ChangeEvent<HTMLInputElement>) => {
-      setLocation(e.target.value);
+      setLocation(e.target.value.substring(0, 48));
     },
     [setLocation],
   );
@@ -202,38 +203,31 @@ const ProfileForm: React.FC = () => {
           <>
             <FormControlLabel
               control={
-                <Checkbox
-                  checked={publicProfile}
-                  onChange={onPublicChange}
-                  disabled={!editingProfile}
-                />
+                <Checkbox checked={publicProfile} onChange={onPublicChange} />
               }
               label="Public"
             />
             <br />
             <FormControlLabel
               control={
-                <Checkbox
-                  checked={!publicProfile}
-                  onChange={onPrivateChange}
-                  disabled={!editingProfile}
-                />
+                <Checkbox checked={!publicProfile} onChange={onPrivateChange} />
               }
               label="Private"
             />
-            <>
-              <Typography variant="subtitle2">
-                Selecting <em>Public</em> allows your profile to be seen by
-                people on this site. If you are a part of a team, your user name
-                will also be listed as part of the team (if that team is itself
-                public).
-              </Typography>
-              <Typography variant="subtitle2">
-                Selecting <em>Private</em> means your profile will not be seen
-                by people on this site. If you are a part of a team, your user
-                name will still be shown to members of that team.
-              </Typography>
-            </>
+            <Typography
+              variant="subtitle2"
+              css={{ marginBottom: 'var(--spacing-medium)' }}
+            >
+              Selecting <em>Public</em> allows your profile to be seen by people
+              on this site. If you are a part of a team, your user name will
+              also be listed as part of the team (if that team is itself
+              public).
+            </Typography>
+            <Typography variant="subtitle2">
+              Selecting <em>Private</em> means your profile will not be seen by
+              people on this site. If you are a part of a team, your user name
+              will still be shown to members of that team.
+            </Typography>
           </>
         )}
       </div>
@@ -245,6 +239,7 @@ const ProfileForm: React.FC = () => {
               variant="contained"
               disabled={
                 (userName === user.userName &&
+                  !userName.match(ValidNameRegex) &&
                   location === user.location &&
                   publicProfile === user.public) ||
                 errorMessage != ''

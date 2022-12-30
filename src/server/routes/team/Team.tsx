@@ -1,8 +1,6 @@
 import React, { useContext, useEffect } from 'react';
 import Button from '@mui/material/Button';
-import ButtonBase from '@mui/material/ButtonBase';
 import Typography from '@mui/material/Typography';
-import { Link } from 'react-router-dom';
 
 import { AppContext } from 'src/server/state/AppContext';
 import Page from 'src/server/ui/page/Page';
@@ -96,7 +94,11 @@ const TeamPage: React.FC = () => {
           </Button>
         </>
       )}
-      {team && <></>}
+      {team && (
+        <>
+          <pre>{JSON.stringify(team, null, 4)}</pre>
+        </>
+      )}
     </Page>
   );
 };
