@@ -2,6 +2,8 @@ import { isLikelyOffensive } from './bannedWords';
 
 (() => {
   const badWordList = [
+    'fuck',
+    'fuckfuckfuck',
     'nigger',
     'ni99er',
     'jew',
@@ -13,12 +15,9 @@ import { isLikelyOffensive } from './bannedWords';
     'pussy_wagon',
     'fuck_stick',
     'big-dick-energy',
-    /*
+    'xx_fuck_xx',
     'assASSassASS',
     'bearNegro',
-    // Wish these were already blocked, but this is as far as I got with the
-    // time I had.
-    */
   ];
   const safeWordList = ['snigger', 'jewel', 'class', 'assassin'];
 

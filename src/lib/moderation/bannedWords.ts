@@ -15,10 +15,11 @@ const subtitutionMap: { [letter: string]: string[] } = {
 
 const base = [
   'abbo',
-  'abo',
-  'arse',
+  // 'abo', -- too many false positives
   'arsehead',
-  'ass',
+  // 'ass', -- waaay too many false positives
+  'assbag',
+  'assface',
   'asshat',
   'asshole',
   'bastard',
@@ -52,7 +53,8 @@ const base = [
   'gyppo',
   'gyppy',
   'honky',
-  'jew',
+  'hitler',
+  // 'jew', -- too many false positives
   'jigaboo',
   'jiggaboo',
   'jizz',
@@ -62,6 +64,8 @@ const base = [
   'monkey',
   'nazi',
   'negro',
+  // 'nig', -- too many false positives
+  'nigg',
   'nigga',
   'nigger',
   'niglet',
@@ -96,15 +100,14 @@ const base = [
   'spastic',
   'spearchucker',
   'sperg',
-  'spic',
-  'spic',
+  // 'spic', -- too many false positives
   'spick',
   'spik',
   'spig',
   'spigotty',
   'spook',
   'tarbaby',
-  'tit',
+  // 'tit', -- too many false positives
   'titties',
   'boobs',
   'boob',
@@ -112,8 +115,9 @@ const base = [
   'uncletom',
   'vagina',
   'wanker',
-  'wap',
+  // 'wap', -- too many false positives
   'wetback',
+  'whitepower',
   'whore',
   'wigger',
   'wigga',
@@ -139,38 +143,45 @@ for (let word of base) {
   addVariants(trie, word);
 }
 
-export function isLikelyOffensive(n: string): boolean {
-  if (trie.has(n)) {
-    return true;
+export function isLikelyOffensive(word: string): boolean {
+  if (word.length <= 2) {
+    return false;
   }
 
-  if (n.includes('_') || n.includes('-')) {
-    if (trie.has(n.replace(/_-/g, ''))) {
+  const candidates = new Set<string>();
+
+  for (let i = 0; i < word.length - 2; i++) {
+    for (let k = i + 3; k <= word.length; k++) {
+      const subword = word.substring(i, k).toLowerCase();
+      if (!subword.includes('_') && !subword.includes('-')) {
+        candidates.add(subword);
+      } else {
+        candidates.add(subword.replace(/_-/g, ''));
+
+        const dashSeparatedParts = subword.split('-');
+        for (let part of dashSeparatedParts) {
+          candidates.add(part);
+        }
+
+        const underscoreSeparatedParts = subword.split('_');
+        for (let part of underscoreSeparatedParts) {
+          candidates.add(part);
+        }
+
+        const eitherSeparator = subword.split(/_-/);
+        for (let part of eitherSeparator) {
+          candidates.add(part);
+        }
+
+        // There's so much more to do here, but this is more than zero
+      }
+    }
+  }
+
+  for (let w of Array.from(candidates)) {
+    if (trie.has(w)) {
       return true;
     }
-
-    const dashSeparatedParts = n.split('-');
-    for (let part of dashSeparatedParts) {
-      if (trie.has(part)) {
-        return true;
-      }
-    }
-
-    const underscoreSeparatedParts = n.split('_');
-    for (let part of underscoreSeparatedParts) {
-      if (trie.has(part)) {
-        return true;
-      }
-    }
-
-    const eitherSeparator = n.split(/_-/);
-    for (let part of eitherSeparator) {
-      if (trie.has(part)) {
-        return true;
-      }
-    }
-
-    // There's so much more to do here, but this is more than zero
   }
 
   return false;
