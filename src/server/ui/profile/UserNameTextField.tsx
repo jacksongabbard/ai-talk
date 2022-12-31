@@ -9,12 +9,20 @@ import ValidNameRegex from 'src/lib/validation/ValidNameRegex';
 type UserNameTextFieldProps = {
   actualUserName: string;
   onTextChange: (t: string) => void;
+  onValidityChange: (v: { valid: boolean }) => void;
 };
 
 const UserNameTextField: React.FC<TextFieldProps & UserNameTextFieldProps> = (
   props,
 ) => {
-  const { onChange, onTextChange, actualUserName, value, ...rest } = props;
+  const {
+    onChange,
+    onTextChange,
+    onValidityChange,
+    actualUserName,
+    value,
+    ...rest
+  } = props;
 
   if (typeof value !== 'string') {
     throw new Error('User name value must be a string');
@@ -32,6 +40,7 @@ const UserNameTextField: React.FC<TextFieldProps & UserNameTextFieldProps> = (
   const _onChange = useCallback(
     (e: React.ChangeEvent<HTMLInputElement>) => {
       setValue(e.target.value.substring(0, 48));
+      onValidityChange({ valid: false });
     },
     [setValue],
   );
@@ -95,6 +104,7 @@ const UserNameTextField: React.FC<TextFieldProps & UserNameTextFieldProps> = (
           setAvailable(resp.available);
           if (resp.available) {
             onTextChange(_value);
+            onValidityChange({ valid: true });
           }
         }
         checkingRef.current = undefined;

@@ -35,6 +35,7 @@ const TeamForm: React.FC<TeamFormProps> = ({ onUpdate, onCancel }) => {
   const [teamLocation, setTeamLocation] = useState(team ? team.location : '');
   const [publicTeam, setPublicTeam] = useState(team ? team.public : true);
 
+  const [teamNameIsValid, setTeamNameIsValid] = useState(false);
   const [successMessage, setSuccessMessage] = useState('');
   const [errorMessage, setErrorMessage] = useState('');
 
@@ -46,13 +47,22 @@ const TeamForm: React.FC<TeamFormProps> = ({ onUpdate, onCancel }) => {
     setTeamName(team.teamName);
     setTeamLocation(team.location);
     setPublicTeam(team.public);
-  }, [team, setTeamName, setTeamLocation, setPublicTeam]);
+
+    setTeamNameIsValid(true);
+  }, [team, setTeamName, setTeamLocation, setPublicTeam, setTeamNameIsValid]);
 
   const onTeamNameChange = useCallback(
     (teamName: string) => {
       setTeamName(teamName);
     },
     [setTeamName],
+  );
+
+  const onTeamNameValidityChange = useCallback(
+    ({ valid }: { valid: boolean }) => {
+      setTeamNameIsValid(valid);
+    },
+    [setTeamNameIsValid],
   );
 
   const onLocationChange = useCallback(
@@ -190,6 +200,7 @@ const TeamForm: React.FC<TeamFormProps> = ({ onUpdate, onCancel }) => {
           actualTeamName={team ? team.teamName : ''}
           value={teamName}
           onTextChange={onTeamNameChange}
+          onValidityChange={onTeamNameValidityChange}
           label="Team Name"
           id="teamName"
           fullWidth={true}
@@ -269,7 +280,7 @@ const TeamForm: React.FC<TeamFormProps> = ({ onUpdate, onCancel }) => {
           disabled={
             !teamName ||
             !teamName.match(ValidNameRegex) ||
-            teamName !== 'THIS IS WHERE YOU LEFT OFF' ||
+            !teamNameIsValid ||
             errorMessage !== ''
           }
         >

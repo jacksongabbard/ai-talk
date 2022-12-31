@@ -31,13 +31,23 @@ const ProfileForm: React.FC<ProfileFormProps> = ({ onUpdate, onCancel }) => {
   const [userName, setUserName] = useState(user.userName);
   const [location, setLocation] = useState(user.location);
   const [publicProfile, setPublicProfile] = useState(user.public);
+
+  const [userNameIsValid, setUserNameIsValid] = useState(false);
   const [successMessage, setSuccessMessage] = useState('');
   const [errorMessage, setErrorMessage] = useState('');
 
   useEffect(() => {
     setUserName(user.userName);
     setLocation(user.location);
-  }, [user, setUserName, setLocation]);
+    setUserNameIsValid(true);
+  }, [user, setUserName, setLocation, setUserNameIsValid]);
+
+  const onValidityChange = useCallback(
+    ({ valid }: { valid: boolean }) => {
+      setUserNameIsValid(valid);
+    },
+    [setUserNameIsValid],
+  );
 
   const cancelEdit = useCallback(() => {
     setSuccessMessage('');
@@ -172,6 +182,7 @@ const ProfileForm: React.FC<ProfileFormProps> = ({ onUpdate, onCancel }) => {
           actualUserName={user.userName}
           value={userName}
           onTextChange={onUserNameChange}
+          onValidityChange={onValidityChange}
           label="User Name"
           id="userName"
           fullWidth={true}
@@ -233,9 +244,10 @@ const ProfileForm: React.FC<ProfileFormProps> = ({ onUpdate, onCancel }) => {
             variant="contained"
             disabled={
               (userName === user.userName &&
-                !userName.match(ValidNameRegex) &&
                 location === user.location &&
                 publicProfile === user.public) ||
+              !userNameIsValid ||
+              !userName.match(ValidNameRegex) ||
               errorMessage != ''
             }
           >
