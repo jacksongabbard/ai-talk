@@ -5,6 +5,7 @@ import User from 'src/lib/db/User';
 import { Op } from 'sequelize';
 import { bail400 } from './util';
 import ValidNameRegex from 'src/lib/validation/ValidNameRegex';
+import { isLikelyOffensive } from 'src/lib/moderation/bannedWords';
 
 export const saveProfile: RequestHandler = async (
   req: Request,
@@ -39,9 +40,10 @@ export const saveProfile: RequestHandler = async (
           typeof req.body.data.userName === 'string'
         ) {
           if (
-            req.body.data.userName.length < 2 &&
-            req.body.data.userName.length > 48 &&
-            req.body.data.userName.match(ValidNameRegex)
+            req.body.data.userName.length < 2 ||
+            req.body.data.userName.length > 48 ||
+            req.body.data.userName.match(ValidNameRegex) ||
+            isLikelyOffensive(req.body.data.userName)
           ) {
             throw new Error('Invalid user name');
           }
@@ -108,6 +110,12 @@ export const checkUserNameIsAvailable: RequestHandler = async (
       req.body.data.userName.length >= 2 && // enforced at the DB as well
       req.body.data.userName.length <= 48 // enforced at the DB as well
     ) {
+      if (isLikelyOffensive(req.body.data.userName)) {
+        res.status(200);
+        res.send(JSON.stringify({ available: false }));
+        return;
+      }
+
       const userCount = await User.count({
         where: {
           userName: { [Op.iLike]: req.body.data.userName },

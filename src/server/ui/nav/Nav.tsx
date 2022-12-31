@@ -2,6 +2,7 @@ import Home from '@mui/icons-material/Home';
 import ListItemIcon from '@mui/material/ListItemIcon';
 import ListItemText from '@mui/material/ListItemText';
 import MenuList from '@mui/material/MenuList';
+import Extension from '@mui/icons-material/Extension';
 import Group from '@mui/icons-material/Group';
 import Paper from '@mui/material/Paper';
 import Person from '@mui/icons-material/Person';
@@ -21,6 +22,12 @@ const Nav: React.FC = () => {
             <Home fontSize="small" />
           </ListItemIcon>
           <ListItemText>Home</ListItemText>
+        </NavMenuItem>
+        <NavMenuItem to="/puzzles">
+          <ListItemIcon>
+            <Extension fontSize="small" />
+          </ListItemIcon>
+          <ListItemText>Puzzles</ListItemText>
         </NavMenuItem>
         <NavMenuItem to="/profile">
           <ListItemIcon>

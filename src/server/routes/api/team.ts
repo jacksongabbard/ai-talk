@@ -7,6 +7,7 @@ import { hasOwnProperty } from 'src/lib/hasOwnProperty';
 import { bail400 } from './util';
 import ValidNameRegex from 'src/lib/validation/ValidNameRegex';
 import SequelizeInstance from 'src/lib/db/SequelizeInstance';
+import { isLikelyOffensive } from 'src/lib/moderation/bannedWords';
 
 export const checkTeamNameIsAvailable: RequestHandler = async (
   req: Request,
@@ -22,6 +23,12 @@ export const checkTeamNameIsAvailable: RequestHandler = async (
       req.body.data.teamName.length >= 2 && // enforced at the DB as well
       req.body.data.teamName.length <= 48 // enforced at the DB as well
     ) {
+      if (isLikelyOffensive(req.body.data.teamName)) {
+        res.status(200);
+        res.send(JSON.stringify({ available: false }));
+        return;
+      }
+
       const teamCount = await Team.count({
         where: {
           teamName: { [Op.iLike]: req.body.data.teamName },
@@ -172,9 +179,10 @@ export const updateTeam: RequestHandler = async (
         typeof req.body.data.teamName === 'string'
       ) {
         if (
-          req.body.data.teamName.length < 2 &&
-          req.body.data.teamName.length > 48 &&
-          req.body.data.teamName.match(ValidNameRegex)
+          req.body.data.teamName.length < 2 ||
+          req.body.data.teamName.length > 48 ||
+          req.body.data.teamName.match(ValidNameRegex) ||
+          isLikelyOffensive(req.body.data.teamName)
         ) {
           throw new Error('Invalid team name');
         }
