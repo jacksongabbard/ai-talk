@@ -42,7 +42,7 @@ export const saveProfile: RequestHandler = async (
           if (
             req.body.data.userName.length < 2 ||
             req.body.data.userName.length > 48 ||
-            req.body.data.userName.match(ValidNameRegex) ||
+            !req.body.data.userName.match(ValidNameRegex) ||
             isLikelyOffensive(req.body.data.userName)
           ) {
             throw new Error('Invalid user name');

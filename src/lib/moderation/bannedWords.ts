@@ -111,8 +111,6 @@ const base = [
   'tarbaby',
   // 'tit', -- too many false positives
   'titties',
-  'boobs',
-  'boob',
   'twat',
   'uncletom',
   'vagina',
