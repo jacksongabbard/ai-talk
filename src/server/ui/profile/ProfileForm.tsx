@@ -13,6 +13,7 @@ import { hasOwnProperty } from 'src/lib/hasOwnProperty';
 import { AppContext } from 'src/server/state/AppContext';
 import ValidNameRegex from 'src/lib/validation/ValidNameRegex';
 import type { ClientUser } from 'src/types/ClientUser';
+import MessageBox from '../messageBox/MessageBox';
 
 type ProfileFormProps = {
   onUpdate: (user: ClientUser) => void;
@@ -143,34 +144,10 @@ const ProfileForm: React.FC<ProfileFormProps> = ({ onUpdate, onCancel }) => {
   return (
     <>
       {successMessage !== '' && (
-        <Paper
-          css={{
-            background: 'var(--theme-sea)',
-            padding: 'var(--spacing-medium)',
-            paddingLeft: 'var(--spacing-large)',
-            paddingRight: 'var(--spacing-large)',
-            marginTop: 'var(--spacing-medium)',
-            marginBottom: 'var(--spacing-massive)',
-            color: '#fff',
-          }}
-        >
-          {successMessage}
-        </Paper>
+        <MessageBox type="success">{successMessage}</MessageBox>
       )}
       {errorMessage !== '' && (
-        <Paper
-          css={{
-            background: 'var(--theme-orange)',
-            padding: 'var(--spacing-medium)',
-            paddingLeft: 'var(--spacing-large)',
-            paddingRight: 'var(--spacing-large)',
-            marginTop: 'var(--spacing-medium)',
-            marginBottom: 'var(--spacing-massive)',
-            color: '#fff',
-          }}
-        >
-          {errorMessage}
-        </Paper>
+        <MessageBox type="error">{errorMessage}</MessageBox>
       )}
       <div
         css={{

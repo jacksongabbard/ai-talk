@@ -13,7 +13,7 @@ export const saveProfile: RequestHandler = async (
 ) => {
   try {
     if (
-      req.query &&
+      req.body &&
       hasOwnProperty(req.body, 'data') &&
       typeof req.body.data === 'object'
     ) {

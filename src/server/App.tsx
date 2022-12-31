@@ -7,6 +7,7 @@ import Shell from './ui/shell/Shell';
 import Team from './routes/team/Team';
 import CreateTeam from './routes/createTeam/CreateTeam';
 import Puzzles from './routes/puzzles/Puzzles';
+import Puzzle from './routes/puzzle/Puzzle';
 
 const App: React.FC = () => {
   return (
@@ -19,6 +20,7 @@ const App: React.FC = () => {
         <Route path="/create-team" element={<CreateTeam />} />
         <Route path="/auth" element={<Auth />} />
         <Route path="/puzzles" element={<Puzzles />} />
+        <Route path="/puzzle/:slug" element={<Puzzle />} />
       </Routes>
     </Shell>
   );

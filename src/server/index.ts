@@ -15,6 +15,8 @@ import { profile } from './routes/profile';
 import { team } from './routes/team';
 import { createTeam } from './routes/createTeam';
 import { puzzles } from './routes/puzzles';
+import { listPuzzles } from './routes/api/puzzles';
+import { puzzle } from './routes/puzzle';
 import { auth } from './routes/auth';
 import { logout } from './routes/logout';
 import { staticResource } from './routes/staticResource';
@@ -25,7 +27,6 @@ import {
   createTeam as createTeamAPI,
   updateTeam as updateTeamAPI,
 } from './routes/api/team';
-import { listPuzzles } from './routes/api/puzzles';
 
 const config = getDotEnv();
 
@@ -48,6 +49,7 @@ console.log('Bootstrapping the server...');
   router.get('/home', authMiddleware, home);
   router.get('/profile', authMiddleware, profile);
   router.get('/puzzles', authMiddleware, puzzles);
+  router.get('/puzzle/:slug', authMiddleware, puzzle);
   router.get('/team', authMiddleware, team);
   router.get('/create-team', authMiddleware, createTeam);
   router.get('/auth', auth);

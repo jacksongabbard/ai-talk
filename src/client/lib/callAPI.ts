@@ -1,4 +1,4 @@
-async function callAPI(endpoint: string, data: object): Promise<object> {
+async function callAPI(endpoint: string, data?: object): Promise<object> {
   const response = await fetch('/api/' + endpoint, {
     method: 'POST',
     mode: 'same-origin',
@@ -9,7 +9,7 @@ async function callAPI(endpoint: string, data: object): Promise<object> {
     },
     redirect: 'error',
     referrerPolicy: 'same-origin',
-    body: JSON.stringify({ data }),
+    body: data ? JSON.stringify({ data }) : null,
   });
 
   const ret = await response.json();

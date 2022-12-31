@@ -14,6 +14,7 @@ import callAPI from 'src/client/lib/callAPI';
 import { hasOwnProperty } from 'src/lib/hasOwnProperty';
 import ValidNameRegex from 'src/lib/validation/ValidNameRegex';
 import type { ClientTeam } from 'src/types/ClientTeam';
+import MessageBox from '../messageBox/MessageBox';
 
 type TeamFormProps = {
   onUpdate: (team: ClientTeam) => void;
@@ -161,34 +162,10 @@ const TeamForm: React.FC<TeamFormProps> = ({ onUpdate, onCancel }) => {
   return (
     <>
       {successMessage !== '' && (
-        <Paper
-          css={{
-            background: 'var(--theme-sea)',
-            padding: 'var(--spacing-medium)',
-            paddingLeft: 'var(--spacing-large)',
-            paddingRight: 'var(--spacing-large)',
-            marginTop: 'var(--spacing-medium)',
-            marginBottom: 'var(--spacing-massive)',
-            color: '#fff',
-          }}
-        >
-          {successMessage}
-        </Paper>
+        <MessageBox type="success">{successMessage}</MessageBox>
       )}
       {errorMessage !== '' && (
-        <Paper
-          css={{
-            background: 'var(--theme-orange)',
-            padding: 'var(--spacing-medium)',
-            paddingLeft: 'var(--spacing-large)',
-            paddingRight: 'var(--spacing-large)',
-            marginTop: 'var(--spacing-medium)',
-            marginBottom: 'var(--spacing-massive)',
-            color: '#fff',
-          }}
-        >
-          {errorMessage}
-        </Paper>
+        <MessageBox type="error">{errorMessage}</MessageBox>
       )}
       <div
         css={{
