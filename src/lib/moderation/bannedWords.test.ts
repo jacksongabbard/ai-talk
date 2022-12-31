@@ -18,8 +18,10 @@ import { isLikelyOffensive } from './bannedWords';
     'xx_fuck_xx',
     'assASSassASS',
     'bearNegro',
+    'c_ock_and_b_alls',
   ];
-  const safeWordList = ['snigger', 'jewel', 'class', 'assassin'];
+
+  const safeWordList = ['jewel', 'class', 'assassin'];
 
   for (let word of badWordList) {
     test(word + ' is offensive', () => {

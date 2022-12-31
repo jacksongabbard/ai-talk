@@ -52,6 +52,7 @@ const base = [
   'gyppie',
   'gyppo',
   'gyppy',
+  'hooker',
   'honky',
   'hitler',
   // 'jew', -- too many false positives
@@ -95,6 +96,7 @@ const base = [
   'shite',
   'shylock',
   'skank',
+  'slapper',
   'slut',
   'spade',
   'spastic',
@@ -156,7 +158,7 @@ export function isLikelyOffensive(word: string): boolean {
       if (!subword.includes('_') && !subword.includes('-')) {
         candidates.add(subword);
       } else {
-        candidates.add(subword.replace(/_-/g, ''));
+        candidates.add(subword.replace(/[_-]/g, ''));
 
         const dashSeparatedParts = subword.split('-');
         for (let part of dashSeparatedParts) {
@@ -168,7 +170,7 @@ export function isLikelyOffensive(word: string): boolean {
           candidates.add(part);
         }
 
-        const eitherSeparator = subword.split(/_-/);
+        const eitherSeparator = subword.split(/[_-]/g);
         for (let part of eitherSeparator) {
           candidates.add(part);
         }
@@ -177,6 +179,8 @@ export function isLikelyOffensive(word: string): boolean {
       }
     }
   }
+
+  console.log(Array.from(candidates));
 
   for (let w of Array.from(candidates)) {
     if (trie.has(w)) {
