@@ -1,4 +1,5 @@
-import React, { useContext, useEffect } from 'react';
+import React, { useCallback, useContext, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import Typography from '@mui/material/Typography';
 
 import { AppContext } from 'src/server/state/AppContext';
@@ -15,6 +16,11 @@ const CreateTeam: React.FC = () => {
     appContext?.setShowNavigation(true);
   }, [appContext?.setShowNavigation]);
 
+  const navigate = useNavigate();
+  const goBack = useCallback(() => {
+    navigate('/team', { replace: true });
+  }, [navigate]);
+
   const LeaveLink = useRouterLink('/leave-team');
   return (
     <Page title="Create a team">
@@ -30,7 +36,7 @@ const CreateTeam: React.FC = () => {
         </>
       )}
 
-      {!team && <TeamForm />}
+      {!team && <TeamForm onUpdate={goBack} onCancel={goBack} />}
     </Page>
   );
 };

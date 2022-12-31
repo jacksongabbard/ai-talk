@@ -50,6 +50,12 @@ const Profile: React.FC = () => {
               <Typography variant="body1">{user.location}</Typography>
             </div>
           )}
+          {team && (
+            <div css={{ marginBottom: 'var(--spacing-large)' }}>
+              <Typography variant="overline">Team</Typography>
+              <Typography variant="body1">{team.teamName}</Typography>
+            </div>
+          )}
           <div css={{ marginBottom: 'var(--spacing-large)' }}>
             <Typography variant="overline">Visibility</Typography>
             <Typography variant="body1">

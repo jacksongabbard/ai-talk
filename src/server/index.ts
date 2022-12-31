@@ -22,6 +22,7 @@ import { saveProfile, checkUserNameIsAvailable } from './routes/api/profile';
 import {
   checkTeamNameIsAvailable,
   createTeam as createTeamAPI,
+  updateTeam as updateTeamAPI,
 } from './routes/api/team';
 
 const config = getDotEnv();
@@ -65,6 +66,7 @@ console.log('Bootstrapping the server...');
   );
 
   router.post('/api/create-team', authMiddleware, createTeamAPI);
+  router.post('/api/update-team', authMiddleware, updateTeamAPI);
 
   // Static resources
   router.get(/.*(\.js|\.js\.map)$/, staticResource);

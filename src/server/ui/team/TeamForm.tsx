@@ -1,5 +1,4 @@
 import { useCallback, useContext, useEffect, useState } from 'react';
-import { redirect, useNavigate } from 'react-router-dom';
 
 import { AppContext } from 'src/server/state/AppContext';
 import TeamNameTextField from './TeamNameTextField';
@@ -14,8 +13,14 @@ import {
 import callAPI from 'src/client/lib/callAPI';
 import { hasOwnProperty } from 'src/lib/hasOwnProperty';
 import ValidNameRegex from 'src/lib/validation/ValidNameRegex';
+import type { ClientTeam } from 'src/types/ClientTeam';
 
-const TeamForm = () => {
+type TeamFormProps = {
+  onUpdate: (team: ClientTeam) => void;
+  onCancel: () => void;
+};
+
+const TeamForm: React.FC<TeamFormProps> = ({ onUpdate, onCancel }) => {
   const appContext = useContext(AppContext);
   const team = appContext?.team;
   const setTeam = appContext?.setTeam;
@@ -71,12 +76,11 @@ const TeamForm = () => {
     [setPublicTeam],
   );
 
-  const navigate = useNavigate();
   const save = useCallback(async () => {
     setSuccessMessage('');
     setErrorMessage('');
 
-    const resp = await callAPI('create-team', {
+    const resp = await callAPI(team ? 'update-team' : 'create-team', {
       teamId: team ? team.id : undefined,
       teamName,
       location: teamLocation,
@@ -125,10 +129,10 @@ const TeamForm = () => {
       }
 
       setTeam(t);
-      setUser({ ...user, teamId: t.id });
-      if (!team) {
-        navigate('/team', { replace: true });
+      if (user.teamId !== t.id) {
+        setUser({ ...user, teamId: t.id });
       }
+      onUpdate(t);
     }
 
     if (hasOwnProperty(resp, 'error') && typeof resp.error === 'string') {
@@ -258,16 +262,24 @@ const TeamForm = () => {
           on this site. Private teams cannot win puzzle competitions.
         </Typography>
       </div>
-      <div>
+      <div css={{ display: 'flex', justifyContent: 'end' }}>
         <Button
           onClick={save}
           variant="contained"
           disabled={
-            (!teamName && !teamName.match(ValidNameRegex)) ||
+            !teamName ||
+            !teamName.match(ValidNameRegex) ||
+            teamName !== 'THIS IS WHERE YOU LEFT OFF' ||
             errorMessage !== ''
           }
         >
           Save
+        </Button>
+        <Button
+          onClick={onCancel}
+          css={{ marginLeft: 'var(--spacing-medium)' }}
+        >
+          Cancel
         </Button>
       </div>
     </>

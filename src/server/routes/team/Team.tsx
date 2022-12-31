@@ -6,6 +6,7 @@ import { AppContext } from 'src/server/state/AppContext';
 import Page from 'src/server/ui/page/Page';
 import { Divider } from '@mui/material';
 import NoTeam from './NoTeam';
+import TeamForm from 'src/server/ui/team/TeamForm';
 
 // For some godforsaken reason, if I call this component 'Team', I get
 // hydration errors. Specifically, the error:
@@ -31,12 +32,18 @@ const TeamPage: React.FC = () => {
   }, [appContext?.setShowNavigation]);
 
   const [editing, setEditing] = useState(false);
-  const startEditingTeam = useCallback(() => {}, []);
+  const startEditingTeam = useCallback(() => {
+    setEditing(true);
+  }, [setEditing]);
+
+  const stopEditingTeam = useCallback(() => {
+    setEditing(false);
+  }, [setEditing]);
 
   return (
     <Page title="Team">
       {!team && <NoTeam />}
-      {team && (
+      {team && !editing && (
         <>
           <div css={{ marginBottom: 'var(--spacing-large)' }}>
             <Typography variant="overline">Team</Typography>
@@ -65,6 +72,9 @@ const TeamPage: React.FC = () => {
             </>
           )}
         </>
+      )}
+      {team && editing && (
+        <TeamForm onUpdate={stopEditingTeam} onCancel={stopEditingTeam} />
       )}
     </Page>
   );

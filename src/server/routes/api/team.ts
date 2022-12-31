@@ -1,5 +1,5 @@
 import type { Request, RequestHandler, Response } from 'express';
-import { Op, Transaction } from 'sequelize';
+import { Op } from 'sequelize';
 
 import Team from 'src/lib/db/Team';
 import User from 'src/lib/db/User';
@@ -121,6 +121,97 @@ export const createTeam: RequestHandler = async (
           teamName,
           location,
           public: team.public,
+        }),
+      );
+      return;
+    } else {
+      bail400('Bad request', res);
+      return;
+    }
+  } catch (e) {
+    console.log('Failed to save profile: ', e);
+    bail400('Unexpected error: ' + (e as Error).message, res);
+    return;
+  }
+};
+
+export const updateTeam: RequestHandler = async (
+  req: Request,
+  res: Response,
+) => {
+  try {
+    if (!req.context?.user) {
+      throw new Error('No user');
+    }
+
+    if (
+      req.query &&
+      hasOwnProperty(req.body, 'data') &&
+      typeof req.body.data === 'object'
+    ) {
+      if (!req.context?.team) {
+        throw new Error('User has no team');
+      }
+
+      const { team } = req.context;
+
+      // Strictly speaking, this check is redundant, but I do imagine a world
+      // with admin users one day so having some sort of explicity permissions
+      // check seems wise.
+      if (req.context.user.teamId !== team.id) {
+        throw new Error('Permission denied');
+      }
+
+      const fields = {
+        teamName: team.teamName,
+        location: team.location,
+        public: team.public,
+      };
+      if (
+        hasOwnProperty(req.body.data, 'teamName') &&
+        typeof req.body.data.teamName === 'string'
+      ) {
+        if (
+          req.body.data.teamName.length < 2 &&
+          req.body.data.teamName.length > 48 &&
+          req.body.data.teamName.match(ValidNameRegex)
+        ) {
+          throw new Error('Invalid team name');
+        }
+        fields.teamName = req.body.data.teamName;
+      }
+
+      if (
+        hasOwnProperty(req.body.data, 'location') &&
+        typeof req.body.data.location === 'string'
+      ) {
+        if (req.body.data.location.length > 48) {
+          throw new Error('Invalid location');
+        }
+        fields.location = req.body.data.location.trim();
+      }
+
+      if (
+        hasOwnProperty(req.body.data, 'public') &&
+        typeof req.body.data.public === 'boolean'
+      ) {
+        fields.public = req.body.data.public;
+      }
+
+      await Team.update(fields, {
+        where: {
+          id: team.id,
+        },
+      });
+
+      const { id, teamName, location } = team;
+      res.status(200);
+      res.send(
+        JSON.stringify({
+          success: true,
+          id,
+          createdAt: team.createdAt.toISOString(),
+          ...fields,
         }),
       );
       return;
