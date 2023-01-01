@@ -15,7 +15,11 @@ import { profile } from './routes/profile';
 import { team } from './routes/team';
 import { createTeam } from './routes/createTeam';
 import { puzzles } from './routes/puzzles';
-import { listPuzzles } from './routes/api/puzzles';
+import {
+  generatePuzzleInstance,
+  getPuzzleInfo,
+  listPuzzles,
+} from './routes/api/puzzles';
 import { puzzle } from './routes/puzzle';
 import { auth } from './routes/auth';
 import { logout } from './routes/logout';
@@ -73,6 +77,12 @@ console.log('Bootstrapping the server...');
   router.post('/api/create-team', authMiddleware, createTeamAPI);
   router.post('/api/update-team', authMiddleware, updateTeamAPI);
   router.post('/api/list-puzzles', authMiddleware, listPuzzles);
+  router.post('/api/puzzle-info', authMiddleware, getPuzzleInfo);
+  router.post(
+    '/api/generate-puzzle-instance',
+    authMiddleware,
+    generatePuzzleInstance,
+  );
 
   // Static resources
   router.get(/.*(\.js|\.js\.map)$/, staticResource);

@@ -4,7 +4,7 @@ import PuzzleInstance from './PuzzleInstance';
 import User from './User';
 
 @Table({
-  timestamps: true,
+  timestamps: false,
   tableName: 'puzzle_instances_users',
 })
 class PuzzleInstanceUser extends Model {
@@ -15,6 +15,7 @@ class PuzzleInstanceUser extends Model {
       model: PuzzleInstance,
       key: 'id',
     },
+    primaryKey: true,
   })
   puzzleInstanceId!: string;
 
@@ -26,6 +27,7 @@ class PuzzleInstanceUser extends Model {
       model: User,
       key: 'id',
     },
+    primaryKey: true,
   })
   userId!: string;
 }

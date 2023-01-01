@@ -56,13 +56,13 @@ class PuzzleInstance extends Model {
     type: DataType.DATE,
     field: 'started_at',
   })
-  startedAt!: string;
+  startedAt!: Date;
 
   @Column({
     type: DataType.DATE,
     field: 'solved_at',
   })
-  solvedAt!: string;
+  solvedAt!: Date | null;
 
   @Column({
     type: DataType.JSONB,
