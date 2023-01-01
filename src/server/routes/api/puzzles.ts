@@ -58,7 +58,6 @@ export const getPuzzleInfo: RequestHandler = async (
         const pmap = puzzleMapFromList(PuzzleList);
         if (pmap[slug]) {
           let instance: ClientPuzzleInstance | null = null;
-          console.log('before PuzzleInstance');
           const pi = await PuzzleInstance.findOne({
             where: {
               teamId: req.context.team.id,
@@ -66,14 +65,12 @@ export const getPuzzleInfo: RequestHandler = async (
           });
 
           if (pi) {
-            console.log('before PuzzleInstanceUser');
             const instanceMembers = await PuzzleInstanceUser.findAll({
               where: {
                 puzzleInstanceId: pi.id,
               },
             });
 
-            console.log('before User');
             const teamMembers = await User.findAll({
               where: {
                 teamId: req.context.team.id,
@@ -92,6 +89,7 @@ export const getPuzzleInfo: RequestHandler = async (
               instanceMembers.length === 0 || teamMembers.length === 0;
             const membersListsAreDifferentInLength =
               instanceMembers.length !== teamMembers.length;
+            console.log({ everyoneIsDead, membersListsAreDifferentInLength });
             if (everyoneIsDead || membersListsAreDifferentInLength) {
               deleteTheInstance = true;
             } else {
@@ -99,6 +97,7 @@ export const getPuzzleInfo: RequestHandler = async (
                 .map((im) => im.id)
                 .sort();
               const teamUserIds = teamMembers.map((tm) => tm.id).sort();
+              console.log({ puzzleInstanceUserIds, teamUserIds });
               for (let i = 0; i < teamUserIds.length; i++) {
                 if (puzzleInstanceUserIds[i] !== teamUserIds[i]) {
                   deleteTheInstance = true;
@@ -107,7 +106,6 @@ export const getPuzzleInfo: RequestHandler = async (
             }
 
             if (deleteTheInstance) {
-              console.log('before destroy');
               await PuzzleInstance.destroy({
                 where: {
                   id: pi.id,
@@ -221,15 +219,14 @@ export const generatePuzzleInstance: RequestHandler = async (
             });
             const instance = await newPI.save({ transaction });
 
-            const instanceMemberPromises = [];
+            const instanceMemberPromises: Promise<PuzzleInstanceUser>[] = [];
             for (let member of teamMembers) {
-              instanceMemberPromises.push(async () => {
-                const piu = PuzzleInstanceUser.build({
-                  puzzleInstanceId: instance.id,
-                  userId: member.id,
-                });
-                return piu.save({ transaction });
+              const piu = PuzzleInstanceUser.build({
+                puzzleInstanceId: instance.id,
+                userId: member.id,
               });
+              console.log(piu);
+              instanceMemberPromises.push(piu.save({ transaction }));
             }
             await Promise.all(instanceMemberPromises);
             await transaction.commit();
