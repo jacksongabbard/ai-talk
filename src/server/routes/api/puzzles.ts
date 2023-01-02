@@ -3,7 +3,7 @@ import type { Request, RequestHandler, Response } from 'express';
 import { PuzzleList } from 'src/server/puzzles';
 import { bail400, error200 } from './util';
 import { hasOwnProperty } from 'src/lib/hasOwnProperty';
-import type { Puzzle } from 'src/types/Puzzle';
+import { ClientPuzzle, Puzzle, puzzleToClientPuzzle } from 'src/types/Puzzle';
 import PuzzleInstance from 'src/lib/db/PuzzleInstance';
 import {
   ClientPuzzleInstance,
@@ -26,9 +26,13 @@ export const listPuzzles: RequestHandler = async (
   res: Response,
 ) => {
   try {
-    const slugToName = puzzleMapFromList(PuzzleList);
+    const slugToPuzzle = puzzleMapFromList(PuzzleList);
+    const slugToClientPuzzle: { [slug: string]: ClientPuzzle } = {};
+    for (let key in slugToPuzzle) {
+      slugToClientPuzzle[key] = puzzleToClientPuzzle(slugToPuzzle[key]);
+    }
     res.status(200);
-    res.send(JSON.stringify({ success: true, puzzles: slugToName }));
+    res.send(JSON.stringify({ success: true, puzzles: slugToClientPuzzle }));
   } catch (e) {
     console.log('Failed to fetch puzzle list: ', e);
     bail400('Unexpected error: ' + (e as Error).message, res);

@@ -7,9 +7,10 @@ import Page from 'src/server/ui/page/Page';
 import { hasOwnProperty } from 'src/lib/hasOwnProperty';
 import MessageBox from 'src/server/ui/messageBox/MessageBox';
 import { Typography } from '@mui/material';
+import { ClientPuzzle, assertIsClientPuzzle } from 'src/types/Puzzle';
 
 type PuzzleMap = {
-  [slug: string]: string;
+  [slug: string]: ClientPuzzle;
 };
 
 const Puzzles: React.FC = () => {
@@ -38,10 +39,7 @@ const Puzzles: React.FC = () => {
         const pmap: PuzzleMap = {};
         for (let slug in resp.puzzles) {
           if (hasOwnProperty(resp.puzzles, slug)) {
-            const v = resp.puzzles[slug];
-            if (typeof v !== 'string') {
-              throw new Error('Bad puzzle list data from server');
-            }
+            const v = assertIsClientPuzzle(resp.puzzles[slug]);
             pmap[slug] = v;
           }
         }
@@ -65,10 +63,21 @@ const Puzzles: React.FC = () => {
       {puzzleMap && (
         <ul>
           {Object.keys(puzzleMap).map((slug) => {
-            const puzzleName = puzzleMap[slug];
+            const p = puzzleMap[slug];
             return (
               <li key={slug}>
-                <Link to={'/puzzle/' + slug}>{puzzleName}</Link>
+                <Link to={'/puzzle/' + slug}>
+                  <Typography variant="h6">{p.name}</Typography>
+                </Link>
+                <Typography variant="body2">
+                  {p.minPlayers === 1 && p.maxPlayers === 1 && 'Single Player'}
+                  {p.maxPlayers !== 1 &&
+                    p.minPlayers === p.maxPlayers &&
+                    p.minPlayers + ' players'}
+                  {p.maxPlayers !== 1 &&
+                    p.minPlayers !== p.maxPlayers &&
+                    p.minPlayers + '-' + p.maxPlayers + ' players'}
+                </Typography>
               </li>
             );
           })}

@@ -11,6 +11,7 @@ import {
   ClientPuzzleInstance,
   assertIsSerializedPuzzleInstance,
 } from 'src/types/ClientPuzzleInstance';
+import PuzzleShell from 'src/server/ui/puzzle/PuzzleShell';
 
 const Puzzle: React.FC = () => {
   const params = useParams();
@@ -141,7 +142,7 @@ const Puzzle: React.FC = () => {
           )}
         </div>
       )}
-      {!loading && instance && <pre>{JSON.stringify(instance, null, 4)}</pre>}
+      {!loading && instance && <PuzzleShell instance={instance} />}
     </Page>
   );
 };
