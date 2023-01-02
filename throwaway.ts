@@ -1,12 +1,11 @@
-import Words from './src/lib/dict/Words';
-import { isLikelyOffensive } from './src/lib/moderation/bannedWords';
+import CookieParser from 'cookie-parser';
 
-/*
-for (let word of Words) {
-  if (isLikelyOffensive(word)) {
-    console.log(word);
-  }
-}
-*/
+import getDotEnv from './src/lib/dotenv';
 
-console.log({ offensive: isLikelyOffensive('c_ockfighter') });
+const config = getDotEnv();
+
+console.log(
+CookieParser.signedCookie(
+  "s%3AtMNnD7CR6xGl.Qfde24SjkQ7gZ9OTOOGo5UPxGT4caqY2USR3GkG2WCY",
+  config.COOKIE_PARSER_SECRET,
+));

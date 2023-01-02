@@ -31,6 +31,7 @@ import {
   createTeam as createTeamAPI,
   updateTeam as updateTeamAPI,
 } from './routes/api/team';
+import { initWebSockets } from './websockets/initWebSockets';
 
 const config = getDotEnv();
 
@@ -87,7 +88,7 @@ console.log('Bootstrapping the server...');
   // Static resources
   router.get(/.*(\.js|\.js\.map)$/, staticResource);
 
-  let server;
+  let server: https.Server;
   const privateKey = fs.readFileSync(
     path.resolve('./.' + config.SERVER_HOST + '/', config.SERVER_HOST + '.key'),
   );
@@ -102,7 +103,7 @@ console.log('Bootstrapping the server...');
     app,
   );
 
-  // initWebSockets(server);
+  initWebSockets(server);
 
   server.listen(parseInt(config.SERVER_PORT, 10), '0.0.0.0');
 })();

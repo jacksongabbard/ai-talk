@@ -52,7 +52,12 @@ export function useWebSocket(
               throw new Error('Invalid WebSocket message');
             }
           } catch (e) {
-            console.error('Ah, yeah, no... we fucked it. ' + e.message);
+            let message = 'Unexpected error';
+            if (e && typeof e === 'object' && hasOwnProperty(e, 'message')) {
+              message += ': ' + e.message;
+            }
+            console.error('Ah, yeah, no... we fucked it. ' + message);
+            onError(message);
           }
         }
       };
@@ -60,16 +65,14 @@ export function useWebSocket(
       s.onopen = () => {
         onConnected();
         sendJSON(s, {
-          type: 'roflcopter',
-          payload: window.location.pathname.replace('/puzzle/', ''),
+          type: 'hello',
         });
       };
-      const reset = () => {
-        setTimeout(() => {
-          setSocket(undefined);
-        }, 1000);
+
+      s.onclose = () => {
+        onClose();
+        setSocket(undefined);
       };
-      s.onclose = onClose;
     }
   }, [socket, setSocket, onMessage]);
 

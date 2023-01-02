@@ -1,7 +1,9 @@
-import cookie from 'cookie';
 import type https from 'https';
+import WebSocket, { WebSocketServer } from 'ws';
+import cookie from 'cookie';
+import CookieParser from 'cookie-parser';
+
 import { hasOwnProperty } from 'src/lib/hasOwnProperty';
-import WebSocket from 'ws';
 import { authFromDatr } from '../lib/authMiddleware';
 import { addWebSocketToMaps, getDetailsForSocket } from './SocketMaps';
 import {
@@ -9,13 +11,16 @@ import {
   SET_PUZZLE,
   assertSocketMessageType,
 } from 'src/types/SocketMessage';
+import getDotEnv from 'src/lib/dotenv';
+
+const config = getDotEnv();
 
 const sendJSON = (ws: WebSocket, thing: any) => {
   ws.send(JSON.stringify(thing, null, 4));
 };
 
 export function initWebSockets(server: https.Server) {
-  const wss = new WebSocket.Server({ noServer: true });
+  const wss = new WebSocketServer({ noServer: true });
 
   wss.on('connection', (ws) => {
     const { user } = getDetailsForSocket(ws);
@@ -109,14 +114,32 @@ export function initWebSockets(server: https.Server) {
       if (!request.headers.cookie) {
         throw new Error('No authentication information provided');
       }
+
       const cookies = cookie.parse(request.headers.cookie);
-      const { datr } = cookies;
-      const { user, team } = await authFromDatr(datr);
-      wss.handleUpgrade(request, socket, head, function done(ws) {
-        addWebSocketToMaps(ws, user, team);
-        wss.emit('connection', ws);
-      });
+      const signedCookies = CookieParser.signedCookies(
+        cookies,
+        config.COOKIE_PARSER_SECRET,
+      );
+
+      console.log(124);
+      if (
+        signedCookies &&
+        typeof signedCookies === 'object' &&
+        signedCookies.datr &&
+        typeof signedCookies.datr === 'string'
+      ) {
+        console.log(131);
+        const { datr } = signedCookies;
+        const { user, team } = await authFromDatr(datr);
+        wss.handleUpgrade(request, socket, head, function done(ws) {
+          addWebSocketToMaps(ws, user, team || undefined);
+          wss.emit('connection', ws);
+        });
+      } else {
+        throw new Error('Bad socket auth');
+      }
     } catch (e) {
+      console.log(e);
       socket.write('HTTP/1.1 401 Who the bloody hell are you?\r\n\r\n');
       socket.destroy();
     }

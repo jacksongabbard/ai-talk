@@ -69,7 +69,6 @@ export const getPuzzleInfo: RequestHandler = async (
           });
 
           if (pi) {
-            console.log({ pi });
             const instanceMembers = await PuzzleInstanceUser.findAll({
               where: {
                 puzzleInstanceId: pi.id,
@@ -229,7 +228,6 @@ export const generatePuzzleInstance: RequestHandler = async (
                 puzzleInstanceId: instance.id,
                 userId: member.id,
               });
-              console.log(piu);
               instanceMemberPromises.push(piu.save({ transaction }));
             }
             await Promise.all(instanceMemberPromises);
