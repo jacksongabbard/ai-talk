@@ -65,6 +65,7 @@ export const getPuzzleInfo: RequestHandler = async (
           });
 
           if (pi) {
+            console.log({ pi });
             const instanceMembers = await PuzzleInstanceUser.findAll({
               where: {
                 puzzleInstanceId: pi.id,
@@ -89,15 +90,14 @@ export const getPuzzleInfo: RequestHandler = async (
               instanceMembers.length === 0 || teamMembers.length === 0;
             const membersListsAreDifferentInLength =
               instanceMembers.length !== teamMembers.length;
-            console.log({ everyoneIsDead, membersListsAreDifferentInLength });
             if (everyoneIsDead || membersListsAreDifferentInLength) {
               deleteTheInstance = true;
             } else {
               const puzzleInstanceUserIds = instanceMembers
-                .map((im) => im.id)
+                .map((im) => im.userId)
                 .sort();
+
               const teamUserIds = teamMembers.map((tm) => tm.id).sort();
-              console.log({ puzzleInstanceUserIds, teamUserIds });
               for (let i = 0; i < teamUserIds.length; i++) {
                 if (puzzleInstanceUserIds[i] !== teamUserIds[i]) {
                   deleteTheInstance = true;
