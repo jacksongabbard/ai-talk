@@ -5,5 +5,19 @@ type PushTheButtonProps = {
 };
 
 const PushTheButton: React.FC<PushTheButtonProps> = ({ instance }) => {
-  return <button>Oooh... push it.</button>;
+  return (
+    <div
+      css={{
+        width: '100%',
+        height: '100%',
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+      }}
+    >
+      <button>Oooh... push it.</button>
+    </div>
+  );
 };
+
+export default PushTheButton;

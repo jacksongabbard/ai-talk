@@ -1,7 +1,7 @@
 import { Paper } from '@mui/material';
 
 type MessageBoxProps = {
-  type: 'success' | 'error';
+  type: 'success' | 'error' | 'info';
   children: React.ReactNode;
 };
 
@@ -15,6 +15,8 @@ const MessageBox: React.FC<MessageBoxProps> = ({ type, children }) => {
   } else if (type === 'error') {
     background = 'var(--theme-orange)';
     color = '#fff';
+  } else if (type === 'info') {
+    (background = 'var(--theme-green)'), (color = '#fff');
   }
 
   return (

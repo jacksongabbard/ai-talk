@@ -1,12 +1,24 @@
-import { useCallback, useState } from 'react';
+import { useCallback, useContext, useEffect, useState } from 'react';
 import { useWebSocket } from 'src/client/hooks/useWebSocket';
 import type { ClientPuzzleInstance } from 'src/types/ClientPuzzleInstance';
+import PushTheButton from './pushTheButton/PushTheButton';
+import MessageBox from '../messageBox/MessageBox';
+import { AppContext } from 'src/server/state/AppContext';
 
 type PuzzleShellProps = {
   instance: ClientPuzzleInstance;
 };
 
 const PuzzleShell: React.FC<PuzzleShellProps> = ({ instance }) => {
+  const appContext = useContext(AppContext);
+
+  useEffect(() => {
+    appContext?.setShowHeader(false);
+    return () => {
+      appContext?.setShowHeader(true);
+    };
+  }, [appContext?.setShowHeader]);
+
   const [connected, setConnected] = useState(false);
   const onConnected = useCallback(() => {
     setConnected(true);
@@ -38,9 +50,20 @@ const PuzzleShell: React.FC<PuzzleShellProps> = ({ instance }) => {
   );
 
   return (
-    <div>
-      <p>Puzzle Shell</p>
-      <pre>{JSON.stringify({ connected }, null, 4)}</pre>
+    <div
+      css={{
+        background: '#000',
+        height: '100vh',
+        width: '100vw',
+        position: 'absolute',
+        top: 0,
+        left: 0,
+      }}
+    >
+      {!connected && <MessageBox type="info">Connecting...</MessageBox>}
+      {instance.puzzleId === 'push_the_button' && (
+        <PushTheButton instance={instance} />
+      )}
     </div>
   );
 };
