@@ -71,3 +71,18 @@ export function getSocketsForPuzzleInstance(
 ): WeakSet<WebSocket> {
   return puzzleInstanceIdToSockets[puzzleInstanceId];
 }
+
+export function removeWebSocketFromMaps(ws: WebSocket) {
+  socketToUser.delete(ws);
+  socketToTeam.delete(ws);
+  const pi = socketToPuzzleInstance.get(ws);
+  if (pi) {
+    socketToPuzzleInstance.delete(ws);
+    if (
+      puzzleInstanceIdToSockets[pi.id] &&
+      puzzleInstanceIdToSockets[pi.id].has(ws)
+    ) {
+      puzzleInstanceIdToSockets[pi.id].delete(ws);
+    }
+  }
+}

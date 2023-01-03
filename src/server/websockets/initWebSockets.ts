@@ -5,7 +5,11 @@ import CookieParser from 'cookie-parser';
 
 import { hasOwnProperty } from 'src/lib/hasOwnProperty';
 import { authFromDatr } from '../lib/authMiddleware';
-import { addWebSocketToMaps, getDetailsForSocket } from './SocketMaps';
+import {
+  addWebSocketToMaps,
+  getDetailsForSocket,
+  removeWebSocketFromMaps,
+} from './SocketMaps';
 import {
   INSTANCE_ACTION,
   SET_PUZZLE,
@@ -19,12 +23,13 @@ const sendJSON = (ws: WebSocket, thing: any) => {
   ws.send(JSON.stringify(thing, null, 4));
 };
 
+// Might need to add some basic heartbeat stuff like this:
+// https://github.com/websockets/ws#how-to-detect-and-close-broken-connectionshttps://github.com/websockets/ws#how-to-detect-and-close-broken-connectionshttps://github.com/websockets/ws#how-to-detect-and-close-broken-connections
+
 export function initWebSockets(server: https.Server) {
   const wss = new WebSocketServer({ noServer: true });
 
   wss.on('connection', (ws) => {
-    const { user } = getDetailsForSocket(ws);
-    console.log('Connection!', user);
     ws.on('message', async (msg) => {
       // Super basic DOS protection
       if (msg && String(msg).length > 5000) {
@@ -50,7 +55,6 @@ export function initWebSockets(server: https.Server) {
         throw new Error('Bad payload');
       }
 
-      ws.send(msg);
       if (!hasOwnProperty(data, 'type') || typeof data.type !== 'string') {
         sendJSON(ws, {
           error:
@@ -104,8 +108,8 @@ export function initWebSockets(server: https.Server) {
       }
     });
 
-    ws.on('close', (ws) => {
-      console.log('Close', ws);
+    ws.on('close', () => {
+      removeWebSocketFromMaps(ws);
     });
   });
 
@@ -121,14 +125,12 @@ export function initWebSockets(server: https.Server) {
         config.COOKIE_PARSER_SECRET,
       );
 
-      console.log(124);
       if (
         signedCookies &&
         typeof signedCookies === 'object' &&
         signedCookies.datr &&
         typeof signedCookies.datr === 'string'
       ) {
-        console.log(131);
         const { datr } = signedCookies;
         const { user, team } = await authFromDatr(datr);
         wss.handleUpgrade(request, socket, head, function done(ws) {
