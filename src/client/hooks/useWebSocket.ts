@@ -1,9 +1,19 @@
 import { useCallback, useEffect, useState } from 'react';
 import { hasOwnProperty } from 'src/lib/hasOwnProperty';
-import { INSTANCE_ACTION } from 'src/types/SocketMessage';
+import { INSTANCE_ACTION, SET_PUZZLE } from 'src/types/SocketMessage';
 
 function sendJSON(s: WebSocket, thing: any) {
+  console.log(thing);
   s.send(JSON.stringify(thing));
+}
+
+function setPuzzle(s: WebSocket, puzzleName: string) {
+  sendJSON(s, {
+    type: SET_PUZZLE,
+    payload: {
+      puzzleName,
+    },
+  });
 }
 
 function sendInstanceAction(s: WebSocket, something: object) {
@@ -14,13 +24,14 @@ function sendInstanceAction(s: WebSocket, something: object) {
 }
 
 type SendInstanceAction = (payload: object) => void;
+type SetPuzzle = (puzzleName: string) => void;
 
 export function useWebSocket(
   onConnected: () => void,
   onClose: () => void,
   onMessage: (data: object) => void,
   onError: (error: string) => void,
-): SendInstanceAction {
+): { sendInstanceAction: SendInstanceAction; setPuzzle: SetPuzzle } {
   const [socket, setSocket] = useState<WebSocket>();
 
   useEffect(() => {
@@ -66,6 +77,7 @@ export function useWebSocket(
         onConnected();
         sendJSON(s, {
           type: 'hello',
+          payload: {},
         });
       };
 
@@ -73,6 +85,7 @@ export function useWebSocket(
         onClose();
         setSocket(undefined);
       };
+      setSocket(s);
     }
   }, [socket, setSocket, onMessage]);
 
@@ -85,5 +98,14 @@ export function useWebSocket(
     [socket],
   );
 
-  return _sendInstanceAction;
+  const _setPuzzle = useCallback(
+    (puzzleName: string) => {
+      if (socket) {
+        setPuzzle(socket, puzzleName);
+      }
+    },
+    [socket],
+  );
+
+  return { sendInstanceAction: _sendInstanceAction, setPuzzle: _setPuzzle };
 }

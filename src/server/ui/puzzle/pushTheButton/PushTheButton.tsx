@@ -1,5 +1,6 @@
-import { Button, ButtonBase, Card } from '@mui/material';
-import { useCallback, useState } from 'react';
+import { Button } from '@mui/material';
+import { useCallback, useContext, useState } from 'react';
+import { AppContext } from 'src/server/state/AppContext';
 import type { ClientPuzzleInstance } from 'src/types/ClientPuzzleInstance';
 
 type PushTheButtonProps = {
@@ -7,6 +8,10 @@ type PushTheButtonProps = {
 };
 
 const PushTheButton: React.FC<PushTheButtonProps> = ({ instance }) => {
+  const appContext = useContext(AppContext);
+  if (!appContext?.user) {
+    throw new Error('No user');
+  }
   const [pressed, setPressed] = useState(false);
   const onDown = useCallback(() => {
     setPressed(true);

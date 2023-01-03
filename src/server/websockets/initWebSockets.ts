@@ -3,7 +3,6 @@ import WebSocket, { WebSocketServer } from 'ws';
 import cookie from 'cookie';
 import CookieParser from 'cookie-parser';
 
-import { hasOwnProperty } from 'src/lib/hasOwnProperty';
 import { authFromDatr } from '../lib/authMiddleware';
 import {
   addWebSocketToMaps,
@@ -13,9 +12,12 @@ import {
 import {
   INSTANCE_ACTION,
   SET_PUZZLE,
-  assertSocketMessageType,
+  SocketMessage,
+  assertIsSetPuzzleMessage,
+  assertIsSocketMessage,
 } from 'src/types/SocketMessage';
 import getDotEnv from 'src/lib/dotenv';
+import { handleSetPuzzle } from './handleSetPuzzle';
 
 const config = getDotEnv();
 
@@ -38,51 +40,38 @@ export function initWebSockets(server: https.Server) {
       }
 
       let data;
+      let sm: SocketMessage;
       try {
         data = JSON.parse(String(msg));
+        console.log(data);
+        sm = assertIsSocketMessage(data);
       } catch (e) {
         ws.send(
           JSON.stringify({
             error:
-              "Look, I'm really trying here, but garbage in -- garbage out.",
+              "Look, I'm really trying here, but garbage in -- garbage out: " +
+              (e as Error).message,
           }),
         );
         console.log('bad-request', data);
         return;
       }
 
-      if (typeof data !== 'object' || !data) {
-        throw new Error('Bad payload');
-      }
-
-      if (!hasOwnProperty(data, 'type') || typeof data.type !== 'string') {
-        sendJSON(ws, {
-          error:
-            "Not to be picky, but *no* `type` really isn't *my* type. I like labels. It's not your garbage JSON. It's me. Really. No, stop crying. Babe, I'm sorry.",
-        });
-        console.log('bad-request', data);
-        return;
-      }
-
-      const messageType = assertSocketMessageType(data.type);
-
-      if (messageType === SET_PUZZLE) {
-        /*
+      if (sm.type === SET_PUZZLE) {
+        const setPuzzleMessage = assertIsSetPuzzleMessage(sm.payload);
         try {
-          const puzzle = getPuzzleForRequest(ws.__user, data.payload);
-          ws.__puzzle = puzzle;
+          await handleSetPuzzle(ws, setPuzzleMessage);
         } catch (e) {
           sendJSON(ws, {
             error: (e as Error).message,
           });
           return;
         }
-        sendJSON(ws, { success: "Aye aye, cap'n. Puzzle set!" });
-        console.log('set-socket-puzzle', ws.__puzzle.name);
-        */
+        sendJSON(ws, { success: true });
+        console.log('set-socket-puzzle', setPuzzleMessage.puzzleName);
       }
 
-      if (messageType === INSTANCE_ACTION) {
+      if (sm.type === INSTANCE_ACTION) {
         /*
         try {
           const apiResp = await PuzzleRunner.handleAPIRequest(

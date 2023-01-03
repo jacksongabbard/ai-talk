@@ -42,12 +42,20 @@ const PuzzleShell: React.FC<PuzzleShellProps> = ({ instance }) => {
     [connected],
   );
 
-  const sendInstanceAction = useWebSocket(
+  const { sendInstanceAction, setPuzzle } = useWebSocket(
     onConnected,
     onClose,
     onMessage,
     onError,
   );
+
+  useEffect(() => {
+    if (!connected) {
+      return;
+    }
+    console.log('Setting the puzzle...');
+    setPuzzle(instance.puzzleId);
+  }, [setPuzzle, instance, connected]);
 
   return (
     <div
