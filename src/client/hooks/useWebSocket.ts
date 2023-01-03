@@ -23,8 +23,12 @@ function sendInstanceAction(s: WebSocket, something: object) {
   });
 }
 
-type SendInstanceAction = (payload: object) => void;
+export type SendInstanceAction = (payload: object) => void;
 type SetPuzzle = (puzzleName: string) => void;
+
+// WHERE DID YOU LEAVE OFF?
+// I WAS TRYING TO DECIDE HOW TO FEED THE onMessage, etc.
+// function down to the puzzle.
 
 export function useWebSocket(
   onConnected: () => void,

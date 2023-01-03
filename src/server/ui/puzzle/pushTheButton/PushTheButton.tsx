@@ -1,13 +1,18 @@
 import { Button } from '@mui/material';
 import { useCallback, useContext, useState } from 'react';
+import type { SendInstanceAction } from 'src/client/hooks/useWebSocket';
 import { AppContext } from 'src/server/state/AppContext';
 import type { ClientPuzzleInstance } from 'src/types/ClientPuzzleInstance';
 
 type PushTheButtonProps = {
   instance: ClientPuzzleInstance;
+  sendInstanceAction: SendInstanceAction;
 };
 
-const PushTheButton: React.FC<PushTheButtonProps> = ({ instance }) => {
+const PushTheButton: React.FC<PushTheButtonProps> = ({
+  instance,
+  sendInstanceAction,
+}) => {
   const appContext = useContext(AppContext);
   if (!appContext?.user) {
     throw new Error('No user');
@@ -15,11 +20,17 @@ const PushTheButton: React.FC<PushTheButtonProps> = ({ instance }) => {
   const [pressed, setPressed] = useState(false);
   const onDown = useCallback(() => {
     setPressed(true);
-  }, [setPressed]);
+    sendInstanceAction({
+      on: true,
+    });
+  }, [setPressed, sendInstanceAction]);
 
   const onUp = useCallback(() => {
     setPressed(false);
-  }, [setPressed]);
+    sendInstanceAction({
+      on: true,
+    });
+  }, [setPressed, sendInstanceAction]);
 
   return (
     <div

@@ -1,6 +1,6 @@
 import type { Request, RequestHandler, Response } from 'express';
 
-import { PuzzleList } from 'src/server/puzzles';
+import { PuzzleList, puzzleMapFromList } from 'src/server/puzzles';
 import { bail400, error200 } from './util';
 import { hasOwnProperty } from 'src/lib/hasOwnProperty';
 import { ClientPuzzle, Puzzle, puzzleToClientPuzzle } from 'src/types/Puzzle';
@@ -13,20 +13,12 @@ import PuzzleInstanceUser from 'src/lib/db/PuzzleInstanceUser';
 import User from 'src/lib/db/User';
 import SequelizeInstance from 'src/lib/db/SequelizeInstance';
 
-function puzzleMapFromList(pl: Puzzle[]): { [slug: string]: Puzzle } {
-  const slugToName: { [slug: string]: Puzzle } = {};
-  for (let ii = 0; ii < PuzzleList.length; ii++) {
-    slugToName[PuzzleList[ii].slug] = PuzzleList[ii];
-  }
-  return slugToName;
-}
-
 export const listPuzzles: RequestHandler = async (
   req: Request,
   res: Response,
 ) => {
   try {
-    const slugToPuzzle = puzzleMapFromList(PuzzleList);
+    const slugToPuzzle = puzzleMapFromList();
     const slugToClientPuzzle: { [slug: string]: ClientPuzzle } = {};
     for (let key in slugToPuzzle) {
       slugToClientPuzzle[key] = puzzleToClientPuzzle(slugToPuzzle[key]);
@@ -59,7 +51,7 @@ export const getPuzzleInfo: RequestHandler = async (
         typeof req.body.data.slug === 'string'
       ) {
         const { slug } = req.body.data;
-        const pmap = puzzleMapFromList(PuzzleList);
+        const pmap = puzzleMapFromList();
         if (pmap[slug]) {
           let instance: ClientPuzzleInstance | null = null;
           const pi = await PuzzleInstance.findOne({
@@ -164,7 +156,7 @@ export const generatePuzzleInstance: RequestHandler = async (
         typeof req.body.data.slug === 'string'
       ) {
         const { slug } = req.body.data;
-        const pmap = puzzleMapFromList(PuzzleList);
+        const pmap = puzzleMapFromList();
         if (pmap[slug]) {
           const pi = await PuzzleInstance.findOne({
             where: {

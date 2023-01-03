@@ -1,3 +1,4 @@
+import type PuzzleInstance from 'src/lib/db/PuzzleInstance';
 import type Team from 'src/lib/db/Team';
 import type User from 'src/lib/db/User';
 import { hasOwnProperty } from 'src/lib/hasOwnProperty';
@@ -14,9 +15,31 @@ export type ClientPuzzle = {
   maxPlayers: number;
 };
 
+export type DiffObject = {
+  value: object;
+};
+
+export type NumeberedDiffObject = DiffObject & {
+  seq: number;
+};
+
+export type ActionResult = {
+  payloadDiff: DiffObject;
+  puzzlePayload: object;
+  solved?: boolean;
+};
+
 export type Puzzle = ClientPuzzle & {
-  createInstance: (team: Team, teamMembers: User[]) => PuzzleInstanceData;
-  receiveAction: (action: object) => void;
+  createInstance: (
+    user: User,
+    team: Team,
+    teamMembers: User[],
+  ) => PuzzleInstanceData;
+  receiveAction: (
+    user: User,
+    puzzleInstance: PuzzleInstance,
+    action: object,
+  ) => ActionResult;
 };
 
 export function puzzleToClientPuzzle(p: Puzzle): ClientPuzzle {

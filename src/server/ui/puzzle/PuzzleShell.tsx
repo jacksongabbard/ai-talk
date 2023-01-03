@@ -70,7 +70,10 @@ const PuzzleShell: React.FC<PuzzleShellProps> = ({ instance }) => {
     >
       {!connected && <MessageBox type="info">Connecting...</MessageBox>}
       {instance.puzzleId === 'push_the_button' && (
-        <PushTheButton instance={instance} />
+        <PushTheButton
+          instance={instance}
+          sendInstanceAction={sendInstanceAction}
+        />
       )}
     </div>
   );

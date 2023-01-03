@@ -18,6 +18,8 @@ import {
 } from 'src/types/SocketMessage';
 import getDotEnv from 'src/lib/dotenv';
 import { handleSetPuzzle } from './handleSetPuzzle';
+import { handlePuzzleInstanceAction } from './handlePuzzleInstanceAction';
+import { errorThingToString } from 'src/lib/error/errorThingToString';
 
 const config = getDotEnv();
 
@@ -72,6 +74,21 @@ export function initWebSockets(server: https.Server) {
       }
 
       if (sm.type === INSTANCE_ACTION) {
+        if (typeof sm.payload !== 'object') {
+          sendJSON(ws, { error: 'Bad instance action' });
+          console.log('invalid-instance-action', sm);
+          return;
+        }
+
+        try {
+          await handlePuzzleInstanceAction(ws, sm.payload);
+        } catch (e) {
+          sendJSON(ws, {
+            error:
+              'Error handling puzzle instance action: ' + errorThingToString(e),
+          });
+          console.log('puzzle-instance-action-error', e);
+        }
         /*
         try {
           const apiResp = await PuzzleRunner.handleAPIRequest(
