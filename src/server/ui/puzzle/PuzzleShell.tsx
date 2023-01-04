@@ -8,6 +8,7 @@ import { AppContext } from 'src/server/state/AppContext';
 import { PuzzleContext } from 'src/server/state/PuzzleContext';
 import {
   PAYLOAD_DIFF,
+  PUZZLE_SOLVED,
   assertIsPayloadDiff,
   assertIsSocketMessage,
 } from 'src/types/SocketMessage';
@@ -65,9 +66,16 @@ const PuzzleShell: React.FC = () => {
           sequenceNumber: payloadDiff.seq,
           puzzlePayload: newPuzzlePayload,
         });
+      } else if (sm.type === PUZZLE_SOLVED) {
+        puzzleContext.setSolved(true);
       }
     },
-    [connected, puzzleContext.instance, puzzleContext.setInstance],
+    [
+      connected,
+      puzzleContext.instance,
+      puzzleContext.setInstance,
+      puzzleContext.setSolved,
+    ],
   );
 
   const onError = useCallback(

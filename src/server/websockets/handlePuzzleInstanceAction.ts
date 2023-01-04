@@ -6,6 +6,7 @@ import { getDetailsForSocket, getSocketsForPuzzleInstance } from './SocketMaps';
 import PuzzleInstanceAction from 'src/lib/db/PuzzleInstanceAction';
 import SequelizeInstance from 'src/lib/db/SequelizeInstance';
 import { PAYLOAD_DIFF, PUZZLE_SOLVED } from 'src/types/SocketMessage';
+import PuzzleInstance from 'src/lib/db/PuzzleInstance';
 
 const PuzzleMap = puzzleMapFromList();
 
@@ -13,10 +14,18 @@ export async function handlePuzzleInstanceAction(
   ws: WebSocket,
   action: object,
 ) {
-  const { user, puzzleInstance } = getDetailsForSocket(ws);
+  const { user, puzzleInstance: oldPI } = getDetailsForSocket(ws);
   if (!user) {
     throw new Error('Puzzle instance action received with no user');
   }
+
+  if (!oldPI) {
+    throw new Error('No oldPI?1');
+  }
+
+  const puzzleInstance = await PuzzleInstance.findOne({
+    where: { id: oldPI.id },
+  });
 
   if (!puzzleInstance) {
     throw new Error('Puzzle instance action received with no puzzle instance');
@@ -44,15 +53,12 @@ export async function handlePuzzleInstanceAction(
     puzzleInstance.solutionPayload,
   );
 
-  puzzleInstance.puzzlePayload = puzzlePayload;
-  if (isSolved) {
-    puzzleInstance.solvedAt = new Date();
-  }
   let puzzleInstanceActionID = uuid();
   let pia: PuzzleInstanceAction | null;
   try {
     // Maybe there's a better way to do this. Or maybe
-    // there's not. Idk.
+    // there's not. Idk. Definitely a race condition
+    // here if teammates move quickly enough.
     const res = await SequelizeInstance.query({
       query: `
         INSERT INTO puzzle_instance_actions (
@@ -76,15 +82,18 @@ export async function handlePuzzleInstanceAction(
         JSON.stringify(puzzlePayload),
       ],
     });
-    console.log(res);
     pia = await PuzzleInstanceAction.findOne({
       where: { id: puzzleInstanceActionID },
     });
 
-    console.log(puzzleInstanceActionID, pia);
-
     if (!pia) {
       throw new Error('Failed to record puzzle instance action');
+    }
+
+    console.log('>>>', { puzzlePayload });
+    puzzleInstance.puzzlePayload = puzzlePayload;
+    if (isSolved) {
+      puzzleInstance.solvedAt = new Date();
     }
     puzzleInstance.sequenceNumber = pia.sequenceNumber;
     await puzzleInstance.save();
