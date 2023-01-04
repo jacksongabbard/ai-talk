@@ -44,14 +44,20 @@ module.exports = {
       puzzle_id TEXT NOT NULL,
       created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
       updated_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
-      team_id UUID NOT NULL,
+      team_id UUID NULL,
+      user_id UUID NULL,
       started_at TIMESTAMP WITH TIME ZONE NOT NULL,
       solved_at TIMESTAMP WITH TIME ZONE NULL,
+      sequence_number INT NULL,
       puzzle_payload JSONB NULL,
       solution_payload JSONB NULL,
       CONSTRAINT fk_team_id
         FOREIGN KEY(team_id) 
 	        REFERENCES teams(id)
+            ON DELETE CASCADE,
+      CONSTRAINT fk_user_id
+        FOREIGN KEY(user_id) 
+	        REFERENCES users(id)
             ON DELETE CASCADE
     );
 
@@ -71,29 +77,11 @@ module.exports = {
 	        REFERENCES users(id)
             ON DELETE CASCADE
     );
-
-    CREATE TABLE puzzle_instance_solution_attempts (
-      id UUID DEFAULT uuid_generate_v4() NOT NULL PRIMARY KEY,
-      created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
-      puzzle_instance_id UUID NOT NULL,
-      user_id UUID NOT NULL,
-      solution_attempt_payload JSONB NOT NULL,
-      CONSTRAINT fk_puzzle_instance_id
-        FOREIGN KEY(puzzle_instance_id) 
-	        REFERENCES puzzle_instances(id)
-            ON DELETE CASCADE,
-      CONSTRAINT fk_user_id
-        FOREIGN KEY(user_id) 
-	        REFERENCES users(id)
-            ON DELETE CASCADE
-
-    );
    `);
   },
 
   async down(queryInterface, Sequelize) {
     await queryInterface.sequelize.query(`
-    DROP TABLE puzzle_instance_solution_attempts;
     DROP TABLE puzzle_instance_actions;
     DROP TABLE puzzle_instances;
     DROP TABLE users;

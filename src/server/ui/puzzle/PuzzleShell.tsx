@@ -21,23 +21,25 @@ const PuzzleShell: React.FC<PuzzleShellProps> = ({ instance }) => {
 
   const [connected, setConnected] = useState(false);
   const onConnected = useCallback(() => {
+    console.log('CONNECTED');
     setConnected(true);
   }, [setConnected]);
 
   const onClose = useCallback(() => {
+    console.log('DISCONNECTED');
     setConnected(false);
   }, [setConnected]);
 
   const onMessage = useCallback(
     (message: object) => {
-      console.log(message);
+      console.log('MESSAGE: ', message);
     },
     [connected],
   );
 
   const onError = useCallback(
     (error: string) => {
-      console.log(error);
+      console.log('ERROR', error);
     },
     [connected],
   );

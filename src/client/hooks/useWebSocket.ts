@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useState } from 'react';
+import { errorThingToString } from 'src/lib/error/errorThingToString';
 import { hasOwnProperty } from 'src/lib/hasOwnProperty';
 import { INSTANCE_ACTION, SET_PUZZLE } from 'src/types/SocketMessage';
 
@@ -47,14 +48,14 @@ export function useWebSocket(
           window.location.hostname +
           (window.location.port ? ':' + window.location.port : ''),
       );
-      s.onmessage = (thing) => {
+      s.onmessage = (messageEvent) => {
         if (
-          thing &&
-          hasOwnProperty(thing, 'data') &&
-          typeof thing.data === 'string'
+          messageEvent &&
+          messageEvent.data &&
+          typeof messageEvent.data === 'string'
         ) {
           try {
-            const data = JSON.parse(thing.data);
+            const data = JSON.parse(messageEvent.data);
             if (data && typeof data === 'object') {
               if (data.success) {
                 return;
@@ -67,13 +68,12 @@ export function useWebSocket(
               throw new Error('Invalid WebSocket message');
             }
           } catch (e) {
-            let message = 'Unexpected error';
-            if (e && typeof e === 'object' && hasOwnProperty(e, 'message')) {
-              message += ': ' + e.message;
-            }
+            let message = 'Unexpected error: ' + errorThingToString(e);
             console.error('Ah, yeah, no... we fucked it. ' + message);
             onError(message);
           }
+        } else {
+          console.log('Bad input: ', messageEvent);
         }
       };
 

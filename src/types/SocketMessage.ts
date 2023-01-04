@@ -2,11 +2,25 @@ import { makeValidator } from 'src/lib/ajv/makeValidator';
 
 export const SET_PUZZLE = 'set_puzzle';
 export const INSTANCE_ACTION = 'instance_action';
+export const PAYLOAD_DIFF = 'payload_diff';
+export const PUZZLE_SOLVED = 'puzzle_solved';
+export const HELLO = 'hello';
 
-export type SocketMessageType = 'set_puzzle' | 'instance_action' | 'hello';
+export type SocketMessageType =
+  | 'set_puzzle'
+  | 'instance_action'
+  | 'payload_diff'
+  | 'puzzle_solved'
+  | 'hello';
 
 export function assertSocketMessageType(s: string): SocketMessageType {
-  if (s === SET_PUZZLE || s === INSTANCE_ACTION || s === 'hello') {
+  if (
+    s === SET_PUZZLE ||
+    s === INSTANCE_ACTION ||
+    s === PAYLOAD_DIFF ||
+    s === PUZZLE_SOLVED ||
+    s === HELLO
+  ) {
     return s as SocketMessageType;
   }
   throw new Error('Invalid socket message type');

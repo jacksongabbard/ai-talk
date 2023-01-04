@@ -29,7 +29,6 @@ class PuzzleInstanceAction extends Model {
 
   @Column({
     type: DataType.UUIDV4,
-    defaultValue: DataType.UUIDV4,
     field: 'user_id',
     references: {
       model: User,
@@ -49,7 +48,7 @@ class PuzzleInstanceAction extends Model {
     type: DataType.INTEGER,
     field: 'sequence_number',
   })
-  sequenceNumber!: string;
+  sequenceNumber!: number;
 
   @Column({
     type: DataType.JSONB,

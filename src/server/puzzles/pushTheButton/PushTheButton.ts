@@ -6,18 +6,21 @@ import type User from 'src/lib/db/User';
 import type { Puzzle } from 'src/types/Puzzle';
 import type { ActionResult } from 'src/types/Puzzle';
 import type PuzzleInstance from 'src/lib/db/PuzzleInstance';
-import type { PushTheButtonPuzzlePayloadType } from 'src/types/puzzles/PuzzleTheButtonTypes';
+import {
+  PushTheButtonPuzzlePayloadType,
+  assertIsPushTheButtonPuzzlePayload,
+} from 'src/types/puzzles/PuzzleTheButtonTypes';
 
 type PushTheButtonAction = {
-  on: boolean;
+  toggle: boolean;
 };
 
 const instanceActionSchema = {
   type: 'object',
   properties: {
-    on: { type: 'boolean' },
+    toggle: { type: 'boolean' },
   },
-  required: ['on'],
+  required: ['toggle'],
   additionalProperties: false,
 };
 
@@ -37,7 +40,7 @@ const PushTheButton: Puzzle = {
   slug: 'push_the_button',
   minPlayers: 1,
   maxPlayers: 6,
-  createInstance: (user: User, team: Team, members: User[]) => {
+  createInstance: (user: User, members: User[], team?: Team) => {
     const solutionPayload: PushTheButtonPuzzlePayloadType = {};
     solutionPayload[user.id] = true;
     // There may or may not be any team members
@@ -56,11 +59,11 @@ const PushTheButton: Puzzle = {
     puzzleInstance: PuzzleInstance,
     action: object,
   ): ActionResult => {
-    const a = assertIsPushTheButtonAction(action);
-    console.log(a);
-
+    assertIsPushTheButtonAction(action);
+    const pp = assertIsPushTheButtonPuzzlePayload(puzzleInstance.puzzlePayload);
+    const newState = !pp[user.id];
     const payloadDiffValue = {
-      [user.id]: a.on,
+      [user.id]: newState,
     };
 
     const puzzlePayload = {
@@ -78,8 +81,7 @@ const PushTheButton: Puzzle = {
   },
 
   isSolved: (puzzlePayload, solutionPayload) => {
-    console.log(puzzlePayload, solutionPayload);
-    return isEqual(puzzlePayload, solutionPayload);
+    return false && isEqual(puzzlePayload, solutionPayload);
   },
 };
 

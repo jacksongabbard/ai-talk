@@ -5,7 +5,6 @@ import Team from './Team';
 import User from './User';
 import PuzzleInstance from './PuzzleInstance';
 import PuzzleInstanceAction from './PuzzleInstanceAction';
-import PuzzleInstanceSolutionAttempt from './PuzzleInstanceSolutionAttempt';
 import AuthToken from './AuthToken';
 import DTSGToken from './DTSGToken';
 import PuzzleInstanceUser from './PuzzleInstanceUser';
@@ -39,7 +38,6 @@ SequelizeInstance.addModels([
   PuzzleInstance,
   PuzzleInstanceUser,
   PuzzleInstanceAction,
-  PuzzleInstanceSolutionAttempt,
   AuthToken,
   DTSGToken,
 ]);

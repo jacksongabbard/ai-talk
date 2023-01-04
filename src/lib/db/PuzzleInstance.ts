@@ -8,6 +8,7 @@ import {
 } from 'sequelize-typescript';
 
 import Team from './Team';
+import User from './User';
 
 @Table({
   timestamps: true,
@@ -43,7 +44,16 @@ class PuzzleInstance extends Model {
 
   @Column({
     type: DataType.UUIDV4,
-    defaultValue: DataType.UUIDV4,
+    field: 'user_id',
+    references: {
+      model: User,
+      key: 'id',
+    },
+  })
+  userId!: string;
+
+  @Column({
+    type: DataType.UUIDV4,
     field: 'team_id',
     references: {
       model: Team,
@@ -63,6 +73,12 @@ class PuzzleInstance extends Model {
     field: 'solved_at',
   })
   solvedAt!: Date | null;
+
+  @Column({
+    type: DataType.INTEGER,
+    field: 'sequence_number',
+  })
+  sequenceNumber!: number;
 
   @Column({
     type: DataType.JSONB,

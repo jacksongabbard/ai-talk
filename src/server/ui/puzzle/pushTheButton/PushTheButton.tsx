@@ -18,17 +18,10 @@ const PushTheButton: React.FC<PushTheButtonProps> = ({
     throw new Error('No user');
   }
   const [pressed, setPressed] = useState(false);
-  const onDown = useCallback(() => {
-    setPressed(true);
-    sendInstanceAction({
-      on: true,
-    });
-  }, [setPressed, sendInstanceAction]);
 
-  const onUp = useCallback(() => {
-    setPressed(false);
+  const onClick = useCallback(() => {
     sendInstanceAction({
-      on: true,
+      toggle: true,
     });
   }, [setPressed, sendInstanceAction]);
 
@@ -66,8 +59,7 @@ const PushTheButton: React.FC<PushTheButtonProps> = ({
             alignItems: 'center',
             justifyContent: 'center',
           }}
-          onPointerDown={onDown}
-          onPointerUp={onUp}
+          onClick={onClick}
         >
           Press and Hold
         </Button>

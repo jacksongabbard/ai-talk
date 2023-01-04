@@ -31,8 +31,8 @@ export type ActionResult = {
 export type Puzzle = ClientPuzzle & {
   createInstance: (
     user: User,
-    team: Team,
     teamMembers: User[],
+    team?: Team,
   ) => PuzzleInstanceData;
   receiveAction: (
     user: User,

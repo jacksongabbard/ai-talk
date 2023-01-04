@@ -37,8 +37,8 @@ export const getPuzzleInfo: RequestHandler = async (
   res: Response,
 ) => {
   try {
-    if (!req.context?.team) {
-      throw new Error('Request has no team');
+    if (!req.context) {
+      throw new Error('Everything is ruined');
     }
 
     if (
@@ -54,11 +54,20 @@ export const getPuzzleInfo: RequestHandler = async (
         const pmap = puzzleMapFromList();
         if (pmap[slug]) {
           let instance: ClientPuzzleInstance | null = null;
-          const pi = await PuzzleInstance.findOne({
-            where: {
-              teamId: req.context.team.id,
-            },
-          });
+          let pi: PuzzleInstance | null = null;
+          if (req.context?.team) {
+            pi = await PuzzleInstance.findOne({
+              where: {
+                teamId: req.context.team.id,
+              },
+            });
+          } else if (req.context?.user) {
+            pi = await PuzzleInstance.findOne({
+              where: {
+                userId: req.context.user.id,
+              },
+            });
+          }
 
           if (pi) {
             const instanceMembers = await PuzzleInstanceUser.findAll({
@@ -67,11 +76,14 @@ export const getPuzzleInfo: RequestHandler = async (
               },
             });
 
-            const teamMembers = await User.findAll({
-              where: {
-                teamId: req.context.team.id,
-              },
-            });
+            let teamMembers = [req.context.user];
+            if (req.context.team) {
+              teamMembers = await User.findAll({
+                where: {
+                  teamId: req.context?.team.id,
+                },
+              });
+            }
 
             // I'm being pretty lazy about cleaning up puzzle instances when
             // teams change. Puzzle instances can be tightly coupled to the
@@ -142,8 +154,9 @@ export const generatePuzzleInstance: RequestHandler = async (
   res: Response,
 ) => {
   try {
-    if (!req.context?.team) {
-      throw new Error('Request has no team');
+    if (!req.context?.user) {
+      error200('Cannot create a puzzle instance with no user', res);
+      return;
     }
 
     if (
@@ -157,13 +170,21 @@ export const generatePuzzleInstance: RequestHandler = async (
       ) {
         const { slug } = req.body.data;
         const pmap = puzzleMapFromList();
+        let pi: PuzzleInstance | null;
         if (pmap[slug]) {
-          const pi = await PuzzleInstance.findOne({
-            where: {
-              teamId: req.context.team.id,
-            },
-          });
-
+          if (req.context.team) {
+            pi = await PuzzleInstance.findOne({
+              where: {
+                teamId: req.context.team.id,
+              },
+            });
+          } else {
+            pi = await PuzzleInstance.findOne({
+              where: {
+                userId: req.context.user.id,
+              },
+            });
+          }
           if (pi) {
             res.status(200);
             res.send(
@@ -172,11 +193,14 @@ export const generatePuzzleInstance: RequestHandler = async (
             return;
           }
 
-          const teamMembers = await User.findAll({
-            where: {
-              teamId: req.context.team.id,
-            },
-          });
+          let teamMembers: User[] = [req.context.user];
+          if (req.context.team) {
+            teamMembers = await User.findAll({
+              where: {
+                teamId: req.context.team.id,
+              },
+            });
+          }
 
           const puzzle = pmap[slug];
           if (teamMembers.length < puzzle.minPlayers) {
@@ -200,18 +224,22 @@ export const generatePuzzleInstance: RequestHandler = async (
           }
 
           const { puzzlePayload, solutionPayload } = puzzle.createInstance(
-            req.context.team,
+            req.context.user,
             teamMembers,
+            req.context.team !== null ? req.context.team : undefined,
           );
           const transaction = await SequelizeInstance.transaction();
           try {
             const newPI = PuzzleInstance.build({
               puzzleId: slug,
-              teamId: req.context.team.id,
+              ...(req.context.team
+                ? { teamId: req.context.team.id }
+                : { userId: req.context.user.id }),
               startedAt: new Date(),
               puzzlePayload,
               solutionPayload,
             });
+            console.log(newPI);
             const instance = await newPI.save({ transaction });
 
             const instanceMemberPromises: Promise<PuzzleInstanceUser>[] = [];

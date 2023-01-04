@@ -21,7 +21,6 @@ class PuzzleInstanceUser extends Model {
 
   @Column({
     type: DataType.UUIDV4,
-    defaultValue: DataType.UUIDV4,
     field: 'user_id',
     references: {
       model: User,

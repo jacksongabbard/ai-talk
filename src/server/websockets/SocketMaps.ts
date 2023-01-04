@@ -7,7 +7,7 @@ import type User from 'src/lib/db/User';
 const socketToUser = new WeakMap<WebSocket, User>();
 const socketToTeam = new WeakMap<WebSocket, Team>();
 const socketToPuzzleInstance = new WeakMap<WebSocket, PuzzleInstance>();
-const puzzleInstanceIdToSockets: { [uuid: string]: WeakSet<WebSocket> } = {};
+const puzzleInstanceIdToSockets: { [uuid: string]: Set<WebSocket> } = {};
 
 export function addWebSocketToMaps(
   ws: WebSocket,
@@ -31,7 +31,7 @@ export function addWebSocketToMaps(
 
   if (puzzleInstance) {
     if (!puzzleInstanceIdToSockets[puzzleInstance.id]) {
-      puzzleInstanceIdToSockets[puzzleInstance.id] = new WeakSet<WebSocket>();
+      puzzleInstanceIdToSockets[puzzleInstance.id] = new Set<WebSocket>();
     }
 
     puzzleInstanceIdToSockets[puzzleInstance.id].add(ws);
@@ -48,7 +48,7 @@ export function updatePuzzleInstanceForWebSocket(
   }
 
   if (!puzzleInstanceIdToSockets[puzzleInstance.id]) {
-    puzzleInstanceIdToSockets[puzzleInstance.id] = new WeakSet<WebSocket>();
+    puzzleInstanceIdToSockets[puzzleInstance.id] = new Set<WebSocket>();
   }
   puzzleInstanceIdToSockets[puzzleInstance.id].add(ws);
   socketToPuzzleInstance.set(ws, puzzleInstance);
@@ -68,7 +68,7 @@ export function getDetailsForSocket(ws: WebSocket): {
 
 export function getSocketsForPuzzleInstance(
   puzzleInstanceId: string,
-): WeakSet<WebSocket> {
+): Set<WebSocket> {
   return puzzleInstanceIdToSockets[puzzleInstanceId];
 }
 

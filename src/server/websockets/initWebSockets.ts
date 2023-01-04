@@ -89,28 +89,6 @@ export function initWebSockets(server: https.Server) {
           });
           console.log('puzzle-instance-action-error', e);
         }
-        /*
-        try {
-          const apiResp = await PuzzleRunner.handleAPIRequest(
-            ws.__puzzle,
-            ws.__user,
-            data.payload,
-          );
-          sendJSON(ws, apiResp);
-          console.log('socket-api-request', {
-            puzzleName: ws.__puzzle.name,
-            body: data.payload,
-          });
-          return;
-        } catch (e) {
-          sendJSON(ws, {
-            error:
-              "Great, now it's broken. ARE YOU HAPPY? It definitely wasn't our shitty code...",
-          });
-          console.log('api-error', { data, error: e.message });
-          return;
-        }
-        */
       }
     });
 

@@ -7,11 +7,9 @@ import Page from 'src/server/ui/page/Page';
 import { hasOwnProperty } from 'src/lib/hasOwnProperty';
 import MessageBox from 'src/server/ui/messageBox/MessageBox';
 import { Button, Typography } from '@mui/material';
-import {
-  ClientPuzzleInstance,
-  assertIsSerializedPuzzleInstance,
-} from 'src/types/ClientPuzzleInstance';
+import { assertIsSerializedPuzzleInstance } from 'src/types/ClientPuzzleInstance';
 import PuzzleShell from 'src/server/ui/puzzle/PuzzleShell';
+import { PuzzleContext } from 'src/server/state/PuzzleContext';
 
 const Puzzle: React.FC = () => {
   const params = useParams();
@@ -24,6 +22,7 @@ const Puzzle: React.FC = () => {
   }
 
   const appContext = useContext(AppContext);
+
   const user = appContext?.user;
   const team = appContext?.team;
   const [loading, setLoading] = useState<boolean>(false);
@@ -31,11 +30,8 @@ const Puzzle: React.FC = () => {
   const [errorMessage, setErrorMessage] = useState<string | undefined>();
   const [puzzleName, setPuzzleName] = useState<string | undefined>();
 
-  // undefined === not yet loaded
-  // null === loaded, but non-existent
-  const [instance, setInstance] = useState<
-    ClientPuzzleInstance | undefined | null
-  >();
+  const puzzleContext = useContext(PuzzleContext);
+  const { instance, setInstance } = puzzleContext;
 
   useEffect(() => {
     appContext?.setShowNavigation(false);
@@ -65,8 +61,11 @@ const Puzzle: React.FC = () => {
       }
 
       setPuzzleName(resp.puzzleName);
+
       setInstance(
-        resp.instance ? assertIsSerializedPuzzleInstance(resp.instance) : null,
+        resp.instance
+          ? assertIsSerializedPuzzleInstance(resp.instance)
+          : undefined,
       );
       console.log(resp);
     })();
@@ -99,7 +98,7 @@ const Puzzle: React.FC = () => {
       const instance = assertIsSerializedPuzzleInstance(resp.instance);
       setInstance(instance);
     })();
-  }, [slug, instance, setGeneratingPuzzle, setErrorMessage]);
+  }, [slug, instance, setGeneratingPuzzle, setErrorMessage, setInstance]);
 
   return (
     <Page>
