@@ -21,7 +21,7 @@ const Solved = () => {
           align-items: center;
           box-sizing: border-box;
           display: flex;
-          font-size: ${Math.ceil(100 / message.length) * 2}vw;
+          font-size: ${Math.ceil(100 / (message.length * 2)) * 2}vw;
           height: 100vh;
           justify-content: center;
           left: 0;

@@ -90,13 +90,22 @@ export async function handlePuzzleInstanceAction(
       throw new Error('Failed to record puzzle instance action');
     }
 
-    console.log('>>>', { puzzlePayload });
-    puzzleInstance.puzzlePayload = puzzlePayload;
+    const updatedFields: {
+      puzzlePayload: object;
+      sequenceNumber: number;
+      solvedAt?: Date;
+    } = {
+      puzzlePayload,
+      sequenceNumber: pia.sequenceNumber,
+    };
     if (isSolved) {
-      puzzleInstance.solvedAt = new Date();
+      updatedFields.solvedAt = new Date();
     }
-    puzzleInstance.sequenceNumber = pia.sequenceNumber;
-    await puzzleInstance.save();
+    await PuzzleInstance.update(updatedFields, {
+      where: {
+        id: puzzleInstance.id,
+      },
+    });
   } catch (e) {
     console.log('puzzle-instance-action-failure', e);
   }

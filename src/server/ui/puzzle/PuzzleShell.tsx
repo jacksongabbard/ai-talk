@@ -114,7 +114,7 @@ const PuzzleShell: React.FC = () => {
       }}
     >
       {!connected && <MessageBox type="info">Connecting...</MessageBox>}
-      {instance.puzzleId === 'push_the_button' && (
+      {instance && instance.puzzleId === 'push_the_button' && (
         <PushTheButton
           instance={instance}
           sendInstanceAction={sendInstanceAction}
