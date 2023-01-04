@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import { errorThingToString } from 'src/lib/error/errorThingToString';
 import { hasOwnProperty } from 'src/lib/hasOwnProperty';
 import { INSTANCE_ACTION, SET_PUZZLE } from 'src/types/SocketMessage';
@@ -39,6 +39,18 @@ export function useWebSocket(
 ): { sendInstanceAction: SendInstanceAction; setPuzzle: SetPuzzle } {
   const [socket, setSocket] = useState<WebSocket>();
 
+  const onConnectedRef = useRef(onConnected);
+  onConnectedRef.current = onConnected;
+
+  const onCloseRef = useRef(onClose);
+  onCloseRef.current = onClose;
+
+  const onMessageRef = useRef(onMessage);
+  onMessageRef.current = onMessage;
+
+  const onErrorRef = useRef(onError);
+  onErrorRef.current = onError;
+
   useEffect(() => {
     // Connect a websocket
     let s: WebSocket;
@@ -63,14 +75,14 @@ export function useWebSocket(
               if (data.error) {
                 throw new Error(data.error);
               }
-              onMessage(data);
+              onMessageRef.current(data);
             } else {
               throw new Error('Invalid WebSocket message');
             }
           } catch (e) {
             let message = 'Unexpected error: ' + errorThingToString(e);
             console.error('Ah, yeah, no... we fucked it. ' + message);
-            onError(message);
+            onErrorRef.current(message);
           }
         } else {
           console.log('Bad input: ', messageEvent);
@@ -78,7 +90,7 @@ export function useWebSocket(
       };
 
       s.onopen = () => {
-        onConnected();
+        onConnectedRef.current();
         sendJSON(s, {
           type: 'hello',
           payload: {},
@@ -86,7 +98,7 @@ export function useWebSocket(
       };
 
       s.onclose = () => {
-        onClose();
+        onCloseRef.current();
         setSocket(undefined);
       };
       setSocket(s);

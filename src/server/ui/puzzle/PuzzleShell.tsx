@@ -1,16 +1,21 @@
 import { useCallback, useContext, useEffect, useState } from 'react';
+import { merge } from 'lodash';
+
 import { useWebSocket } from 'src/client/hooks/useWebSocket';
-import type { ClientPuzzleInstance } from 'src/types/ClientPuzzleInstance';
 import PushTheButton from './pushTheButton/PushTheButton';
 import MessageBox from '../messageBox/MessageBox';
 import { AppContext } from 'src/server/state/AppContext';
+import { PuzzleContext } from 'src/server/state/PuzzleContext';
+import {
+  PAYLOAD_DIFF,
+  assertIsPayloadDiff,
+  assertIsSocketMessage,
+} from 'src/types/SocketMessage';
 
-type PuzzleShellProps = {
-  instance: ClientPuzzleInstance;
-};
-
-const PuzzleShell: React.FC<PuzzleShellProps> = ({ instance }) => {
+const PuzzleShell: React.FC = () => {
   const appContext = useContext(AppContext);
+  const puzzleContext = useContext(PuzzleContext);
+  const { instance } = puzzleContext;
 
   useEffect(() => {
     appContext?.setShowHeader(false);
@@ -33,8 +38,36 @@ const PuzzleShell: React.FC<PuzzleShellProps> = ({ instance }) => {
   const onMessage = useCallback(
     (message: object) => {
       console.log('MESSAGE: ', message);
+      const sm = assertIsSocketMessage(message);
+      if (sm.type === PAYLOAD_DIFF) {
+        const payloadDiff = assertIsPayloadDiff(sm.payload);
+        if (!puzzleContext.instance) {
+          throw new Error('Cannot merge payload diff with no puzzle instance');
+        }
+        const { instance } = puzzleContext;
+        console.log({ instance, payloadDiff });
+        if (instance.sequenceNumber !== payloadDiff.seq - 1) {
+          throw new Error(
+            'Received out-of-order payload diffs. Everything is ruined.',
+          );
+        }
+
+        // TODO: Add some guarantee here that the payload diff is correct
+        // for the puzzle
+
+        const newPuzzlePayload = merge(
+          instance.puzzlePayload,
+          payloadDiff.value,
+        );
+
+        puzzleContext.setInstance({
+          ...instance,
+          sequenceNumber: payloadDiff.seq,
+          puzzlePayload: newPuzzlePayload,
+        });
+      }
     },
-    [connected],
+    [connected, puzzleContext.instance, puzzleContext.setInstance],
   );
 
   const onError = useCallback(
@@ -56,8 +89,10 @@ const PuzzleShell: React.FC<PuzzleShellProps> = ({ instance }) => {
       return;
     }
     console.log('Setting the puzzle...');
-    setPuzzle(instance.puzzleId);
-  }, [setPuzzle, instance, connected]);
+    if (instance) {
+      setPuzzle(instance.puzzleId);
+    }
+  }, [setPuzzle, instance?.puzzleId, connected]);
 
   return (
     <div

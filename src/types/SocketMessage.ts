@@ -72,3 +72,26 @@ export function assertIsSetPuzzleMessage(thing: any): SetPuzzleMessage {
 
   throw new Error('Provided value is not a SocketMessage');
 }
+
+export const validateIsPayloadDiff = makeValidator({
+  type: 'object',
+  properties: {
+    seq: { type: 'number' },
+    value: { type: 'object' },
+  },
+  required: ['seq', 'value'],
+  additionalProperties: false,
+});
+
+type PayloadDiff = {
+  seq: number;
+  value: object;
+};
+
+export function assertIsPayloadDiff(thing: any): PayloadDiff {
+  if (validateIsPayloadDiff(thing)) {
+    return thing as PayloadDiff;
+  }
+
+  throw new Error('Provided value is not a PayloadDiff');
+}

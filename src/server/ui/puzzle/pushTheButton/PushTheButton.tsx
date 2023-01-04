@@ -1,8 +1,12 @@
 import { Button } from '@mui/material';
-import { useCallback, useContext, useState } from 'react';
+import { useCallback, useContext, useEffect, useState } from 'react';
 import type { SendInstanceAction } from 'src/client/hooks/useWebSocket';
 import { AppContext } from 'src/server/state/AppContext';
 import type { ClientPuzzleInstance } from 'src/types/ClientPuzzleInstance';
+import {
+  PushTheButtonPuzzlePayloadType,
+  assertIsPushTheButtonPuzzlePayload,
+} from 'src/types/puzzles/PuzzleTheButtonTypes';
 
 type PushTheButtonProps = {
   instance: ClientPuzzleInstance;
@@ -13,17 +17,29 @@ const PushTheButton: React.FC<PushTheButtonProps> = ({
   instance,
   sendInstanceAction,
 }) => {
+  const [payload, setPayload] = useState<PushTheButtonPuzzlePayloadType>({
+    pressed: {},
+    uuidsToNames: {},
+  });
+
+  useEffect(() => {
+    if (!instance) {
+      throw new Error('No instance of PushTheButton');
+    }
+
+    const pp = assertIsPushTheButtonPuzzlePayload(instance.puzzlePayload);
+    setPayload(pp);
+  }, [instance, setPayload]);
+
   const appContext = useContext(AppContext);
   if (!appContext?.user) {
     throw new Error('No user');
   }
-  const [pressed, setPressed] = useState(false);
-
   const onClick = useCallback(() => {
     sendInstanceAction({
       toggle: true,
     });
-  }, [setPressed, sendInstanceAction]);
+  }, [sendInstanceAction]);
 
   return (
     <div
@@ -40,13 +56,24 @@ const PushTheButton: React.FC<PushTheButtonProps> = ({
         css={{
           flex: 1,
           color: 'white',
-
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'center',
+          flexDirection: 'column',
         }}
       >
-        {pressed ? 'Pressed' : 'Not pressed'}
+        {Object.keys(payload.uuidsToNames).map((uuid) => {
+          return (
+            <div key={uuid}>
+              {payload.pressed[uuid] === true && (
+                <div>{payload.uuidsToNames[uuid]} has pressed! ❤️</div>
+              )}
+              {payload.pressed[uuid] !== true && (
+                <div>{payload.uuidsToNames[uuid]} has not pressed! 💔</div>
+              )}
+            </div>
+          );
+        })}
       </div>
       <div css={{ flex: 1 }}>
         <Button

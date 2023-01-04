@@ -8,6 +8,7 @@ export type ClientPuzzleInstance = {
   updatedAt: Date;
   startedAt: Date;
   solvedAt: Date | null;
+  sequenceNumber: number;
   puzzlePayload: object;
 };
 
@@ -21,6 +22,7 @@ export function puzzleInstanceToClientPuzzleInstance(
     updatedAt: p.createdAt,
     startedAt: p.startedAt,
     solvedAt: p.solvedAt,
+    sequenceNumber: p.sequenceNumber,
     puzzlePayload: p.puzzlePayload,
   };
 }
@@ -28,6 +30,7 @@ export function puzzleInstanceToClientPuzzleInstance(
 export function assertIsSerializedPuzzleInstance(
   thing: unknown,
 ): ClientPuzzleInstance {
+  console.log(thing);
   if (
     !!thing &&
     typeof thing === 'object' &&
@@ -43,6 +46,8 @@ export function assertIsSerializedPuzzleInstance(
     typeof thing.startedAt === 'string' &&
     hasOwnProperty(thing, 'solvedAt') &&
     (typeof thing.solvedAt === 'string' || thing.solvedAt === null) &&
+    hasOwnProperty(thing, 'sequenceNumber') &&
+    typeof thing.sequenceNumber === 'number' &&
     hasOwnProperty(thing, 'puzzlePayload') &&
     typeof thing.puzzlePayload === 'object' &&
     !!thing.puzzlePayload
@@ -54,6 +59,7 @@ export function assertIsSerializedPuzzleInstance(
       updatedAt: new Date(thing.updatedAt),
       startedAt: new Date(thing.startedAt),
       solvedAt: thing.solvedAt ? new Date(thing.solvedAt) : null,
+      sequenceNumber: thing.sequenceNumber,
       puzzlePayload: thing.puzzlePayload,
     };
   }

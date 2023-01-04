@@ -1,5 +1,5 @@
 import AJV from 'ajv';
-import { isEqual } from 'lodash';
+import { isEqual, merge } from 'lodash';
 
 import type Team from 'src/lib/db/Team';
 import type User from 'src/lib/db/User';
@@ -41,15 +41,32 @@ const PushTheButton: Puzzle = {
   minPlayers: 1,
   maxPlayers: 6,
   createInstance: (user: User, members: User[], team?: Team) => {
-    const solutionPayload: PushTheButtonPuzzlePayloadType = {};
-    solutionPayload[user.id] = true;
+    const solutionPayload: PushTheButtonPuzzlePayloadType = {
+      pressed: {
+        [user.id]: true,
+      },
+      uuidsToNames: {
+        [user.id]: user.userName,
+      },
+    };
+    const puzzlePayload: PushTheButtonPuzzlePayloadType = {
+      pressed: {
+        [user.id]: true,
+      },
+      uuidsToNames: {
+        [user.id]: user.userName,
+      },
+    };
     // There may or may not be any team members
     for (const member of members || []) {
-      solutionPayload[member.id] = true;
+      solutionPayload.pressed[member.id] = true;
+      solutionPayload.uuidsToNames[member.id] = member.userName;
+      puzzlePayload.pressed[member.id] = false;
+      puzzlePayload.uuidsToNames[member.id] = member.userName;
     }
 
     return {
-      puzzlePayload: {},
+      puzzlePayload,
       solutionPayload,
     };
   },
@@ -61,19 +78,18 @@ const PushTheButton: Puzzle = {
   ): ActionResult => {
     assertIsPushTheButtonAction(action);
     const pp = assertIsPushTheButtonPuzzlePayload(puzzleInstance.puzzlePayload);
-    const newState = !pp[user.id];
+    const newState = !pp.pressed[user.id];
     const payloadDiffValue = {
-      [user.id]: newState,
+      pressed: {
+        [user.id]: newState,
+      },
     };
 
-    const puzzlePayload = {
-      ...puzzleInstance.puzzlePayload,
-      ...payloadDiffValue,
-    };
+    const puzzlePayload = merge(puzzleInstance.puzzlePayload, payloadDiffValue);
 
     return {
       payloadDiff: {
-        // seq comes externally
+        // seq number comes externally
         value: payloadDiffValue,
       },
       puzzlePayload,
@@ -81,7 +97,9 @@ const PushTheButton: Puzzle = {
   },
 
   isSolved: (puzzlePayload, solutionPayload) => {
-    return false && isEqual(puzzlePayload, solutionPayload);
+    let p = assertIsPushTheButtonPuzzlePayload(puzzlePayload);
+    let s = assertIsPushTheButtonPuzzlePayload(solutionPayload);
+    return false && isEqual(p.pressed, s.pressed);
   },
 };
 

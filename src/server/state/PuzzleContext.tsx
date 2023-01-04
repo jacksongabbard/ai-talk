@@ -8,7 +8,9 @@ export type TPuzzleContext = {
 
 export const PuzzleContext = React.createContext<TPuzzleContext>({
   instance: undefined,
-  setInstance: () => {},
+  setInstance: () => {
+    console.log('If you see this, something is borked');
+  },
 });
 
 type PuzzleContextProviderProps = {
@@ -20,6 +22,7 @@ export const PuzzleContextProvider: React.FC<PuzzleContextProviderProps> = ({
 }) => {
   const [instance, setInstance] = useState<ClientPuzzleInstance | undefined>();
   const value = useMemo(() => {
+    console.log('Updating the PuzzleContext', instance);
     return {
       instance,
       setInstance,

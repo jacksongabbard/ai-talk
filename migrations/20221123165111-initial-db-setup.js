@@ -48,7 +48,7 @@ module.exports = {
       user_id UUID NULL,
       started_at TIMESTAMP WITH TIME ZONE NOT NULL,
       solved_at TIMESTAMP WITH TIME ZONE NULL,
-      sequence_number INT NULL,
+      sequence_number INT NULL DEFAULT 0,
       puzzle_payload JSONB NULL,
       solution_payload JSONB NULL,
       CONSTRAINT fk_team_id

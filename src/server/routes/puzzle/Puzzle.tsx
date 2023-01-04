@@ -141,7 +141,7 @@ const Puzzle: React.FC = () => {
           )}
         </div>
       )}
-      {!loading && instance && <PuzzleShell instance={instance} />}
+      {!loading && instance && <PuzzleShell />}
     </Page>
   );
 };
