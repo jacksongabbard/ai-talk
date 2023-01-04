@@ -96,10 +96,17 @@ export async function handlePuzzleInstanceAction(
 
   const sockets = getSocketsForPuzzleInstance(puzzleInstance.id);
   sockets.forEach((s) => {
+    const { user } = getDetailsForSocket(s);
+    if (!user) {
+      console.log('Socket found with no related user');
+      return;
+    }
+
+    const value = puzzle.filterPayloadForUser(user, payloadDiff.value);
     s.send(
       JSON.stringify({
         type: PAYLOAD_DIFF,
-        payload: { ...payloadDiff, seq: pia?.sequenceNumber },
+        payload: { value, seq: pia?.sequenceNumber },
       }),
     );
     if (isSolved) {

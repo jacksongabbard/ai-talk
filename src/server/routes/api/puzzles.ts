@@ -1,6 +1,6 @@
 import type { Request, RequestHandler, Response } from 'express';
 
-import { PuzzleList, puzzleMapFromList } from 'src/server/puzzles';
+import { puzzleMapFromList } from 'src/server/puzzles';
 import { bail400, error200 } from './util';
 import { hasOwnProperty } from 'src/lib/hasOwnProperty';
 import { ClientPuzzle, Puzzle, puzzleToClientPuzzle } from 'src/types/Puzzle';
@@ -39,6 +39,10 @@ export const getPuzzleInfo: RequestHandler = async (
   try {
     if (!req.context) {
       throw new Error('Everything is ruined');
+    }
+
+    if (!req.context.user) {
+      throw new Error('Cannot get puzzle info with no user');
     }
 
     if (
@@ -119,7 +123,14 @@ export const getPuzzleInfo: RequestHandler = async (
                 },
               });
             } else {
-              instance = puzzleInstanceToClientPuzzleInstance(pi);
+              const filteredPuzzlePayload = pmap[slug].filterPayloadForUser(
+                req.context.user,
+                pi.puzzlePayload,
+              );
+              instance = {
+                ...puzzleInstanceToClientPuzzleInstance(pi),
+                puzzlePayload: filteredPuzzlePayload,
+              };
             }
           }
 
@@ -253,11 +264,19 @@ export const generatePuzzleInstance: RequestHandler = async (
             await Promise.all(instanceMemberPromises);
             await transaction.commit();
 
+            const filteredPuzzlePayload = puzzle.filterPayloadForUser(
+              req.context.user,
+              instance.puzzlePayload,
+            );
+
             res.status(200);
             res.send(
               JSON.stringify({
                 success: true,
-                instance: puzzleInstanceToClientPuzzleInstance(instance),
+                instance: {
+                  ...puzzleInstanceToClientPuzzleInstance(instance),
+                  puzzlePayload: filteredPuzzlePayload,
+                },
               }),
             );
             return;
