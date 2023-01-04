@@ -71,6 +71,10 @@ const PushTheButton: Puzzle = {
     };
   },
 
+  filterPayloadForUser: (user: User, payload: object) => {
+    return payload;
+  },
+
   receiveAction: (
     user: User,
     puzzleInstance: PuzzleInstance,
@@ -99,7 +103,7 @@ const PushTheButton: Puzzle = {
   isSolved: (puzzlePayload, solutionPayload) => {
     let p = assertIsPushTheButtonPuzzlePayload(puzzlePayload);
     let s = assertIsPushTheButtonPuzzlePayload(solutionPayload);
-    return false && isEqual(p.pressed, s.pressed);
+    return isEqual(p.pressed, s.pressed);
   },
 };
 

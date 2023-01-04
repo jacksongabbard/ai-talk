@@ -34,6 +34,7 @@ export type Puzzle = ClientPuzzle & {
     teamMembers: User[],
     team?: Team,
   ) => PuzzleInstanceData;
+  filterPayloadForUser: (user: User, payload: object) => object;
   receiveAction: (
     user: User,
     puzzleInstance: PuzzleInstance,
