@@ -23,8 +23,30 @@ export const listPuzzles: RequestHandler = async (
     for (let key in slugToPuzzle) {
       slugToClientPuzzle[key] = puzzleToClientPuzzle(slugToPuzzle[key]);
     }
+
+    let instances: PuzzleInstance[];
+    if (req.context?.team) {
+      instances = await PuzzleInstance.findAll({
+        where: { teamId: req.context?.team.id },
+      });
+    } else if (req.context?.user) {
+      instances = await PuzzleInstance.findAll({
+        where: { teamId: req.context?.user.id },
+      });
+    } else {
+      bail400('No user or team, no puzzles. Capiche?', res);
+      return;
+    }
+
+    const solvedMap: { [puzzleName: string]: boolean } = {};
+    for (let instance of instances) {
+      solvedMap[instance.puzzleId] = !!instance.solvedAt;
+    }
+
     res.status(200);
-    res.send(JSON.stringify({ success: true, puzzles: slugToClientPuzzle }));
+    res.send(
+      JSON.stringify({ success: true, puzzles: slugToClientPuzzle, solvedMap }),
+    );
   } catch (e) {
     console.log('Failed to fetch puzzle list: ', e);
     bail400('Unexpected error: ' + (e as Error).message, res);

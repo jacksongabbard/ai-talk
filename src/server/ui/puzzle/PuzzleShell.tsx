@@ -120,6 +120,21 @@ const PuzzleShell: React.FC = () => {
           sendInstanceAction={sendInstanceAction}
         />
       )}
+      {instance && instance.solvedAt && (
+        <div
+          css={{
+            position: 'absolute',
+            top: '5vmin',
+            left: '5vmin',
+            background: 'black',
+            border: '1px #3f3 solid',
+            color: 'white',
+            padding: 'var(--spacing-large)',
+          }}
+        >
+          SOLVED!
+        </div>
+      )}
     </div>
   );
 };

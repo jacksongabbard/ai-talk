@@ -10,7 +10,7 @@ import { Typography } from '@mui/material';
 import { ClientPuzzle, assertIsClientPuzzle } from 'src/types/Puzzle';
 
 type PuzzleMap = {
-  [slug: string]: ClientPuzzle;
+  [slug: string]: { puzzle: ClientPuzzle; solved: boolean | undefined };
 };
 
 const Puzzles: React.FC = () => {
@@ -35,12 +35,25 @@ const Puzzles: React.FC = () => {
         return;
       }
 
-      if (hasOwnProperty(resp, 'puzzles') && typeof resp.puzzles === 'object') {
+      if (
+        hasOwnProperty(resp, 'puzzles') &&
+        typeof resp.puzzles === 'object' &&
+        hasOwnProperty(resp, 'solvedMap') &&
+        typeof resp.solvedMap === 'object' &&
+        resp.solvedMap !== null
+      ) {
         const pmap: PuzzleMap = {};
         for (let slug in resp.puzzles) {
           if (hasOwnProperty(resp.puzzles, slug)) {
             const v = assertIsClientPuzzle(resp.puzzles[slug]);
-            pmap[slug] = v;
+            let solved: undefined | boolean = undefined;
+            if (hasOwnProperty(resp.solvedMap, slug)) {
+              solved = !!resp.solvedMap[slug];
+            }
+            pmap[slug] = {
+              puzzle: v,
+              solved,
+            };
           }
         }
         setPuzzleMap(pmap);
@@ -63,7 +76,8 @@ const Puzzles: React.FC = () => {
       {puzzleMap && (
         <ul>
           {Object.keys(puzzleMap).map((slug) => {
-            const p = puzzleMap[slug];
+            const p = puzzleMap[slug].puzzle;
+            const solved = puzzleMap[slug].solved;
             return (
               <li key={slug}>
                 <Link to={'/puzzle/' + slug}>
@@ -78,6 +92,12 @@ const Puzzles: React.FC = () => {
                     p.minPlayers !== p.maxPlayers &&
                     p.minPlayers + '-' + p.maxPlayers + ' players'}
                 </Typography>
+                {solved === true && (
+                  <Typography variant="body2">Solved!</Typography>
+                )}
+                {solved === false && (
+                  <Typography variant="body2">Started</Typography>
+                )}
               </li>
             );
           })}
