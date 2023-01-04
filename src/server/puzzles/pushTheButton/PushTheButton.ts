@@ -1,12 +1,12 @@
 import AJV from 'ajv';
+import { isEqual } from 'lodash';
 
 import type Team from 'src/lib/db/Team';
 import type User from 'src/lib/db/User';
 import type { Puzzle } from 'src/types/Puzzle';
-import AlphaNum from 'src/lib/dict/AlphaNum';
-import { getRandomEntry } from 'src/lib/dict/utils';
 import type { ActionResult } from 'src/types/Puzzle';
 import type PuzzleInstance from 'src/lib/db/PuzzleInstance';
+import type { PushTheButtonPuzzlePayloadType } from 'src/types/puzzles/PuzzleTheButtonTypes';
 
 type PushTheButtonAction = {
   on: boolean;
@@ -38,19 +38,16 @@ const PushTheButton: Puzzle = {
   minPlayers: 1,
   maxPlayers: 6,
   createInstance: (user: User, team: Team, members: User[]) => {
-    const solution: { [uuid: string]: boolean } = {};
-
-    for (const member of members) {
-      solution[member.id] = true;
+    const solutionPayload: PushTheButtonPuzzlePayloadType = {};
+    solutionPayload[user.id] = true;
+    // There may or may not be any team members
+    for (const member of members || []) {
+      solutionPayload[member.id] = true;
     }
 
     return {
-      puzzlePayload: {
-        revealedLetters: [],
-      },
-      solutionPayload: {
-        solution,
-      },
+      puzzlePayload: {},
+      solutionPayload,
     };
   },
 
@@ -61,14 +58,28 @@ const PushTheButton: Puzzle = {
   ): ActionResult => {
     const a = assertIsPushTheButtonAction(action);
     console.log(a);
+
+    const payloadDiffValue = {
+      [user.id]: a.on,
+    };
+
+    const puzzlePayload = {
+      ...puzzleInstance.puzzlePayload,
+      ...payloadDiffValue,
+    };
+
     return {
       payloadDiff: {
-        value: { foo: 'bar' },
+        // seq comes externally
+        value: payloadDiffValue,
       },
-      puzzlePayload: {
-        foo: 'bar',
-      },
+      puzzlePayload,
     };
+  },
+
+  isSolved: (puzzlePayload, solutionPayload) => {
+    console.log(puzzlePayload, solutionPayload);
+    return isEqual(puzzlePayload, solutionPayload);
   },
 };
 

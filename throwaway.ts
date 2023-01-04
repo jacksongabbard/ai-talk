@@ -1,11 +1,6 @@
-import CookieParser from 'cookie-parser';
+import { merge } from 'lodash';
 
-import getDotEnv from './src/lib/dotenv';
+const a = { a: { b: { c: 'foo' } } };
+const b = { a: { b: { d: 'bar' } } };
 
-const config = getDotEnv();
-
-console.log(
-CookieParser.signedCookie(
-  "s%3AtMNnD7CR6xGl.Qfde24SjkQ7gZ9OTOOGo5UPxGT4caqY2USR3GkG2WCY",
-  config.COOKIE_PARSER_SECRET,
-));
+console.log(merge(a, b));

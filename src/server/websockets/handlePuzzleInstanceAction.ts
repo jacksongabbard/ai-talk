@@ -24,10 +24,16 @@ export async function handlePuzzleInstanceAction(
 
   const puzzle = PuzzleMap[puzzleInstance.puzzleId];
 
-  const { payloadDiff, puzzlePayload, solved } = puzzle.receiveAction(
+  const { payloadDiff, puzzlePayload } = puzzle.receiveAction(
     user,
     puzzleInstance,
     action,
   );
-  console.log({ payloadDiff, puzzlePayload, solved });
+
+  const isSolved = puzzle.isSolved(
+    puzzlePayload,
+    puzzleInstance.solutionPayload,
+  );
+
+  console.log({ payloadDiff, puzzlePayload, isSolved });
 }

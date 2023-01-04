@@ -26,7 +26,6 @@ export type NumeberedDiffObject = DiffObject & {
 export type ActionResult = {
   payloadDiff: DiffObject;
   puzzlePayload: object;
-  solved?: boolean;
 };
 
 export type Puzzle = ClientPuzzle & {
@@ -40,6 +39,7 @@ export type Puzzle = ClientPuzzle & {
     puzzleInstance: PuzzleInstance,
     action: object,
   ) => ActionResult;
+  isSolved: (puzzlePayload: object, solutionPayload: object) => boolean;
 };
 
 export function puzzleToClientPuzzle(p: Puzzle): ClientPuzzle {
