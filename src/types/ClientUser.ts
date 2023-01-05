@@ -1,3 +1,4 @@
+import { makeValidator } from 'src/lib/ajv/makeValidator';
 import type User from 'src/lib/db/User';
 
 export type ClientUser = {
@@ -23,4 +24,53 @@ export function userToClientUser(u: User): ClientUser {
     active: u.active,
     public: u.public,
   };
+}
+
+type SerializedClientUser = {
+  id: string;
+  createdAt: string;
+  teamId?: string;
+  userName: string;
+  location: string;
+  emailAddress?: string;
+  profilePic?: string;
+  active: boolean;
+  public: boolean;
+};
+
+export const validateIsSerializedClientUser = makeValidator({
+  type: 'object',
+  properties: {
+    id: { type: 'string' },
+    createdAt: { type: 'string' },
+    teamId: { type: 'string' },
+    userName: { type: 'string' },
+    location: { type: 'string' },
+    emailAddress: { type: 'string' },
+    profilePic: { type: 'string' },
+    active: { type: 'boolean' },
+    public: { type: 'boolean' },
+  },
+  required: ['id', 'createdAt', 'userName', 'location', 'active', 'public'],
+  additionalProperties: false,
+});
+
+export function hydrateSerializedClientUser(thing: any): ClientUser {
+  if (validateIsSerializedClientUser(thing)) {
+    const t = thing as SerializedClientUser;
+    const clientUser: ClientUser = {
+      id: t.id,
+      createdAt: new Date(t.createdAt),
+      teamId: t.teamId,
+      userName: t.userName,
+      location: t.location,
+      emailAddress: t.emailAddress,
+      profilePic: t.profilePic,
+      active: t.active,
+      public: t.public,
+    };
+    return clientUser;
+  }
+
+  throw new Error('Provided value is not a serialized client user');
 }

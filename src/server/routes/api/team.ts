@@ -4,10 +4,12 @@ import { Op } from 'sequelize';
 import Team from 'src/lib/db/Team';
 import User from 'src/lib/db/User';
 import { hasOwnProperty } from 'src/lib/hasOwnProperty';
-import { bail400 } from './util';
+import { bail400, error200 } from './util';
 import ValidNameRegex from 'src/lib/validation/ValidNameRegex';
 import SequelizeInstance from 'src/lib/db/SequelizeInstance';
 import { isLikelyOffensive } from 'src/lib/moderation/bannedWords';
+import type { ClientUser } from 'src/types/ClientUser';
+import { userToClientUser } from 'src/types/ClientUser';
 
 export const checkTeamNameIsAvailable: RequestHandler = async (
   req: Request,
@@ -230,6 +232,72 @@ export const updateTeam: RequestHandler = async (
   } catch (e) {
     console.log('Failed to save profile: ', e);
     bail400('Unexpected error: ' + (e as Error).message, res);
+    return;
+  }
+};
+
+export const listTeamMembers: RequestHandler = async (
+  req: Request,
+  res: Response,
+) => {
+  if (!req.context?.user) {
+    bail400('Thou shalt not list team members, ya twat.', res);
+    return;
+  }
+
+  if (
+    req.body &&
+    hasOwnProperty(req.body, 'data') &&
+    typeof req.body.data === 'object' &&
+    hasOwnProperty(req.body.data, 'teamId') &&
+    typeof req.body.data.teamId === 'string'
+  ) {
+    let requesterTeamId = '';
+    if (req.context?.team && req.context.team !== undefined) {
+      requesterTeamId = req.context.team.id;
+    }
+
+    const team = await Team.findOne({
+      where: {
+        id: req.body.data.teamId,
+      },
+    });
+    const isOwnTeam = team && requesterTeamId === team.id;
+    if (!team) {
+      bail400('No such team, my friend', res);
+      return;
+    }
+
+    if (!team.public && !isOwnTeam) {
+      error200('Team not public', res);
+      return;
+    }
+
+    const users = await User.findAll({
+      where: {
+        teamId: team.id,
+      },
+    });
+
+    const clientUsers: ClientUser[] = [];
+    let privateUsersOmitted = false;
+    for (let u of users) {
+      if (u.public || isOwnTeam) {
+        clientUsers.push(userToClientUser(u));
+      } else {
+        privateUsersOmitted = true;
+      }
+    }
+
+    res.status(200);
+    res.send({
+      success: true,
+      members: clientUsers,
+      privateUsersOmitted,
+    });
+    return;
+  } else {
+    bail400('Bad input', res);
     return;
   }
 };

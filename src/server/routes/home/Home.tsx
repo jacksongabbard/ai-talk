@@ -27,7 +27,7 @@ const Home: React.FC = () => {
       <h2 css={{ marginBottom: 'var(--spacing-large)' }}>
         Hi there {user ? user.userName : 'unknown puzzler'}
       </h2>
-      <p>The party is just getting started</p>
+      <p>I'll find something to put here.</p>
     </Page>
   );
 };

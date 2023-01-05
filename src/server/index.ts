@@ -30,10 +30,13 @@ import { saveProfile, checkUserNameIsAvailable } from './routes/api/profile';
 import {
   checkTeamNameIsAvailable,
   createTeam as createTeamAPI,
+  listTeamMembers,
   updateTeam as updateTeamAPI,
 } from './routes/api/team';
 import { initWebSockets } from './websockets/initWebSockets';
 import { healthCheck } from './routes/healthCheck';
+import { joinTeam } from './routes/joinTeam';
+import { generateJoinCode } from './routes/api/joinCode';
 
 const config = getDotEnv();
 
@@ -59,6 +62,7 @@ console.log('Bootstrapping the server...');
   router.get('/puzzle/:slug', authMiddleware, puzzle);
   router.get('/team', authMiddleware, team);
   router.get('/create-team', authMiddleware, createTeam);
+  router.get('/join-team', authMiddleware, joinTeam);
   router.get('/auth', auth);
   router.get('/logout', logout);
   router.get('/google-oauth-redirect', googleOAuthRedirect);
@@ -87,6 +91,8 @@ console.log('Bootstrapping the server...');
     authMiddleware,
     generatePuzzleInstance,
   );
+  router.post('/api/list-team-members', authMiddleware, listTeamMembers);
+  router.post('/api/generate-join-code', authMiddleware, generateJoinCode);
 
   // Static resources
   router.get(/.*(\.js|\.js\.map)$/, staticResource);
