@@ -178,8 +178,6 @@ export function isLikelyOffensive(word: string): boolean {
     }
   }
 
-  console.log(Array.from(candidates));
-
   for (let w of Array.from(candidates)) {
     if (trie.has(w)) {
       return true;
