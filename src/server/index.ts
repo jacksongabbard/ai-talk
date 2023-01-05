@@ -92,7 +92,7 @@ console.log('Bootstrapping the server...');
   router.get(/.*(\.js|\.js\.map)$/, staticResource);
 
   let server: https.Server | http.Server;
-  if (!config.UNSECURE) {
+  if (config.HTTPS) {
     const privateKey = fs.readFileSync(
       path.resolve(
         './.' + config.SERVER_HOST + '/',
