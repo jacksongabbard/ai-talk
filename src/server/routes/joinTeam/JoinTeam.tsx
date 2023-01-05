@@ -12,6 +12,8 @@ import { AppContext } from 'src/server/state/AppContext';
 import Page from 'src/server/ui/page/Page';
 import { Button, Input } from '@mui/material';
 import useRouterLink from 'src/server/ui/routerLink/useRouterLink';
+import callAPI from 'src/client/lib/callAPI';
+import { hasOwnProperty } from 'src/lib/hasOwnProperty';
 
 const JoinTeam: React.FC = () => {
   const appContext = useContext(AppContext);
@@ -30,12 +32,17 @@ const JoinTeam: React.FC = () => {
     [joinCode, setJoinCode],
   );
 
-  const navigate = useNavigate();
-  const goBack = useCallback(() => {
-    navigate('/team', { replace: true });
-  }, [navigate]);
+  const tryJoinCode = useCallback(() => {
+    (async () => {
+      const res = await callAPI('try-join-code', { joinCode });
+      if (res && hasOwnProperty(res, 'success')) {
+        window.location.pathname = '/team';
+      }
+    })();
+  }, [joinCode]);
 
-  const LeaveLink = useRouterLink('/leave-team');
+  // const navigate = useNavigate();
+
   return (
     <Page title="Join a team">
       {team && (
@@ -57,7 +64,13 @@ const JoinTeam: React.FC = () => {
               placeholder="XXXXXXXX"
             />
           </div>
-          <Button variant="contained">Join!</Button>
+          <Button
+            variant="contained"
+            disabled={joinCode.length !== 8}
+            onClick={tryJoinCode}
+          >
+            Join!
+          </Button>
         </>
       )}
     </Page>
