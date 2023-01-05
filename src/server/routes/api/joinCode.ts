@@ -121,6 +121,15 @@ export const tryJoinCode: RequestHandler = async (
     res.send({
       success: true,
     });
+
+    const deleteResult = await JoinCode.destroy({
+      where: {
+        code: joinCode,
+      },
+    });
+    if (deleteResult !== 1) {
+      console.log('could-not-delete-join-code');
+    }
   } else {
     bail400('Bad input', res);
     return;
