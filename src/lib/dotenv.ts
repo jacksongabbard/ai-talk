@@ -53,7 +53,7 @@ function getDotEnv() {
       // in the system.
       return {
         AES_KEY: config.AES_KEY,
-        IS_PROD: config.IS_PROD,
+        IS_PROD: config.IS_PROD.toString().trim().toUpperCase() === 'TRUE',
         SERVER_HOST: config.SERVER_HOST,
         SERVER_PORT: config.SERVER_PORT,
         POSTGRES_HOST: config.POSTGRES_HOST,
@@ -65,7 +65,7 @@ function getDotEnv() {
         GOOGLE_CLIENT_SECRET: config.GOOGLE_CLIENT_SECRET,
         BUILD_DIR: config.BUILD_DIR,
         COOKIE_PARSER_SECRET: config.COOKIE_PARSER_SECRET,
-        HTTPS: Boolean(config.HTTPS),
+        HTTPS: config.HTTPS.toString().trim().toUpperCase() === 'TRUE',
       };
     }
 
