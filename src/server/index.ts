@@ -33,6 +33,7 @@ import {
   updateTeam as updateTeamAPI,
 } from './routes/api/team';
 import { initWebSockets } from './websockets/initWebSockets';
+import { healthCheck } from './routes/healthCheck';
 
 const config = getDotEnv();
 
@@ -61,6 +62,7 @@ console.log('Bootstrapping the server...');
   router.get('/auth', auth);
   router.get('/logout', logout);
   router.get('/google-oauth-redirect', googleOAuthRedirect);
+  router.get('/health-check', healthCheck);
 
   // API endpoints
   router.post('/api/save-profile', authMiddleware, saveProfile);
