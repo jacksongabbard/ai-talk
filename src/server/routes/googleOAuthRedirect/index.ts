@@ -47,7 +47,8 @@ export const googleOAuthRedirect: RequestHandler = async (
       const client = new OAuth2Client({
         clientId: config.GOOGLE_CLIENT_ID,
         clientSecret: config.GOOGLE_CLIENT_SECRET,
-        redirectUri: 'https://local.ohffs.io:8197/google-oauth-redirect',
+        redirectUri:
+          'https://' + config.SERVER_HOST + ':8197/google-oauth-redirect',
       });
       // Get access and refresh tokens (if access_type is offline)
       let { tokens } = await client.getToken(req.query.code);
