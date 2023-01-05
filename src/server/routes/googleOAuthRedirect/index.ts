@@ -43,12 +43,14 @@ export const googleOAuthRedirect: RequestHandler = async (
         res.send('No OAuth code');
         return;
       }
-
+      let host = config.SERVER_HOST;
+      if (!config.IS_PROD) {
+        host += ':' + config.SERVER_PORT;
+      }
       const client = new OAuth2Client({
         clientId: config.GOOGLE_CLIENT_ID,
         clientSecret: config.GOOGLE_CLIENT_SECRET,
-        redirectUri:
-          'https://' + config.SERVER_HOST + ':8197/google-oauth-redirect',
+        redirectUri: 'https://' + host + '/google-oauth-redirect',
       });
       // Get access and refresh tokens (if access_type is offline)
       let { tokens } = await client.getToken(req.query.code);

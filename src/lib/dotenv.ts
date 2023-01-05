@@ -20,6 +20,7 @@ function getDotEnv() {
 
     if (
       assertHasKey(config, 'AES_KEY') &&
+      assertHasKey(config, 'IS_PROD') &&
       assertHasKey(config, 'SERVER_HOST') &&
       assertHasKey(config, 'SERVER_PORT') &&
       assertHasKey(config, 'POSTGRES_HOST') &&
@@ -52,8 +53,9 @@ function getDotEnv() {
       // in the system.
       return {
         AES_KEY: config.AES_KEY,
+        IS_PROD: config.IS_PROD,
         SERVER_HOST: config.SERVER_HOST,
-        SERVER_PORT,
+        SERVER_PORT: config.SERVER_PORT,
         POSTGRES_HOST: config.POSTGRES_HOST,
         POSTGRES_PORT: config.POSTGRES_PORT,
         POSTGRES_USER: config.POSTGRES_USER,

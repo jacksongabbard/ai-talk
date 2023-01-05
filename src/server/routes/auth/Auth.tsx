@@ -22,11 +22,15 @@ const Auth: React.FC = () => {
   // instances of ciphertext, which makes it much easier to recover the key
   // through cryptanalysis. Need to change the way those values are generated.
   const doAuth = useCallback(() => {
+    let host = window.location.host;
+    if (window.location.port) {
+      host += ':' + window.location.port;
+    }
     const client = google.accounts.oauth2.initCodeClient({
       client_id: GOOGLE_CLIENT_ID,
       scope: 'https://www.googleapis.com/auth/userinfo.email',
       ux_mode: 'redirect',
-      redirect_uri: 'https://local.ohffs.io:8197/google-oauth-redirect',
+      redirect_uri: 'https://' + host + '/google-oauth-redirect',
       state: DTSG_TOKEN,
     });
     client.requestCode();
