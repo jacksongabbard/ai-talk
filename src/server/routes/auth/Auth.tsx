@@ -22,10 +22,7 @@ const Auth: React.FC = () => {
   // instances of ciphertext, which makes it much easier to recover the key
   // through cryptanalysis. Need to change the way those values are generated.
   const doAuth = useCallback(() => {
-    let host = window.location.host;
-    if (window.location.port) {
-      host += ':' + window.location.port;
-    }
+    const { host } = window.location;
     const client = google.accounts.oauth2.initCodeClient({
       client_id: GOOGLE_CLIENT_ID,
       scope: 'https://www.googleapis.com/auth/userinfo.email',
