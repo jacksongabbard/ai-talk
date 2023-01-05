@@ -111,7 +111,7 @@ console.log('Bootstrapping the server...');
       app,
     );
   } else {
-    server = http.createServer();
+    server = http.createServer(app);
   }
   initWebSockets(server);
 
