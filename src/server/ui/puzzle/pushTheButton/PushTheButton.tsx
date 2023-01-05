@@ -35,9 +35,15 @@ const PushTheButton: React.FC<PushTheButtonProps> = ({
   if (!appContext?.user) {
     throw new Error('No user');
   }
-  const onClick = useCallback(() => {
+  const onPointerDown = useCallback(() => {
     sendInstanceAction({
-      toggle: true,
+      on: true,
+    });
+  }, [sendInstanceAction]);
+
+  const onPointerUp = useCallback(() => {
+    sendInstanceAction({
+      on: false,
     });
   }, [sendInstanceAction]);
 
@@ -64,13 +70,24 @@ const PushTheButton: React.FC<PushTheButtonProps> = ({
       >
         {Object.keys(payload.uuidsToNames).map((uuid) => {
           return (
-            <div key={uuid}>
-              {payload.pressed[uuid] === true && (
-                <div>{payload.uuidsToNames[uuid]} has pressed! ❤️</div>
-              )}
-              {payload.pressed[uuid] !== true && (
-                <div>{payload.uuidsToNames[uuid]} has not pressed! 💔</div>
-              )}
+            <div
+              key={uuid}
+              css={{
+                display: 'flex',
+                flexDirection: 'row',
+                justifyContent: 'center',
+                alignItems: 'center',
+              }}
+            >
+              <div
+                css={{
+                  fontSize: '3vmin',
+                  paddingRight: 'var(--spacing-medium)',
+                }}
+              >
+                {payload.pressed[uuid] === true ? <>❤️</> : <>💔</>}
+              </div>
+              <div>{payload.uuidsToNames[uuid]}</div>
             </div>
           );
         })}
@@ -86,9 +103,10 @@ const PushTheButton: React.FC<PushTheButtonProps> = ({
             alignItems: 'center',
             justifyContent: 'center',
           }}
-          onClick={onClick}
+          onPointerDown={onPointerDown}
+          onPointerUp={onPointerUp}
         >
-          Press and Hold
+          <span css={{ fontSize: '10vmin', lineHeight: '10vmin' }}>❤️</span>
         </Button>
       </div>
     </div>

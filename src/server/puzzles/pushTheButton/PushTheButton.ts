@@ -12,15 +12,15 @@ import {
 } from 'src/types/puzzles/PuzzleTheButtonTypes';
 
 type PushTheButtonAction = {
-  toggle: boolean;
+  on: boolean;
 };
 
 const instanceActionSchema = {
   type: 'object',
   properties: {
-    toggle: { type: 'boolean' },
+    on: { type: 'boolean' },
   },
-  required: ['toggle'],
+  required: ['on'],
   additionalProperties: false,
 };
 
@@ -28,7 +28,6 @@ const ajv = new AJV();
 const validateInstanceAction = ajv.compile(instanceActionSchema);
 
 function assertIsPushTheButtonAction(thing: any): PushTheButtonAction {
-  console.log({ thing });
   if (validateInstanceAction(thing)) {
     return thing as PushTheButtonAction;
   }
@@ -80,9 +79,9 @@ const PushTheButton: Puzzle = {
     puzzleInstance: PuzzleInstance,
     action: object,
   ): ActionResult => {
-    assertIsPushTheButtonAction(action);
+    const a = assertIsPushTheButtonAction(action);
     const pp = assertIsPushTheButtonPuzzlePayload(puzzleInstance.puzzlePayload);
-    const newState = !pp.pressed[user.id];
+    const newState = a.on;
     const payloadDiffValue = {
       pressed: {
         [user.id]: newState,
