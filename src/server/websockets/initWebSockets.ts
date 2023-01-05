@@ -1,4 +1,5 @@
 import type https from 'https';
+import type http from 'http';
 import WebSocket, { WebSocketServer } from 'ws';
 import cookie from 'cookie';
 import CookieParser from 'cookie-parser';
@@ -30,7 +31,7 @@ const sendJSON = (ws: WebSocket, thing: any) => {
 // Might need to add some basic heartbeat stuff like this:
 // https://github.com/websockets/ws#how-to-detect-and-close-broken-connectionshttps://github.com/websockets/ws#how-to-detect-and-close-broken-connectionshttps://github.com/websockets/ws#how-to-detect-and-close-broken-connections
 
-export function initWebSockets(server: https.Server) {
+export function initWebSockets(server: https.Server | http.Server) {
   const wss = new WebSocketServer({ noServer: true });
 
   wss.on('connection', (ws) => {

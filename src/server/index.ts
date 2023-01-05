@@ -1,4 +1,5 @@
 import fs from 'fs';
+import http from 'http';
 import https from 'https';
 
 import express from 'express';
@@ -88,21 +89,30 @@ console.log('Bootstrapping the server...');
   // Static resources
   router.get(/.*(\.js|\.js\.map)$/, staticResource);
 
-  let server: https.Server;
-  const privateKey = fs.readFileSync(
-    path.resolve('./.' + config.SERVER_HOST + '/', config.SERVER_HOST + '.key'),
-  );
-  const certificate = fs.readFileSync(
-    path.resolve('./.' + config.SERVER_HOST + '/', config.SERVER_HOST + '.crt'),
-  );
-  server = https.createServer(
-    {
-      key: privateKey,
-      cert: certificate,
-    },
-    app,
-  );
-
+  let server: https.Server | http.Server;
+  if (!config.UNSECURE) {
+    const privateKey = fs.readFileSync(
+      path.resolve(
+        './.' + config.SERVER_HOST + '/',
+        config.SERVER_HOST + '.key',
+      ),
+    );
+    const certificate = fs.readFileSync(
+      path.resolve(
+        './.' + config.SERVER_HOST + '/',
+        config.SERVER_HOST + '.crt',
+      ),
+    );
+    server = https.createServer(
+      {
+        key: privateKey,
+        cert: certificate,
+      },
+      app,
+    );
+  } else {
+    server = http.createServer();
+  }
   initWebSockets(server);
 
   server.listen(parseInt(config.SERVER_PORT, 10), '0.0.0.0');
