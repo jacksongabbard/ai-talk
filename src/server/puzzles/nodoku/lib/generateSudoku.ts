@@ -67,6 +67,3 @@ export function printGrid(g: SolvedSudoku) {
   }
   console.log('------------------');
 }
-
-const g = generateSudoku();
-printGrid(g);

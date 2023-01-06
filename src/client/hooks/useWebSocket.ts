@@ -1,10 +1,8 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { errorThingToString } from 'src/lib/error/errorThingToString';
-import { hasOwnProperty } from 'src/lib/hasOwnProperty';
 import { INSTANCE_ACTION, SET_PUZZLE } from 'src/types/SocketMessage';
 
 function sendJSON(s: WebSocket, thing: any) {
-  console.log(thing);
   s.send(JSON.stringify(thing));
 }
 
@@ -26,10 +24,6 @@ function sendInstanceAction(s: WebSocket, something: object) {
 
 export type SendInstanceAction = (payload: object) => void;
 type SetPuzzle = (puzzleName: string) => void;
-
-// WHERE DID YOU LEAVE OFF?
-// I WAS TRYING TO DECIDE HOW TO FEED THE onMessage, etc.
-// function down to the puzzle.
 
 export function useWebSocket(
   onConnected: () => void,

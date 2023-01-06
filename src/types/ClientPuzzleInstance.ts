@@ -30,7 +30,6 @@ export function puzzleInstanceToClientPuzzleInstance(
 export function assertIsSerializedPuzzleInstance(
   thing: unknown,
 ): ClientPuzzleInstance {
-  console.log(thing);
   if (
     !!thing &&
     typeof thing === 'object' &&

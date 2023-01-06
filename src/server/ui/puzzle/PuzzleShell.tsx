@@ -28,18 +28,15 @@ const PuzzleShell: React.FC = () => {
 
   const [connected, setConnected] = useState(false);
   const onConnected = useCallback(() => {
-    console.log('CONNECTED');
     setConnected(true);
   }, [setConnected]);
 
   const onClose = useCallback(() => {
-    console.log('DISCONNECTED');
     setConnected(false);
   }, [setConnected]);
 
   const onMessage = useCallback(
     (message: object) => {
-      console.log('MESSAGE: ', message);
       const sm = assertIsSocketMessage(message);
       if (sm.type === PAYLOAD_DIFF) {
         const payloadDiff = assertIsPayloadDiff(sm.payload);
@@ -97,7 +94,6 @@ const PuzzleShell: React.FC = () => {
     if (!connected) {
       return;
     }
-    console.log('Setting the puzzle...');
     if (instance) {
       setPuzzle(instance.puzzleId);
     }

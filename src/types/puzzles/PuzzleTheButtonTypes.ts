@@ -27,7 +27,6 @@ const pushTheButtonPuzzlePayloadValidator = makeValidator({
 });
 
 export function assertIsPushTheButtonPuzzlePayload(thing: any) {
-  console.log(pushTheButtonPuzzlePayloadValidator(thing));
   if (pushTheButtonPuzzlePayloadValidator(thing)) {
     return thing as PushTheButtonPuzzlePayloadType;
   }

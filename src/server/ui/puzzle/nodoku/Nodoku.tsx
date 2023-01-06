@@ -27,6 +27,17 @@ const Nodoku: React.FC<NodokuProps> = ({ instance, sendInstanceAction }) => {
       [0, 0, 0, 0, 0, 0, 0, 0, 0],
       [0, 0, 0, 0, 0, 0, 0, 0, 0],
     ],
+    correct: [
+      [false, false, false, false, false, false, false, false, false],
+      [false, false, false, false, false, false, false, false, false],
+      [false, false, false, false, false, false, false, false, false],
+      [false, false, false, false, false, false, false, false, false],
+      [false, false, false, false, false, false, false, false, false],
+      [false, false, false, false, false, false, false, false, false],
+      [false, false, false, false, false, false, false, false, false],
+      [false, false, false, false, false, false, false, false, false],
+      [false, false, false, false, false, false, false, false, false],
+    ],
   });
 
   const [localGrid, setLocalGrid] = useState<(number | string)[][]>(
@@ -50,7 +61,6 @@ const Nodoku: React.FC<NodokuProps> = ({ instance, sendInstanceAction }) => {
 
   const handleValueChange = useCallback(
     (e: React.ChangeEvent<HTMLInputElement>) => {
-      console.log(e.target.value);
       const x = parseInt(e.target.dataset['x'] || '');
       const y = parseInt(e.target.dataset['y'] || '');
       if (x === undefined || y === undefined) {
@@ -68,12 +78,16 @@ const Nodoku: React.FC<NodokuProps> = ({ instance, sendInstanceAction }) => {
       if (intValue !== undefined && intValue >= 0 && intValue <= 9) {
         const newGrid = cloneDeep(localGrid);
         newGrid[y][x] = intValue;
-        console.log('TODO: Call the API to sync the grid');
         setLocalGrid(newGrid);
+        sendInstanceAction({
+          value: intValue,
+          x,
+          y,
+        });
         return;
       }
     },
-    [localGrid, setLocalGrid],
+    [localGrid, setLocalGrid, sendInstanceAction],
   );
 
   return (
@@ -110,30 +124,43 @@ const Nodoku: React.FC<NodokuProps> = ({ instance, sendInstanceAction }) => {
           >
             {localGrid.map((row, y) => (
               <div key={'row_' + y}>
-                {row.map((val, x) => (
-                  <input
-                    data-x={x}
-                    data-y={y}
-                    type="text"
-                    value={val}
-                    onChange={handleValueChange}
-                    key={'y_' + y + '_x_' + x}
-                    css={{
-                      fontFamily: 'monospace',
-                      border: 0,
-                      borderTop: '1px #3f3 solid',
-                      borderLeft: '1px #3f3 solid',
-                      outline: 'none',
-                      width: '5vw',
-                      height: '5vw',
-                      fontSize: '4.8vw',
-                      lineHeight: '4.8vw',
-                      textAlign: 'center',
-                      background: 'black',
-                      color: '#3f3',
-                    }}
-                  />
-                ))}
+                {row.map((val, x) => {
+                  const valid = payload.correct[y][x] === true;
+                  let color = '#030';
+                  let bg = '#000';
+                  if (valid) {
+                    bg = '#3f3';
+                    color = '#000';
+                  } else if (val !== 0) {
+                    bg = '#f33';
+                    color = '#000';
+                  }
+                  return (
+                    <input
+                      data-x={x}
+                      data-y={y}
+                      type="text"
+                      disabled={valid}
+                      value={val}
+                      onChange={handleValueChange}
+                      key={'y_' + y + '_x_' + x}
+                      css={{
+                        background: bg,
+                        border: 0,
+                        borderLeft: '1px #3f3 solid',
+                        borderTop: '1px #3f3 solid',
+                        color,
+                        fontFamily: 'monospace',
+                        fontSize: '4.8vw',
+                        height: '5vw',
+                        lineHeight: '4.8vw',
+                        outline: 'none',
+                        textAlign: 'center',
+                        width: '5vw',
+                      }}
+                    />
+                  );
+                })}
               </div>
             ))}
           </div>

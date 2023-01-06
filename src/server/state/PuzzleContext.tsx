@@ -30,7 +30,6 @@ export const PuzzleContextProvider: React.FC<PuzzleContextProviderProps> = ({
   const [instance, setInstance] = useState<ClientPuzzleInstance | undefined>();
   const [solved, setSolved] = useState(false);
   const value = useMemo(() => {
-    console.log('Updating the PuzzleContext', instance);
     return {
       instance,
       setInstance,
