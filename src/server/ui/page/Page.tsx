@@ -63,7 +63,7 @@ const Page: React.FC<PageProps> = ({ title, children }) => {
       {cordContext.hasProvider && appContext?.team && (
         <div css={{ flex: 0, width: 300, marginLeft: 'var(--spacing-xlarge)' }}>
           <Thread
-            threadId={window.location.pathname}
+            threadId={window.location.pathname + ':' + appContext.team.id}
             location={{ route: window.location.pathname }}
           />
         </div>
