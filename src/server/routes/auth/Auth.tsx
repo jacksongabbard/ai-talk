@@ -1,5 +1,7 @@
-import React, { useCallback, useContext, useEffect } from 'react';
+import { Typography } from '@mui/material';
+import React, { useCallback, useContext, useEffect, useState } from 'react';
 import Helmet from 'react-helmet';
+import { getRandomEntry } from 'src/lib/dict/utils';
 
 import { AppContext } from 'src/server/state/AppContext';
 
@@ -7,8 +9,22 @@ declare var google: any;
 declare var GOOGLE_CLIENT_ID: string;
 declare var DTSG_TOKEN: string;
 
+const prompts = [
+  "I don't even know you!",
+  'And who mayhaps are you?',
+  "Let's see some ID there, buddy",
+  'You. Shall Not. Pass. (Unless you login.)',
+  'Stranger danger!',
+  'Speak friend and enter. And by that I mean login already.',
+];
 const Auth: React.FC = () => {
   const appContext = useContext(AppContext);
+  const [prompt, setPrompt] = useState('');
+
+  useEffect(() => {
+    setPrompt(getRandomEntry(prompts));
+  }, [setPrompt]);
+
   useEffect(() => {
     appContext?.setShowNavigation(false);
   }, [appContext?.setShowNavigation]);
@@ -38,6 +54,16 @@ const Auth: React.FC = () => {
       <Helmet>
         <title>Login</title>
       </Helmet>
+      {prompt !== '' && (
+        <div
+          css={{
+            marginTop: 'var(--spacing-large)',
+            marginBottom: 'var(--spacing-large)',
+          }}
+        >
+          <Typography variant="h5">{prompt}</Typography>
+        </div>
+      )}
       {doAuth && <button onClick={doAuth}>Login with Google</button>}
     </>
   );
