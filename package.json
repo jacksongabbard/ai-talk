@@ -18,6 +18,8 @@
   },
   "homepage": "https://github.com/jacksongabbard/cord-puzzles#readme",
   "dependencies": {
+    "@cord-sdk/react": "^0.0.25",
+    "@cord-sdk/server": "^0.0.25",
     "@emotion/react": "^11.10.5",
     "@emotion/styled": "^11.10.5",
     "@mui/icons-material": "^5.11.0",

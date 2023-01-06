@@ -11,6 +11,8 @@ export type TAppContext = null | {
   setShowNavigation: (b: boolean) => void;
   showHeader: boolean;
   setShowHeader: (b: boolean) => void;
+  cordClientAuthToken?: string;
+  setCordClientAuthToken: (s: string) => void;
 };
 
 export type TAppContextExport = {
@@ -18,6 +20,7 @@ export type TAppContextExport = {
   team?: ClientTeam | undefined;
   showNavigation?: boolean | undefined;
   showHeader?: boolean | undefined;
+  cordClientAuthToken?: string | undefined;
 };
 
 export const AppContext = React.createContext<TAppContext>(null);
@@ -27,6 +30,7 @@ type AppContextProviderProps = {
   team?: ClientTeam;
   showNavigation?: boolean;
   showHeader?: boolean;
+  cordClientAuthToken?: string;
   children: React.ReactNode;
 };
 
@@ -45,6 +49,9 @@ export const AppContextProvider: React.FC<AppContextProviderProps> = ({
   const [_showHeader, setShowHeader] = useState(
     showHeader !== undefined ? showHeader : true,
   );
+  const [cordClientAuthToken, setCordClientAuthToken] = useState<
+    string | undefined
+  >();
   return (
     <AppContext.Provider
       value={{
@@ -56,6 +63,8 @@ export const AppContextProvider: React.FC<AppContextProviderProps> = ({
         setShowNavigation,
         showHeader: _showHeader,
         setShowHeader,
+        cordClientAuthToken,
+        setCordClientAuthToken,
       }}
     >
       {children}

@@ -32,7 +32,9 @@ function getDotEnv() {
       assertHasKey(config, 'GOOGLE_CLIENT_SECRET') &&
       assertHasKey(config, 'BUILD_DIR') &&
       assertHasKey(config, 'COOKIE_PARSER_SECRET') &&
-      assertHasKey(config, 'HTTPS')
+      assertHasKey(config, 'HTTPS') &&
+      assertHasKey(config, 'CORD_APPLICATION_ID') &&
+      assertHasKey(config, 'CORD_SECRET')
     ) {
       const { SERVER_PORT, POSTGRES_PORT } = config;
       if (!SERVER_PORT.match(/^\d{4,}$/)) {
@@ -66,6 +68,8 @@ function getDotEnv() {
         BUILD_DIR: config.BUILD_DIR,
         COOKIE_PARSER_SECRET: config.COOKIE_PARSER_SECRET,
         HTTPS: config.HTTPS.toString().trim().toUpperCase() === 'TRUE',
+        CORD_APPLICATION_ID: config.CORD_APPLICATION_ID,
+        CORD_SECRET: config.CORD_SECRET,
       };
     }
 

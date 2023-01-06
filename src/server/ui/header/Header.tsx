@@ -21,7 +21,6 @@ const Header: React.FC<HeaderProps> = ({ title }) => {
   const appContext = useContext(AppContext);
   const user = appContext?.user;
   const team = appContext?.team;
-
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
 
   const showMenu = (event: React.MouseEvent<HTMLElement>) => {

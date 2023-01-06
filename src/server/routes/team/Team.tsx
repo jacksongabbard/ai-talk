@@ -20,6 +20,7 @@ import callAPI from 'src/client/lib/callAPI';
 import { hasOwnProperty } from 'src/lib/hasOwnProperty';
 import MessageBox from 'src/server/ui/messageBox/MessageBox';
 import { errorThingToString } from 'src/lib/error/errorThingToString';
+import { CordContext, PresenceFacepile } from '@cord-sdk/react';
 
 // For some godforsaken reason, if I call this component 'Team', I get
 // hydration errors. Specifically, the error:
@@ -115,6 +116,13 @@ const TeamPage: React.FC = () => {
     })();
   }, [setJoinCode, setErrorMessage]);
 
+  const cordContext = useContext(CordContext);
+  useEffect(() => {
+    cordContext.setLocation({ route: '/team' });
+  }, [cordContext.setLocation]);
+
+  console.log(cordContext);
+
   return (
     <Page title="Team">
       {errorMessage !== '' && (
@@ -123,6 +131,9 @@ const TeamPage: React.FC = () => {
       {!team && <NoTeam />}
       {team && !editing && (
         <>
+          {cordContext.hasProvider && (
+            <PresenceFacepile location={{ route: '/team' }} />
+          )}
           <div css={{ marginBottom: 'var(--spacing-large)' }}>
             <Typography variant="overline">Team</Typography>
             <Typography variant="h5">{team.teamName}</Typography>

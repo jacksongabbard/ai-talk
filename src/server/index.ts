@@ -37,6 +37,7 @@ import { initWebSockets } from './websockets/initWebSockets';
 import { healthCheck } from './routes/healthCheck';
 import { joinTeam } from './routes/joinTeam';
 import { generateJoinCode, tryJoinCode } from './routes/api/joinCode';
+import { getCordClientAuthToken } from './routes/api/cord';
 
 const config = getDotEnv();
 
@@ -94,6 +95,11 @@ console.log('Bootstrapping the server...');
   router.post('/api/list-team-members', authMiddleware, listTeamMembers);
   router.post('/api/generate-join-code', authMiddleware, generateJoinCode);
   router.post('/api/try-join-code', authMiddleware, tryJoinCode);
+  router.post(
+    '/api/get-cord-client-auth-token',
+    authMiddleware,
+    getCordClientAuthToken,
+  );
 
   // Static resources
   router.get(/.*(\.js|\.js\.map)$/, staticResource);

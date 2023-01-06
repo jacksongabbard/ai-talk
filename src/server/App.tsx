@@ -9,9 +9,30 @@ import CreateTeam from './routes/createTeam/CreateTeam';
 import JoinTeam from './routes/joinTeam/JoinTeam';
 import Puzzles from './routes/puzzles/Puzzles';
 import PuzzleWithContext from './routes/puzzle/PuzzleWithContext';
+import { useContext, useEffect } from 'react';
+import { AppContext } from './state/AppContext';
+import callAPI from 'src/client/lib/callAPI';
+import { hasOwnProperty } from 'src/lib/hasOwnProperty';
+import { CordProvider } from '@cord-sdk/react';
 
 const App: React.FC = () => {
-  return (
+  const appContext = useContext(AppContext);
+  const cordToken = appContext?.cordClientAuthToken;
+  useEffect(() => {
+    (async () => {
+      if (appContext?.team && appContext?.setCordClientAuthToken) {
+        const resp = await callAPI('get-cord-client-auth-token');
+        if (
+          hasOwnProperty(resp, 'clientAuthToken') &&
+          typeof resp.clientAuthToken === 'string'
+        ) {
+          appContext.setCordClientAuthToken(resp.clientAuthToken);
+        }
+      }
+    })();
+  }, [appContext?.team, appContext?.setCordClientAuthToken]);
+
+  const shell = (
     <Shell>
       <Routes>
         <Route path="/" element={<Home />} />
@@ -26,6 +47,11 @@ const App: React.FC = () => {
       </Routes>
     </Shell>
   );
+
+  if (cordToken) {
+    return <CordProvider clientAuthToken={cordToken}>{shell}</CordProvider>;
+  }
+  return shell;
 };
 
 export default App;
