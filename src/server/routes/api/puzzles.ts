@@ -85,12 +85,14 @@ export const getPuzzleInfo: RequestHandler = async (
             pi = await PuzzleInstance.findOne({
               where: {
                 teamId: req.context.team.id,
+                puzzleId: slug,
               },
             });
           } else if (req.context?.user) {
             pi = await PuzzleInstance.findOne({
               where: {
                 userId: req.context.user.id,
+                puzzleId: slug,
               },
             });
           }
@@ -209,12 +211,14 @@ export const generatePuzzleInstance: RequestHandler = async (
             pi = await PuzzleInstance.findOne({
               where: {
                 teamId: req.context.team.id,
+                puzzleId: slug,
               },
             });
           } else {
             pi = await PuzzleInstance.findOne({
               where: {
                 userId: req.context.user.id,
+                puzzleId: slug,
               },
             });
           }
