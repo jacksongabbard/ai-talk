@@ -50,7 +50,7 @@ const PushTheButton: Puzzle = {
     };
     const puzzlePayload: PushTheButtonPuzzlePayloadType = {
       pressed: {
-        [user.id]: true,
+        [user.id]: false,
       },
       uuidsToNames: {
         [user.id]: user.userName,
