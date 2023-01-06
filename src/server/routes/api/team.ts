@@ -80,9 +80,10 @@ export const createTeam: RequestHandler = async (
         typeof req.body.data.teamName === 'string'
       ) {
         if (
-          req.body.data.teamName.length < 2 &&
-          req.body.data.teamName.length > 48 &&
-          req.body.data.teamName.match(ValidNameRegex)
+          req.body.data.teamName.length < 2 ||
+          req.body.data.teamName.length > 48 ||
+          !req.body.data.teamName.match(ValidNameRegex) ||
+          isLikelyOffensive(req.body.data.teamName)
         ) {
           throw new Error('Invalid team name');
         }
@@ -183,7 +184,7 @@ export const updateTeam: RequestHandler = async (
         if (
           req.body.data.teamName.length < 2 ||
           req.body.data.teamName.length > 48 ||
-          req.body.data.teamName.match(ValidNameRegex) ||
+          !req.body.data.teamName.match(ValidNameRegex) ||
           isLikelyOffensive(req.body.data.teamName)
         ) {
           throw new Error('Invalid team name');

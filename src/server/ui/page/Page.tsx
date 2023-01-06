@@ -26,7 +26,7 @@ const Page: React.FC<PageProps> = ({ title, children }) => {
 
       <div
         css={{
-          maxWidth: '768px',
+          maxWidth: '1440px',
         }}
       >
         <Paper>

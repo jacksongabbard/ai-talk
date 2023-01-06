@@ -16,6 +16,21 @@ const Shell: React.FC<ShellProps> = ({ title, children }) => {
 
   return (
     <div css={{ background: 'var(--theme-bg-wash)' }}>
+      <style
+        dangerouslySetInnerHTML={{
+          __html: `
+          body {
+          --cord-page-presence-avatar-size: 32px;
+          --cord-color-base: #000;
+          --cord-color-base-strong: #696A6C;
+          --cord-color-base-x-strong: #97979F;
+          --cord-color-content-primary: #3f3;
+          --cord-color-content-emphasis: #3f3;
+          --cord-color-brand-primary: #3f3;
+        }
+      `,
+        }}
+      ></style>
       {!appContext ||
         appContext.showHeader === undefined ||
         (appContext.showHeader && <Header title="O.H.F.F.S." />)}

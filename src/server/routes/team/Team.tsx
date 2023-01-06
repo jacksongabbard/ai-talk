@@ -20,7 +20,12 @@ import callAPI from 'src/client/lib/callAPI';
 import { hasOwnProperty } from 'src/lib/hasOwnProperty';
 import MessageBox from 'src/server/ui/messageBox/MessageBox';
 import { errorThingToString } from 'src/lib/error/errorThingToString';
-import { CordContext, PresenceFacepile } from '@cord-sdk/react';
+import {
+  CordContext,
+  PagePresence,
+  PresenceFacepile,
+  Thread,
+} from '@cord-sdk/react';
 
 // For some godforsaken reason, if I call this component 'Team', I get
 // hydration errors. Specifically, the error:
@@ -130,85 +135,95 @@ const TeamPage: React.FC = () => {
       )}
       {!team && <NoTeam />}
       {team && !editing && (
-        <>
-          {cordContext.hasProvider && (
-            <PresenceFacepile location={{ route: '/team' }} />
-          )}
-          <div css={{ marginBottom: 'var(--spacing-large)' }}>
-            <Typography variant="overline">Team</Typography>
-            <Typography variant="h5">{team.teamName}</Typography>
-          </div>
-          {team.location && (
+        <div css={{ display: 'flex', flexDirection: 'row' }}>
+          <div css={{ flex: 1 }}>
             <div css={{ marginBottom: 'var(--spacing-large)' }}>
-              <Typography variant="overline">Location</Typography>
-              <Typography variant="body1">{team.location}</Typography>
+              <Typography variant="overline">Team</Typography>
+              <Typography variant="h5">{team.teamName}</Typography>
             </div>
-          )}
-          {members.length > 0 && (
-            <>
-              <Typography variant="overline">Members</Typography>
-              {members.length === 0 && omittedMembers && (
-                <div css={{ marginBottom: 'var(--spacing-large)' }}>
-                  <Typography variant="body1">
-                    All users on this team are non-public
-                  </Typography>
-                </div>
-              )}
-              {members.length > 0 && (
-                <>
-                  <ul css={{ marginBottom: 'var(--spacing-large)' }}>
-                    {members.map((m) => (
-                      <li
-                        css={{ marginBottom: 'var(--spacing-large)' }}
-                        key={m.id}
-                      >
-                        <Typography variant="body1">{m.userName}</Typography>
-                      </li>
-                    ))}
-                  </ul>
-                  {omittedMembers && (
-                    <Typography variant="subtitle2">
-                      Some non-public members have been omitted from this list.
+            {team.location && (
+              <div css={{ marginBottom: 'var(--spacing-large)' }}>
+                <Typography variant="overline">Location</Typography>
+                <Typography variant="body1">{team.location}</Typography>
+              </div>
+            )}
+            {members.length > 0 && (
+              <>
+                <Typography variant="overline">Members</Typography>
+                {members.length === 0 && omittedMembers && (
+                  <div css={{ marginBottom: 'var(--spacing-large)' }}>
+                    <Typography variant="body1">
+                      All users on this team are non-public
                     </Typography>
-                  )}
-                </>
-              )}
-            </>
-          )}
-          {user?.teamId === team.id && (
-            <div
-              css={{
-                marginTop: 'var(--spacing-xlarge)',
-              }}
-            >
-              <Divider />
+                  </div>
+                )}
+                {members.length > 0 && (
+                  <>
+                    <ul css={{ marginBottom: 'var(--spacing-large)' }}>
+                      {members.map((m) => (
+                        <li
+                          css={{ marginBottom: 'var(--spacing-large)' }}
+                          key={m.id}
+                        >
+                          <Typography variant="body1">{m.userName}</Typography>
+                        </li>
+                      ))}
+                    </ul>
+                    {omittedMembers && (
+                      <Typography variant="subtitle2">
+                        Some non-public members have been omitted from this
+                        list.
+                      </Typography>
+                    )}
+                  </>
+                )}
+              </>
+            )}
+            {user?.teamId === team.id && (
               <div
                 css={{
-                  display: 'flex',
-                  justifyContent: 'end',
-                  marginTop: 'var(--spacing-large)',
+                  marginTop: 'var(--spacing-xlarge)',
                 }}
               >
-                {members && members.length < 6 && (
+                <Divider />
+                <div
+                  css={{
+                    display: 'flex',
+                    justifyContent: 'end',
+                    marginTop: 'var(--spacing-large)',
+                  }}
+                >
+                  {members && members.length < 6 && (
+                    <Button
+                      variant="text"
+                      onClick={inviteMembers}
+                      css={{ marginLeft: 'var(--spacing-large)' }}
+                    >
+                      Invite members
+                    </Button>
+                  )}
                   <Button
                     variant="text"
-                    onClick={inviteMembers}
+                    onClick={startEditingTeam}
                     css={{ marginLeft: 'var(--spacing-large)' }}
                   >
-                    Invite members
+                    Edit team
                   </Button>
-                )}
-                <Button
-                  variant="text"
-                  onClick={startEditingTeam}
-                  css={{ marginLeft: 'var(--spacing-large)' }}
-                >
-                  Edit team
-                </Button>
+                </div>
               </div>
+            )}
+          </div>
+          {cordContext.hasProvider && (
+            <div
+              css={{ flex: 0, width: 300, marginLeft: 'var(--spacing-xlarge)' }}
+            >
+              <div>
+                <PagePresence location={{ route: '/team' }} />
+              </div>
+              <Thread threadId={team.teamName} location={{ route: 'lteam' }} />
             </div>
           )}
-        </>
+        </div>
       )}
       {team && editing && (
         <TeamForm onUpdate={stopEditingTeam} onCancel={stopEditingTeam} />

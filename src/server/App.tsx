@@ -1,4 +1,7 @@
+import { CordProvider } from '@cord-sdk/react';
 import { Routes, Route } from 'react-router-dom';
+import { ThemeProvider, createTheme } from '@mui/material/styles';
+import CssBaseline from '@mui/material/CssBaseline';
 
 import Home from './routes/home/Home';
 import Profile from './routes/profile/Profile';
@@ -13,7 +16,12 @@ import { useContext, useEffect } from 'react';
 import { AppContext } from './state/AppContext';
 import callAPI from 'src/client/lib/callAPI';
 import { hasOwnProperty } from 'src/lib/hasOwnProperty';
-import { CordProvider } from '@cord-sdk/react';
+
+const darkTheme = createTheme({
+  palette: {
+    mode: 'dark',
+  },
+});
 
 const App: React.FC = () => {
   const appContext = useContext(AppContext);
@@ -33,19 +41,21 @@ const App: React.FC = () => {
   }, [appContext?.team, appContext?.setCordClientAuthToken]);
 
   const shell = (
-    <Shell>
-      <Routes>
-        <Route path="/" element={<Home />} />
-        <Route path="/home" element={<Home />} />
-        <Route path="/profile" element={<Profile />} />
-        <Route path="/team" element={<Team />} />
-        <Route path="/create-team" element={<CreateTeam />} />
-        <Route path="/join-team" element={<JoinTeam />} />
-        <Route path="/auth" element={<Auth />} />
-        <Route path="/puzzles" element={<Puzzles />} />
-        <Route path="/puzzle/:slug" element={<PuzzleWithContext />} />
-      </Routes>
-    </Shell>
+    <ThemeProvider theme={darkTheme}>
+      <Shell>
+        <Routes>
+          <Route path="/" element={<Home />} />
+          <Route path="/home" element={<Home />} />
+          <Route path="/profile" element={<Profile />} />
+          <Route path="/team" element={<Team />} />
+          <Route path="/create-team" element={<CreateTeam />} />
+          <Route path="/join-team" element={<JoinTeam />} />
+          <Route path="/auth" element={<Auth />} />
+          <Route path="/puzzles" element={<Puzzles />} />
+          <Route path="/puzzle/:slug" element={<PuzzleWithContext />} />
+        </Routes>
+      </Shell>
+    </ThemeProvider>
   );
 
   if (cordToken) {
