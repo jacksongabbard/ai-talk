@@ -213,16 +213,6 @@ const TeamPage: React.FC = () => {
               </div>
             )}
           </div>
-          {cordContext.hasProvider && (
-            <div
-              css={{ flex: 0, width: 300, marginLeft: 'var(--spacing-xlarge)' }}
-            >
-              <div>
-                <PagePresence location={{ route: '/team' }} />
-              </div>
-              <Thread threadId={team.teamName} location={{ route: 'lteam' }} />
-            </div>
-          )}
         </div>
       )}
       {team && editing && (

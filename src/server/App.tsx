@@ -20,6 +20,22 @@ import { hasOwnProperty } from 'src/lib/hasOwnProperty';
 const darkTheme = createTheme({
   palette: {
     mode: 'dark',
+    primary: {
+      main: '#119911',
+      light: '#55cc55',
+      contrastText: '#ffffff',
+    },
+    secondary: {
+      main: '#33ff33',
+    },
+    background: {
+      default: '#000',
+      paper: '#111',
+    },
+    text: {
+      primary: '#ccffcc',
+      secondary: 'rgba(255,255,255,0.7)',
+    },
   },
 });
 

@@ -37,7 +37,7 @@ const Shell: React.FC<ShellProps> = ({ title, children }) => {
       <div css={{ display: 'flex', alignItems: 'stretch' }}>
         {(showNavigation === undefined || showNavigation) && <Nav />}
         <div css={{ flex: 1, margin: 'var(--spacing-xlarge)', marginLeft: 0 }}>
-          <div css={{ maxWidth: 768, margin: '0 auto' }}>
+          <div css={{ maxWidth: 1440, margin: '0 auto' }}>
             {title && (
               <div css={{ paddingBottom: 'var(--spacing-xlarge)' }}>
                 <Typography variant="h4">{title}</Typography>
