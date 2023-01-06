@@ -67,7 +67,6 @@ const Puzzle: React.FC = () => {
           ? assertIsSerializedPuzzleInstance(resp.instance)
           : undefined,
       );
-      console.log(resp);
     })();
   }, [setErrorMessage, setLoading, setPuzzleName, setInstance, slug]);
 

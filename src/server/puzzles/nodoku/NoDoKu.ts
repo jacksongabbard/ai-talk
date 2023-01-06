@@ -5,6 +5,7 @@ import type User from 'src/lib/db/User';
 import type { Puzzle } from 'src/types/Puzzle';
 import type { ActionResult } from 'src/types/Puzzle';
 import type PuzzleInstance from 'src/lib/db/PuzzleInstance';
+import { generateSudoku } from './lib/generateSudoku';
 
 const Nodoku: Puzzle = {
   name: 'Nodoku',
@@ -12,8 +13,22 @@ const Nodoku: Puzzle = {
   minPlayers: 2,
   maxPlayers: 6,
   createInstance: (user: User, members: User[], team?: Team) => {
-    const solutionPayload: object = {};
-    const puzzlePayload: object = {};
+    const grid = generateSudoku();
+
+    const solutionPayload: object = { grid };
+    const puzzlePayload: object = {
+      grid: [
+        [0, 0, 0, 0, 0, 0, 0, 0, 0],
+        [0, 0, 0, 0, 0, 0, 0, 0, 0],
+        [0, 0, 0, 0, 0, 0, 0, 0, 0],
+        [0, 0, 0, 0, 0, 0, 0, 0, 0],
+        [0, 0, 0, 0, 0, 0, 0, 0, 0],
+        [0, 0, 0, 0, 0, 0, 0, 0, 0],
+        [0, 0, 0, 0, 0, 0, 0, 0, 0],
+        [0, 0, 0, 0, 0, 0, 0, 0, 0],
+        [0, 0, 0, 0, 0, 0, 0, 0, 0],
+      ],
+    };
 
     return {
       puzzlePayload,

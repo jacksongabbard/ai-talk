@@ -12,6 +12,7 @@ import {
   assertIsPayloadDiff,
   assertIsSocketMessage,
 } from 'src/types/SocketMessage';
+import Nodoku from './nodoku/Nodoku';
 
 const PuzzleShell: React.FC = () => {
   const appContext = useContext(AppContext);
@@ -119,6 +120,9 @@ const PuzzleShell: React.FC = () => {
           instance={instance}
           sendInstanceAction={sendInstanceAction}
         />
+      )}
+      {instance && instance.puzzleId === 'nodoku' && (
+        <Nodoku instance={instance} sendInstanceAction={sendInstanceAction} />
       )}
       {instance && instance.solvedAt && (
         <div
