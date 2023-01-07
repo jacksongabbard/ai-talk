@@ -276,7 +276,6 @@ export const generatePuzzleInstance: RequestHandler = async (
               puzzlePayload,
               solutionPayload,
             });
-            console.log(newPI);
             const instance = await newPI.save({ transaction });
 
             const instanceMemberPromises: Promise<PuzzleInstanceUser>[] = [];

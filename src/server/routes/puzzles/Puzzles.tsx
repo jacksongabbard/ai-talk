@@ -8,6 +8,7 @@ import { hasOwnProperty } from 'src/lib/hasOwnProperty';
 import MessageBox from 'src/server/ui/messageBox/MessageBox';
 import { Typography } from '@mui/material';
 import { ClientPuzzle, assertIsClientPuzzle } from 'src/types/Puzzle';
+import { CordContext, PagePresence, PresenceFacepile } from '@cord-sdk/react';
 
 type PuzzleMap = {
   [slug: string]: { puzzle: ClientPuzzle; solved: boolean | undefined };
@@ -15,6 +16,7 @@ type PuzzleMap = {
 
 const Puzzles: React.FC = () => {
   const appContext = useContext(AppContext);
+  const cordContext = useContext(CordContext);
   const user = appContext?.user;
   const team = appContext?.team;
   const [puzzleMap, setPuzzleMap] = useState<PuzzleMap>();
@@ -74,34 +76,90 @@ const Puzzles: React.FC = () => {
         </Typography>
       )}
       {puzzleMap && (
-        <ul>
+        <div css={{ flex: 1, display: 'flex' }}>
           {Object.keys(puzzleMap).map((slug) => {
             const p = puzzleMap[slug].puzzle;
             const solved = puzzleMap[slug].solved;
             return (
-              <li key={slug}>
-                <Link to={'/puzzle/' + slug}>
-                  <Typography variant="h6">{p.name}</Typography>
-                </Link>
-                <Typography variant="body2">
-                  {p.minPlayers === 1 && p.maxPlayers === 1 && 'Single Player'}
-                  {p.maxPlayers !== 1 &&
-                    p.minPlayers === p.maxPlayers &&
-                    p.minPlayers + ' players'}
-                  {p.maxPlayers !== 1 &&
-                    p.minPlayers !== p.maxPlayers &&
-                    p.minPlayers + '-' + p.maxPlayers + ' players'}
-                </Typography>
-                {solved === true && (
-                  <Typography variant="body2">Solved!</Typography>
-                )}
-                {solved === false && (
-                  <Typography variant="body2">Started</Typography>
-                )}
-              </li>
+              <Link to={'/puzzle/' + slug} key={slug}>
+                <div
+                  css={{
+                    border: '1px #3f3 solid',
+                    borderRadius: 2,
+                    width: '25vw',
+                    height: '200px',
+                    flex: 0,
+                    flexGrow: 0,
+                    flexShrink: 0,
+                    padding: 'var(--spacing-medium)',
+                    marginBottom: 'var(--spacing-medium)',
+                    marginRight: 'var(--spacing-medium)',
+                    position: 'relative',
+                    textDecoration: 'none',
+                    '&:hover': {
+                      background: '#3f3',
+                      color: '#000',
+                      textDecoration: 'none',
+                    },
+                  }}
+                >
+                  <Typography variant="h3" css={{ textDecoration: 'none' }}>
+                    {p.name}
+                  </Typography>
+                  <Typography variant="body2" css={{ textDecoration: 'none' }}>
+                    {p.minPlayers === 1 &&
+                      p.maxPlayers === 1 &&
+                      'Single Player'}
+                    {p.maxPlayers !== 1 &&
+                      p.minPlayers === p.maxPlayers &&
+                      p.minPlayers + ' players'}
+                    {p.maxPlayers !== 1 &&
+                      p.minPlayers !== p.maxPlayers &&
+                      p.minPlayers + '-' + p.maxPlayers + ' players'}
+                  </Typography>
+                  <div
+                    css={{
+                      marginTop: 'var(--spacing-medium)',
+                      marginBottom: 'var(--spacing-medium)',
+                    }}
+                  >
+                    <PresenceFacepile location={{ route: '/puzzle/' + slug }} />
+                  </div>
+                  {solved === true && (
+                    <Typography
+                      variant="subtitle2"
+                      css={{
+                        position: 'absolute',
+                        bottom: 0,
+                        right: '16px',
+                        background: '#3f3',
+                        color: '#000',
+                        padding: 'var(--spacing-medium)',
+                      }}
+                    >
+                      Solved!
+                    </Typography>
+                  )}
+                  {solved === false && (
+                    <Typography
+                      variant="subtitle2"
+                      css={{
+                        position: 'absolute',
+                        bottom: 0,
+                        right: '16px',
+                        background: '#3f3',
+                        color: '#000',
+                        padding: 'var(--spacing-medium)',
+                      }}
+                    >
+                      Started
+                    </Typography>
+                  )}
+                </div>
+              </Link>
             );
           })}
-        </ul>
+        </div>
       )}
     </Page>
   );

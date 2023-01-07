@@ -102,12 +102,10 @@ const PuzzleShell: React.FC = () => {
   return (
     <div
       css={{
-        background: '#000',
-        height: '100vh',
-        width: '100vw',
-        position: 'absolute',
-        top: 0,
-        left: 0,
+        display: 'flex',
+        flex: 1,
+        alignItems: 'center',
+        justifyContent: 'center',
       }}
     >
       {!connected && <MessageBox type="info">Connecting...</MessageBox>}

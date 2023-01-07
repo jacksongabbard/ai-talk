@@ -15,19 +15,21 @@ const Home: React.FC = () => {
 
   return (
     <Page title="Home">
-      {user && user.profilePic && (
-        <p>
-          <img
-            src={user.profilePic}
-            alt={'Photo of ' + user.userName}
-            width="100"
-          />
-        </p>
-      )}
-      <h2 css={{ marginBottom: 'var(--spacing-large)' }}>
-        Hi there {user ? user.userName : 'unknown puzzler'}
-      </h2>
-      <p>I'll find something to put here.</p>
+      <div>
+        {user && user.profilePic && (
+          <p>
+            <img
+              src={user.profilePic}
+              alt={'Photo of ' + user.userName}
+              width="100"
+            />
+          </p>
+        )}
+        <h2 css={{ marginBottom: 'var(--spacing-large)' }}>
+          Hi there {user ? user.userName : 'unknown puzzler'}
+        </h2>
+        <p>I'll find something to put here.</p>
+      </div>
     </Page>
   );
 };

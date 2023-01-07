@@ -48,11 +48,11 @@ const Solved = () => {
           top: -100vh;
         }
         .letter:first-child {
-          padding-left: 10vw;
+          padding-left: 25vw;
         }
         
         .letter:last-child {
-          padding-right: 10vw;
+          padding-right: 25vw;
         }
 
 

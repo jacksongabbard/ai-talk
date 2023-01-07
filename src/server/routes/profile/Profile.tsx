@@ -29,53 +29,55 @@ const Profile: React.FC = () => {
 
   return (
     <Page title="Profile">
-      {editingProfile ? (
-        <ProfileForm onUpdate={stopEditing} onCancel={stopEditing} />
-      ) : (
-        <>
-          <div css={{ marginBottom: 'var(--spacing-large)' }}>
-            {user.profilePic ? (
-              <Avatar src={user.profilePic} />
-            ) : (
-              <Avatar>{user.userName[0].toUpperCase()}</Avatar>
+      <div>
+        {editingProfile ? (
+          <ProfileForm onUpdate={stopEditing} onCancel={stopEditing} />
+        ) : (
+          <>
+            <div css={{ marginBottom: 'var(--spacing-large)' }}>
+              {user.profilePic ? (
+                <Avatar src={user.profilePic} />
+              ) : (
+                <Avatar>{user.userName[0].toUpperCase()}</Avatar>
+              )}
+            </div>
+            <div css={{ marginBottom: 'var(--spacing-large)' }}>
+              <Typography variant="overline">User Name</Typography>
+              <Typography variant="h5">{user.userName}</Typography>
+            </div>
+            {user.location && (
+              <div css={{ marginBottom: 'var(--spacing-large)' }}>
+                <Typography variant="overline">Location</Typography>
+                <Typography variant="body1">{user.location}</Typography>
+              </div>
             )}
-          </div>
-          <div css={{ marginBottom: 'var(--spacing-large)' }}>
-            <Typography variant="overline">User Name</Typography>
-            <Typography variant="h5">{user.userName}</Typography>
-          </div>
-          {user.location && (
+            {team && (
+              <div css={{ marginBottom: 'var(--spacing-large)' }}>
+                <Typography variant="overline">Team</Typography>
+                <Typography variant="body1">{team.teamName}</Typography>
+              </div>
+            )}
             <div css={{ marginBottom: 'var(--spacing-large)' }}>
-              <Typography variant="overline">Location</Typography>
-              <Typography variant="body1">{user.location}</Typography>
+              <Typography variant="overline">Visibility</Typography>
+              <Typography variant="body1">
+                {user.public ? 'Public' : 'Private'}
+              </Typography>
             </div>
-          )}
-          {team && (
-            <div css={{ marginBottom: 'var(--spacing-large)' }}>
-              <Typography variant="overline">Team</Typography>
-              <Typography variant="body1">{team.teamName}</Typography>
+            <Divider />
+            <div
+              css={{
+                marginBottom: 'var(--spacing-large)',
+                display: 'flex',
+                justifyContent: 'end',
+              }}
+            >
+              <Button variant="text" onClick={startEditingProfile}>
+                Edit profile
+              </Button>
             </div>
-          )}
-          <div css={{ marginBottom: 'var(--spacing-large)' }}>
-            <Typography variant="overline">Visibility</Typography>
-            <Typography variant="body1">
-              {user.public ? 'Public' : 'Private'}
-            </Typography>
-          </div>
-          <Divider />
-          <div
-            css={{
-              marginBottom: 'var(--spacing-large)',
-              display: 'flex',
-              justifyContent: 'end',
-            }}
-          >
-            <Button variant="text" onClick={startEditingProfile}>
-              Edit profile
-            </Button>
-          </div>
-        </>
-      )}
+          </>
+        )}
+      </div>
     </Page>
   );
 };

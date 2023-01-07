@@ -51,7 +51,7 @@ const PushTheButton: React.FC<PushTheButtonProps> = ({
     <div
       css={{
         width: '100%',
-        height: '100%',
+        height: '100vh',
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'center',
@@ -65,7 +65,7 @@ const PushTheButton: React.FC<PushTheButtonProps> = ({
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'center',
-          flexDirection: 'column',
+          flexDirection: 'row',
         }}
       >
         {Object.keys(payload.uuidsToNames).map((uuid) => {
@@ -81,13 +81,12 @@ const PushTheButton: React.FC<PushTheButtonProps> = ({
             >
               <div
                 css={{
-                  fontSize: '3vmin',
+                  fontSize: '10vmin',
                   paddingRight: 'var(--spacing-medium)',
                 }}
               >
                 {payload.pressed[uuid] === true ? <>❤️</> : <>💔</>}
               </div>
-              <div>{payload.uuidsToNames[uuid]}</div>
             </div>
           );
         })}

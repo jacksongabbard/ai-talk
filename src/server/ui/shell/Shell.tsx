@@ -4,6 +4,7 @@ import Header from '../header/Header';
 import Nav from '../nav/Nav';
 import { useContext } from 'react';
 import { AppContext } from 'src/server/state/AppContext';
+import TeamChat from '../cord/TeamChat';
 
 type ShellProps = {
   title?: string;
@@ -34,18 +35,26 @@ const Shell: React.FC<ShellProps> = ({ title, children }) => {
       {!appContext ||
         appContext.showHeader === undefined ||
         (appContext.showHeader && <Header title="O.H.F.F.S." />)}
-      <div css={{ display: 'flex', alignItems: 'stretch' }}>
+      <div css={{ display: 'flex', alignItems: 'stretch', minHeight: '100vh' }}>
         {(showNavigation === undefined || showNavigation) && <Nav />}
-        <div css={{ flex: 1, margin: 'var(--spacing-xlarge)', marginLeft: 0 }}>
-          <div css={{ maxWidth: 1440, margin: '0 auto' }}>
-            {title && (
-              <div css={{ paddingBottom: 'var(--spacing-xlarge)' }}>
-                <Typography variant="h4">{title}</Typography>
-              </div>
-            )}
-            {children}
-          </div>
+        <div
+          css={{
+            flex: 1,
+            margin: 'var(--spacing-xlarge)',
+            marginLeft: 0,
+            display: 'flex',
+            alignItems: 'stretch',
+            justifyContent: 'center',
+          }}
+        >
+          {title && (
+            <div css={{ paddingBottom: 'var(--spacing-xlarge)' }}>
+              <Typography variant="h4">{title}</Typography>
+            </div>
+          )}
+          {children}
         </div>
+        <TeamChat />
       </div>
     </div>
   );
