@@ -21,6 +21,7 @@ const Shell: React.FC<ShellProps> = ({ title, children }) => {
         dangerouslySetInnerHTML={{
           __html: `
           body {
+          --cord-color-launcher: #353;
           --cord-page-presence-avatar-size: 32px;
           --cord-color-base: #000;
           --cord-color-base-strong: #696A6C;

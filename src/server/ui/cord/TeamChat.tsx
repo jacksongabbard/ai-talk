@@ -14,14 +14,7 @@ const TeamChat = () => {
   }
 
   return (
-    <div
-      css={{
-        flex: 0,
-        width: 400,
-        marginLeft: 'var(--spacing-xlarge)',
-        marginRight: 'var(--spacing-xlarge)',
-      }}
-    >
+    <div>
       {/* 
       <div
         css={{
@@ -38,7 +31,15 @@ const TeamChat = () => {
         <PagePresence location={{ route: location.pathname }} />
       </div>
       */}
-      <Sidebar location={{ route: location.pathname }} />
+      <Sidebar
+        location={{ route: location.pathname }}
+        onOpen={(info) => {
+          document.body.style.paddingRight = info.width + 'px';
+        }}
+        onClose={() => {
+          document.body.style.paddingRight = '0';
+        }}
+      />
     </div>
   );
 };
