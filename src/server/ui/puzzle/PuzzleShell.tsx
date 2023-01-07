@@ -13,6 +13,12 @@ import {
   assertIsSocketMessage,
 } from 'src/types/SocketMessage';
 import Nodoku from './nodoku/Nodoku';
+import {
+  Dialog,
+  DialogContent,
+  DialogContentText,
+  DialogTitle,
+} from '@mui/material';
 
 const PuzzleShell: React.FC = () => {
   const appContext = useContext(AppContext);
@@ -76,12 +82,18 @@ const PuzzleShell: React.FC = () => {
     ],
   );
 
+  const [errorMessage, setErrorMessage] = useState('');
   const onError = useCallback(
     (error: string) => {
       console.log('ERROR', error);
+      setErrorMessage(errorMessage);
     },
-    [connected],
+    [connected, setErrorMessage],
   );
+
+  const onErrorDialogClose = useCallback(() => {
+    setErrorMessage('');
+  }, [setErrorMessage]);
 
   const { sendInstanceAction, setPuzzle } = useWebSocket(
     onConnected,
@@ -124,15 +136,28 @@ const PuzzleShell: React.FC = () => {
             position: 'absolute',
             top: '5vmin',
             left: '5vmin',
-            background: 'black',
-            border: '1px #3f3 solid',
-            color: 'white',
+            background: '#3f3',
+            color: '#000',
             padding: 'var(--spacing-large)',
           }}
         >
           SOLVED!
         </div>
       )}
+      <Dialog open={errorMessage !== ''} onClose={onErrorDialogClose}>
+        <DialogTitle>Everything is ruined</DialogTitle>
+        <DialogContent>
+          <DialogContentText>
+            <strong>The follow error occurred:</strong>
+            <div>{errorMessage}</div>
+            <div>
+              When this happens, it's usually because the server got overwhelmed
+              with too many requests, too fast and Jackson's crappy architecture
+              can't handle it. Your best bet is to refresh the page.
+            </div>
+          </DialogContentText>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 };
