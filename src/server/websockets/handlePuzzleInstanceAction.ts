@@ -110,8 +110,6 @@ export async function handlePuzzleInstanceAction(
     console.log('puzzle-instance-action-failure', e);
   }
 
-  console.log({ payloadDiff, puzzlePayload, isSolved });
-
   const sockets = getSocketsForPuzzleInstance(puzzleInstance.id);
   sockets.forEach((s) => {
     const { user } = getDetailsForSocket(s);
