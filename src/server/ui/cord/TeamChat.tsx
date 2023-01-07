@@ -22,6 +22,7 @@ const TeamChat = () => {
         marginRight: 'var(--spacing-xlarge)',
       }}
     >
+      {/* 
       <div
         css={{
           display: 'flex',
@@ -36,7 +37,8 @@ const TeamChat = () => {
         </Typography>
         <PagePresence location={{ route: location.pathname }} />
       </div>
-      <Sidebar location={{ route: location.pathname }} showPresence={false} />
+      */}
+      <Sidebar location={{ route: location.pathname }} />
     </div>
   );
 };
