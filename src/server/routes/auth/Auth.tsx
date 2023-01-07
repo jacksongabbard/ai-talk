@@ -1,4 +1,4 @@
-import { Typography } from '@mui/material';
+import { Button, Typography } from '@mui/material';
 import React, { useCallback, useContext, useEffect, useState } from 'react';
 import Helmet from 'react-helmet';
 import { getRandomEntry } from 'src/lib/dict/utils';
@@ -50,22 +50,25 @@ const Auth: React.FC = () => {
   }, []);
 
   return (
-    <>
+    <div>
       <Helmet>
         <title>Login</title>
       </Helmet>
       {prompt !== '' && (
         <div
           css={{
-            marginTop: 'var(--spacing-large)',
-            marginBottom: 'var(--spacing-large)',
+            margin: 'var(--spacing-large)',
           }}
         >
           <Typography variant="h5">{prompt}</Typography>
         </div>
       )}
-      {doAuth && <button onClick={doAuth}>Login with Google</button>}
-    </>
+      {doAuth && (
+        <Button onClick={doAuth} size="large" variant="contained">
+          Login with Google
+        </Button>
+      )}
+    </div>
   );
 };
 
