@@ -45,34 +45,36 @@ const JoinTeam: React.FC = () => {
 
   return (
     <Page title="Join a team">
-      {team && (
-        <>
-          <Typography variant="h5">
-            Whoopsie! You've already got a team!
-          </Typography>
-        </>
-      )}
+      <div>
+        {team && (
+          <>
+            <Typography variant="h5">
+              Whoopsie! You've already got a team!
+            </Typography>
+          </>
+        )}
 
-      {!team && (
-        <>
-          <Typography variant="h5">Enter the join code for a team</Typography>
-          <div css={{ marginBottom: 'var(--spacing-large)' }}>
-            <Input
-              css={{ fontSize: '5vw', width: '50vw' }}
-              value={joinCode}
-              onChange={onJoinCodeChange}
-              placeholder="XXXXXXXX"
-            />
-          </div>
-          <Button
-            variant="contained"
-            disabled={joinCode.length !== 8}
-            onClick={tryJoinCode}
-          >
-            Join!
-          </Button>
-        </>
-      )}
+        {!team && (
+          <>
+            <Typography variant="h5">Enter the join code for a team</Typography>
+            <div css={{ marginBottom: 'var(--spacing-large)' }}>
+              <Input
+                css={{ fontSize: '5vw', width: '50vw' }}
+                value={joinCode}
+                onChange={onJoinCodeChange}
+                placeholder="XXXXXXXX"
+              />
+            </div>
+            <Button
+              variant="contained"
+              disabled={joinCode.length !== 8}
+              onClick={tryJoinCode}
+            >
+              Join!
+            </Button>
+          </>
+        )}
+      </div>
     </Page>
   );
 };

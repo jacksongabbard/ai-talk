@@ -6,7 +6,7 @@ const NoTeam = () => {
   const CreateTeamRouterLink = useRouterLink('/create-team');
   const JoinTeamRouterLink = useRouterLink('/join-team');
   return (
-    <>
+    <div>
       <div css={{ marginBottom: 'var(--spacing-medium)' }}>
         <Typography variant="h5">😿 You're not currently on a team.</Typography>
       </div>
@@ -61,7 +61,7 @@ const NoTeam = () => {
           </Typography>
         </div>
       </Button>
-    </>
+    </div>
   );
 };
 

@@ -160,7 +160,7 @@ const TeamForm: React.FC<TeamFormProps> = ({ onUpdate, onCancel }) => {
   ]);
 
   return (
-    <>
+    <div>
       {successMessage !== '' && (
         <MessageBox type="success">{successMessage}</MessageBox>
       )}
@@ -270,7 +270,7 @@ const TeamForm: React.FC<TeamFormProps> = ({ onUpdate, onCancel }) => {
           Cancel
         </Button>
       </div>
-    </>
+    </div>
   );
 };
 
