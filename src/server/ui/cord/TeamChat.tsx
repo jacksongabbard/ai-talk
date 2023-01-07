@@ -1,4 +1,4 @@
-import { CordContext, PagePresence, Thread } from '@cord-sdk/react';
+import { CordContext, PagePresence, Sidebar, Thread } from '@cord-sdk/react';
 import { Typography } from '@mui/material';
 import { useContext } from 'react';
 import { useLocation } from 'react-router-dom';
@@ -17,6 +17,7 @@ const TeamChat = () => {
     <div
       css={{
         flex: 0,
+        width: 400,
         marginLeft: 'var(--spacing-xlarge)',
         marginRight: 'var(--spacing-xlarge)',
       }}
@@ -35,18 +36,7 @@ const TeamChat = () => {
         </Typography>
         <PagePresence location={{ route: location.pathname }} />
       </div>
-      <div
-        css={{
-          width: '100%',
-          maxHeight: '100vh',
-          overflow: 'auto',
-        }}
-      >
-        <Thread
-          threadId={appContext.team.id}
-          location={{ route: location.pathname }}
-        />
-      </div>
+      <Sidebar location={{ route: location.pathname }} showPresence={false} />
     </div>
   );
 };
