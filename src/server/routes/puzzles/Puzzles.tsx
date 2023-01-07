@@ -91,7 +91,7 @@ const Puzzles: React.FC = () => {
                     flex: 0,
                     flexGrow: 0,
                     flexShrink: 0,
-                    padding: 'var(--spacing-medium)',
+                    padding: 'var(--spacing-large)',
                     marginBottom: 'var(--spacing-medium)',
                     marginRight: 'var(--spacing-medium)',
                     position: 'relative',

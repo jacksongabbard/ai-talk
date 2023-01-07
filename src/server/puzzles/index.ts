@@ -1,8 +1,9 @@
 import type { Puzzle } from 'src/types/Puzzle';
 import PushTheButton from './pushTheButton/PushTheButton';
 import Nodoku from './nodoku/Nodoku';
+import OnionGrinder from './onionGrinder/OnionGrinder';
 
-export const PuzzleList = [PushTheButton, Nodoku];
+export const PuzzleList = [PushTheButton, Nodoku, OnionGrinder];
 
 export function puzzleMapFromList(): { [slug: string]: Puzzle } {
   const slugToName: { [slug: string]: Puzzle } = {};

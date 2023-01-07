@@ -101,45 +101,54 @@ const Puzzle: React.FC = () => {
 
   return (
     <Page>
-      {errorMessage && <MessageBox type="error">{errorMessage}</MessageBox>}
-      {loading && (
-        <Typography
-          variant="subtitle2"
-          css={{ display: 'block', textAlign: 'center' }}
-        >
-          Loading...
-        </Typography>
-      )}
-      {!loading && puzzleName && !instance && (
-        <div
-          css={{
-            display: 'flex',
-            flexDirection: 'column',
-            justifyContent: 'center',
-            alignItems: 'center',
-          }}
-        >
+      <div
+        css={{
+          display: 'flex',
+          flexDirection: 'column',
+          justifyContent: 'center',
+          alignItems: 'center',
+        }}
+      >
+        {errorMessage && <MessageBox type="error">{errorMessage}</MessageBox>}
+        {loading && (
           <Typography
-            variant="h6"
-            css={{ marginBottom: 'var(--spacing-large)' }}
+            variant="subtitle2"
+            css={{ display: 'block', textAlign: 'center' }}
           >
-            {puzzleName}
+            Loading...
           </Typography>
-          {!generatingPuzzle && (
-            <Button variant="contained" onClick={createInstance}>
-              Start
-            </Button>
-          )}
-          {generatingPuzzle && (
+        )}
+        {!loading && puzzleName && !instance && (
+          <div
+            css={{
+              display: 'flex',
+              flexDirection: 'column',
+              justifyContent: 'center',
+              alignItems: 'center',
+            }}
+          >
             <Typography
-              variant="body2"
+              variant="h6"
               css={{ marginBottom: 'var(--spacing-large)' }}
             >
-              Generating puzzle...
+              {puzzleName}
             </Typography>
-          )}
-        </div>
-      )}
+            {!generatingPuzzle && (
+              <Button variant="contained" onClick={createInstance}>
+                Start
+              </Button>
+            )}
+            {generatingPuzzle && (
+              <Typography
+                variant="body2"
+                css={{ marginBottom: 'var(--spacing-large)' }}
+              >
+                Generating puzzle...
+              </Typography>
+            )}
+          </div>
+        )}
+      </div>
       {!loading && instance && <PuzzleShell />}
     </Page>
   );
