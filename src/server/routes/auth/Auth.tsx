@@ -50,14 +50,23 @@ const Auth: React.FC = () => {
   }, []);
 
   return (
-    <div>
+    <div
+      css={{
+        display: 'flex',
+        flexDirection: 'column',
+        alignItems: 'center',
+        justifyContent: 'center',
+        height: '70vh',
+        width: '100vw',
+      }}
+    >
       <Helmet>
         <title>Login</title>
       </Helmet>
       {prompt !== '' && (
         <div
           css={{
-            margin: 'var(--spacing-large)',
+            margin: 'var(--spacing-xlarge)',
           }}
         >
           <Typography variant="h5">{prompt}</Typography>
