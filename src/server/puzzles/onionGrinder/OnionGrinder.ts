@@ -13,7 +13,7 @@ const RaceToTheBottom: Puzzle = {
   minPlayers: 1,
   maxPlayers: 6,
   createInstance: (user: User, members: User[], team?: Team) => {
-    const { puzzlePayload, solutionPayload } = createRaceToTheBottomPayloads();
+    const { puzzlePayload, solutionPayload } = createOnionGrinderPayloads();
 
     return {
       puzzlePayload,

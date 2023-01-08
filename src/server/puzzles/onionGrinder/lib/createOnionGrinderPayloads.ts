@@ -1,41 +1,37 @@
-import { getRandomEntry } from 'src/lib/dict/utils';
-
-// Intentionally excluding one here because multiplying by one
-// is lame.
-const getRandomSingelDigitNumberGreaterThanZero = (): number => {
-  return Math.round(Math.random() * 7) + 2;
-};
+import { toMorseCode } from 'src/lib/ciphers/morseCode';
+import { toNatoWords, toRot13 } from './ciphers';
+import { toNumberWords } from 'src/lib/ciphers/numbers';
 
 export const createOnionGrinderPayloads = () => {
-  let runningTotal = 100000 + Math.round(Math.random() * 100000);
-  const mathProblem: (string | number)[] = [runningTotal];
-  const ops = ['*', '+', '-'];
+  let total = 5000 + Math.round(Math.random() * 10000);
+  const parts: number[] = [];
   for (let i = 0; i < 6; i++) {
-    const op = getRandomEntry(ops);
-    const num = getRandomSingelDigitNumberGreaterThanZero();
-    mathProblem.unshift('(');
-    mathProblem.push(op);
-    mathProblem.push(num);
-    mathProblem.push(')');
-
-    switch (op) {
-      case '*':
-        runningTotal *= num;
-        break;
-      case '+':
-        runningTotal += num;
-        break;
-      case '-':
-        runningTotal -= num;
-        break;
-    }
+    const num = 10000 + Math.round(Math.random() * 90000);
+    parts.push(num);
+    total += num;
   }
 
-  console.log(mathProblem.join(''));
-  console.log(runningTotal);
+  console.log(parts);
+  console.log(total);
+
+  for (let part of parts) {
+    console.log(
+      part,
+      // toMorseCodeWords(
+      toMorseCode(
+        toNatoWords(
+          toRot13(toNumberWords(part.toString().split('').join(' '))),
+        ),
+      ),
+      // ),
+    );
+  }
 
   const puzzlePayload = {};
-  const solutionPayload = {};
+  const solutionPayload = {
+    parts,
+    total,
+  };
   return {
     puzzlePayload,
     solutionPayload,
