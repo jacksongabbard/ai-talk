@@ -41,6 +41,8 @@ const charToNatoMap = {
   '-': 'hyphen',
   '\n': 'return',
   ' ': 'space',
+  ':': 'colon',
+  ';': 'semicolon',
 };
 
 export function toNatoWords(input: string): string {
@@ -96,6 +98,8 @@ const natoToCharMap = {
   hyphen: '-',
   return: ' \n',
   space: ' ',
+  colon: ':',
+  semicolon: ';',
 };
 
 export function fromNatoWords(input: string): string {

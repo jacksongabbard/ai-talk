@@ -13,7 +13,9 @@ const RaceToTheBottom: Puzzle = {
   minPlayers: 1,
   maxPlayers: 6,
   createInstance: (user: User, members: User[], team?: Team) => {
-    const { puzzlePayload, solutionPayload } = createNoYouFirstPayloads();
+    const { puzzlePayload, solutionPayload } =
+      createNoYouFirstPayloads(members);
+    console.log({ puzzlePayload, solutionPayload });
 
     return {
       puzzlePayload,

@@ -19,6 +19,7 @@ import {
   DialogContentText,
   DialogTitle,
 } from '@mui/material';
+import NoYouFirst from './noYouFirst/NoYouFirst';
 
 const PuzzleShell: React.FC = () => {
   const appContext = useContext(AppContext);
@@ -129,6 +130,12 @@ const PuzzleShell: React.FC = () => {
       )}
       {instance && instance.puzzleId === 'nodoku' && (
         <Nodoku instance={instance} sendInstanceAction={sendInstanceAction} />
+      )}
+      {instance && instance.puzzleId === 'no_you_first' && (
+        <NoYouFirst
+          instance={instance}
+          sendInstanceAction={sendInstanceAction}
+        />
       )}
       {instance && instance.solvedAt && (
         <div
