@@ -1,6 +1,6 @@
 import { toMorseCode } from 'src/lib/ciphers/morseCode';
 import { toNatoWords, toRot13 } from './ciphers';
-import { toNumberWords } from 'src/lib/ciphers/numbers';
+import { toNumberWords } from 'src/lib/ciphers/words';
 
 export const createOnionGrinderPayloads = () => {
   let total = 5000 + Math.round(Math.random() * 10000);
