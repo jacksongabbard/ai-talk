@@ -1,8 +1,8 @@
-import { toMorseCode } from 'src/lib/ciphers/morseCode';
+import { toMorseCode } from 'src/lib/puzzles/noYouFirst/ciphers/morseCode';
 import { toNatoWords, toRot13 } from './ciphers';
-import { toNumberWords } from 'src/lib/ciphers/words';
+import { toWords } from 'src/lib/puzzles/noYouFirst/ciphers/words';
 
-export const createOnionGrinderPayloads = () => {
+export const createNoYouFirstPayloads = () => {
   let total = 5000 + Math.round(Math.random() * 10000);
   const parts: number[] = [];
   for (let i = 0; i < 6; i++) {
@@ -19,9 +19,7 @@ export const createOnionGrinderPayloads = () => {
       part,
       // toMorseCodeWords(
       toMorseCode(
-        toNatoWords(
-          toRot13(toNumberWords(part.toString().split('').join(' '))),
-        ),
+        toNatoWords(toRot13(toWords(part.toString().split('').join(' ')))),
       ),
       // ),
     );

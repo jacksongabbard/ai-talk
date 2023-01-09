@@ -5,15 +5,15 @@ import type User from 'src/lib/db/User';
 import type { Puzzle } from 'src/types/Puzzle';
 import type { ActionResult } from 'src/types/Puzzle';
 import type PuzzleInstance from 'src/lib/db/PuzzleInstance';
-import { createOnionGrinderPayloads } from './lib/createOnionGrinderPayloads';
+import { createNoYouFirstPayloads } from './lib/createNoYouFirstPayloads';
 
 const RaceToTheBottom: Puzzle = {
-  name: 'Onion Grinder',
-  slug: 'onion_grinder',
+  name: 'No, You First',
+  slug: 'no_you_first',
   minPlayers: 1,
   maxPlayers: 6,
   createInstance: (user: User, members: User[], team?: Team) => {
-    const { puzzlePayload, solutionPayload } = createOnionGrinderPayloads();
+    const { puzzlePayload, solutionPayload } = createNoYouFirstPayloads();
 
     return {
       puzzlePayload,

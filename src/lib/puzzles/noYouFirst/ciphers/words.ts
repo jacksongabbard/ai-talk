@@ -1,4 +1,4 @@
-import { hasOwnProperty } from '../hasOwnProperty';
+import { hasOwnProperty } from '../../../hasOwnProperty';
 
 const charToWordMap = {
   '0': 'zero',
@@ -62,10 +62,11 @@ const charToWordMap = {
   W: 'YOUYOU',
   X: 'EX',
   Y: 'WHY',
-  Z: 'ZEE',
-  '.': 'dot',
-  '-': 'dash',
+  Z: 'ZED',
+  '.': 'period',
+  '-': 'hyphen',
   ' ': 'space',
+  '\n': 'return',
 };
 
 export function toWords(input: string): string {
@@ -143,21 +144,23 @@ const wordToCharMap = {
   YOUYOU: 'W',
   EX: 'X',
   WHY: 'Y',
-  ZEE: 'Z',
-  dot: '.',
-  dash: '-',
+  ZED: 'Z',
+  period: '.',
+  hyphen: '-',
   space: ' ',
+  return: '\n',
 };
 
-export function toChars(input: string): string {
+export function fromWords(input: string): string {
   const output = [];
-  for (let i = 0; i < input.length; i++) {
-    if (hasOwnProperty(charToWordMap, input[i])) {
-      output.push(charToWordMap[input[i]]);
+  const parts = input.split(' ');
+  for (const part of parts) {
+    if (hasOwnProperty(wordToCharMap, part)) {
+      output.push(wordToCharMap[part]);
     } else {
-      output.push(input[i]);
+      output.push(part);
     }
   }
 
-  return output.join(' ');
+  return output.join('');
 }

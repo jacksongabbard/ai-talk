@@ -1,4 +1,4 @@
-import { hasOwnProperty } from '../hasOwnProperty';
+import { hasOwnProperty } from '../../../hasOwnProperty';
 
 const morseCodeMap: { [k: string]: string } = {
   a: '.-',
@@ -37,52 +37,22 @@ const morseCodeMap: { [k: string]: string } = {
   '7': '--...',
   '8': '---..',
   '9': '----.',
+  ' ': '..--.-',
+  '.': '.-.-.-',
+  '-': '-....-',
+  '\n': '\n',
 };
 
 export function toMorseCode(input: string): string {
   const output = [];
-  const parts = input.split(' ');
-  for (const part of parts) {
-    const w: string[] = [];
-    for (let i = 0; i < part.length; i++) {
-      if (hasOwnProperty(morseCodeMap, part[i])) {
-        w.push(morseCodeMap[part[i]] + ' ');
-      } else {
-        w.push(part[i]);
-      }
-    }
-    output.push(w.join(' '));
-  }
-  return output.join('\n');
-}
-
-export function toMorseCodeWords(input: string): string {
-  const output = [];
   for (let i = 0; i < input.length; i++) {
-    if (input[i] === '.') {
-      output.push('dot ');
-    } else if (input[i] === '-') {
-      output.push('dash ');
+    if (hasOwnProperty(morseCodeMap, input[i])) {
+      output.push(morseCodeMap[input[i]]);
     } else {
       output.push(input[i]);
     }
   }
-  return output.join('');
-}
-
-export function toMorseCodeFromMorseCodeWords(input: string): string {
-  const output = [];
-  const parts = input.split('\n');
-  for (const part of parts) {
-    if (part === 'dot') {
-      output.push('.');
-    } else if (part === 'dash') {
-      output.push('-');
-    } else {
-      output.push(part);
-    }
-  }
-  return output.join('');
+  return output.join(' ');
 }
 
 const reverseMorseCodeMap: { [k: string]: string } = {
@@ -122,11 +92,15 @@ const reverseMorseCodeMap: { [k: string]: string } = {
   '--...': '7',
   '---..': '8',
   '----.': '9',
+  '..--.-': ' ',
+  '.-.-.-': '.',
+  '-....-': '-',
+  '\n': '\n',
 };
 
-export function toTextFromMorseCode(input: string): string {
+export function fromMorseCode(input: string): string {
   const output = [];
-  const parts = input.split('\n');
+  const parts = input.split(' ');
   for (const part of parts) {
     const w: string[] = [];
     const chars = part.split(' ');
@@ -137,7 +111,7 @@ export function toTextFromMorseCode(input: string): string {
         w.push(subseq);
       }
     }
-    output.push(w.join(' '));
+    output.push(w.join(''));
   }
-  return output.join('\n');
+  return output.join('');
 }
