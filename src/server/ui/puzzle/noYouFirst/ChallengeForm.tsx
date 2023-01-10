@@ -1,5 +1,6 @@
 import React, { useCallback, useEffect, useState } from 'react';
 import { Button } from '@mui/material';
+import { PresenceFacepile, PresenceObserver } from '@cord-sdk/react';
 
 type ChallengeFormProps = {
   input: string;
@@ -39,107 +40,116 @@ const ChallengeForm: React.FC<ChallengeFormProps> = ({
   );
 
   return (
-    <div
-      css={{
-        display: 'flex',
-        flexDirection: 'row',
-        marginBottom: 'var(--spacing-xlarge)',
-      }}
+    <PresenceObserver
+      location={{ puzzle: 'noYouFirst', section: idx.toString() }}
     >
       <div
         css={{
-          flex: 0,
-          flexShrink: 0,
-          flexGrow: 0,
-          marginRight: 'var(--spacing-large)',
+          display: 'flex',
+          flexDirection: 'row',
+          marginBottom: 'var(--spacing-xlarge)',
         }}
       >
-        <Button
-          data-cipheridx="0"
-          css={{ fontSize: 20 }}
-          onClick={onCipherButtonPress}
-          disabled={enabledButtons.includes(0)}
-        >
-          🆘
-        </Button>
-        <Button
-          data-cipheridx="1"
-          css={{ fontSize: 24 }}
-          onClick={onCipherButtonPress}
-          disabled={enabledButtons.includes(1)}
-        >
-          👄
-        </Button>
-        <Button
-          data-cipheridx="2"
-          css={{ fontSize: 24 }}
-          onClick={onCipherButtonPress}
-          disabled={enabledButtons.includes(2)}
-        >
-          🪖
-        </Button>
-        <Button
-          data-cipheridx="3"
-          css={{ fontSize: 24 }}
-          onClick={onCipherButtonPress}
-          disabled={enabledButtons.includes(3)}
-        >
-          💾
-        </Button>
-        <Button
-          data-cipheridx="4"
-          css={{ fontSize: 24 }}
-          onClick={onCipherButtonPress}
-          disabled={enabledButtons.includes(4)}
-        >
-          🛞
-        </Button>
-        <Button
-          data-cipheridx="5"
-          css={{ fontSize: 24 }}
-          onClick={onCipherButtonPress}
-          disabled={enabledButtons.includes(5)}
-        >
-          ＠
-        </Button>
-        <Button
-          data-cipheridx="6"
-          css={{ fontSize: 24 }}
-          onClick={onCipherButtonPress}
-          disabled={enabledButtons.includes(6)}
-        >
-          ↔️
-        </Button>
-        <Button
-          data-cipheridx="7"
-          css={{ fontSize: 24 }}
-          onClick={onCipherButtonPress}
-          disabled={enabledButtons.includes(7)}
-        >
-          🧨
-        </Button>
-      </div>
-      <div>
-        <textarea
+        <div
           css={{
-            background: '#000',
-            color: '#3f3',
-            border: correct ? '1px #3f3 solid' : '1px #f33 solid',
-            height: 500,
-            width: '60vw',
-            maxWidth: '60vw',
-            overflow: 'auto',
-            wordWrap: 'break-word',
-            flex: 1,
+            flex: 0,
+            flexShrink: 0,
+            flexGrow: 0,
+            marginRight: 'var(--spacing-large)',
           }}
-          value={input}
-          readOnly={true}
-        />
-        <div css={{ textAlign: 'right', color: '#383' }}>
-          Character Count {deciphered.length.toLocaleString()}
+        >
+          <Button
+            data-cipheridx="0"
+            css={{ fontSize: 20 }}
+            onClick={onCipherButtonPress}
+            disabled={enabledButtons.includes(0)}
+          >
+            🆘
+          </Button>
+          <Button
+            data-cipheridx="1"
+            css={{ fontSize: 24 }}
+            onClick={onCipherButtonPress}
+            disabled={enabledButtons.includes(1)}
+          >
+            👄
+          </Button>
+          <Button
+            data-cipheridx="2"
+            css={{ fontSize: 24 }}
+            onClick={onCipherButtonPress}
+            disabled={enabledButtons.includes(2)}
+          >
+            🪖
+          </Button>
+          <Button
+            data-cipheridx="3"
+            css={{ fontSize: 24 }}
+            onClick={onCipherButtonPress}
+            disabled={enabledButtons.includes(3)}
+          >
+            💾
+          </Button>
+          <Button
+            data-cipheridx="4"
+            css={{ fontSize: 24 }}
+            onClick={onCipherButtonPress}
+            disabled={enabledButtons.includes(4)}
+          >
+            🛞
+          </Button>
+          <Button
+            data-cipheridx="5"
+            css={{ fontSize: 24 }}
+            onClick={onCipherButtonPress}
+            disabled={enabledButtons.includes(5)}
+          >
+            ＠
+          </Button>
+          <Button
+            data-cipheridx="6"
+            css={{ fontSize: 24 }}
+            onClick={onCipherButtonPress}
+            disabled={enabledButtons.includes(6)}
+          >
+            ↔️
+          </Button>
+          <Button
+            data-cipheridx="7"
+            css={{ fontSize: 24 }}
+            onClick={onCipherButtonPress}
+            disabled={enabledButtons.includes(7)}
+          >
+            🧨
+          </Button>
+        </div>
+        <div>
+          <textarea
+            css={{
+              background: '#000',
+              color: '#3f3',
+              border: correct ? '1px #3f3 solid' : '1px #f33 solid',
+              height: 500,
+              width: '60vw',
+              maxWidth: '60vw',
+              overflow: 'auto',
+              wordWrap: 'break-word',
+              flex: 1,
+            }}
+            value={input}
+            readOnly={true}
+          />
+          <div css={{ display: 'flex', justifyContent: 'space-between' }}>
+            <PresenceFacepile
+              location={{ puzzle: 'noYouFirst', section: idx.toString() }}
+            />
+            <div css={{ textAlign: 'right', color: '#383' }}>
+              Character Count {deciphered.length.toLocaleString()}
+            </div>
+          </div>
         </div>
       </div>
-    </div>
+    </PresenceObserver>
   );
 };
 
