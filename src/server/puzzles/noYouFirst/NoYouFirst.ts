@@ -108,7 +108,7 @@ const handleSolve = (
 const RaceToTheBottom: Puzzle = {
   name: 'No, You First',
   slug: 'no_you_first',
-  minPlayers: 1,
+  minPlayers: 2,
   maxPlayers: 6,
   createInstance: (user: User, members: User[], team?: Team) => {
     const { puzzlePayload, solutionPayload } =

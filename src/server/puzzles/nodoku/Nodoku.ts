@@ -2,7 +2,7 @@ import { cloneDeep, isEqual, merge } from 'lodash';
 
 import type Team from 'src/lib/db/Team';
 import type User from 'src/lib/db/User';
-import { Puzzle, assertIsClientPuzzle } from 'src/types/Puzzle';
+import type { Puzzle } from 'src/types/Puzzle';
 import type { ActionResult } from 'src/types/Puzzle';
 import type PuzzleInstance from 'src/lib/db/PuzzleInstance';
 import { generateSudoku } from './lib/generateSudoku';
@@ -15,7 +15,7 @@ import {
 const Nodoku: Puzzle = {
   name: 'Nodoku',
   slug: 'nodoku',
-  minPlayers: 1,
+  minPlayers: 2,
   maxPlayers: 6,
   createInstance: (user: User, members: User[], team?: Team) => {
     const grid = generateSudoku();

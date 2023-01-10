@@ -37,7 +37,7 @@ function assertIsPushTheButtonAction(thing: any): PushTheButtonAction {
 const PushTheButton: Puzzle = {
   name: 'Push the Button',
   slug: 'push_the_button',
-  minPlayers: 1,
+  minPlayers: 2,
   maxPlayers: 6,
   createInstance: (user: User, members: User[], team?: Team) => {
     const solutionPayload: PushTheButtonPuzzlePayloadType = {
