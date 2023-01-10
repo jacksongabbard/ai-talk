@@ -72,6 +72,12 @@ const PuzzleShell: React.FC = () => {
         });
       } else if (sm.type === PUZZLE_SOLVED) {
         puzzleContext.setSolved(true);
+        if (puzzleContext.instance) {
+          puzzleContext.setInstance({
+            ...puzzleContext.instance,
+            solvedAt: new Date(),
+          });
+        }
       }
     },
     [
@@ -87,7 +93,6 @@ const PuzzleShell: React.FC = () => {
     (error: string) => {
       console.log('ERROR', error);
       setErrorMessage(error);
-      console.log('Yeah...did the thing...');
     },
     [connected, setErrorMessage],
   );
