@@ -23,8 +23,6 @@ export async function handlePuzzleInstanceAction(
     throw new Error('No oldPI?1');
   }
 
-  console.log(JSON.stringify(oldPI, null, 4));
-
   const puzzleInstance = await PuzzleInstance.findOne({
     where: { id: oldPI.id },
   });
@@ -56,7 +54,6 @@ export async function handlePuzzleInstanceAction(
   );
 
   let puzzleInstanceActionID = uuid();
-  console.log({ puzzleInstanceActionID });
   let pia: PuzzleInstanceAction | null;
   try {
     // Maybe there's a better way to do this. Or maybe
@@ -93,7 +90,6 @@ export async function handlePuzzleInstanceAction(
       throw new Error('Failed to record puzzle instance action');
     }
 
-    console.log(JSON.stringify({ pia }, null, 4));
     const updatedFields: {
       puzzlePayload: object;
       sequenceNumber: number;

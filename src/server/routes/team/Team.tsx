@@ -67,7 +67,6 @@ const TeamPage: React.FC = () => {
     (async () => {
       if (teamId) {
         const resp = await callAPI('list-team-members', { teamId });
-        console.log(resp);
         if (hasOwnProperty(resp, 'error') && typeof resp.error === 'string') {
           setErrorMessage(resp.error);
           return;

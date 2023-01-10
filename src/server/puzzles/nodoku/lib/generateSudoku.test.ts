@@ -9,7 +9,6 @@ import { generateSudoku, printGrid } from './generateSudoku';
         // check the x axis
         const xs = new Set(grid[y]);
         if (xs.size !== 9) {
-          console.log('x axis collision at row ' + y);
           printGrid(grid);
           collision = true;
           break;
@@ -23,8 +22,6 @@ import { generateSudoku, printGrid } from './generateSudoku';
         }
         const ySet = new Set(ys);
         if (ySet.size !== 9) {
-          console.log(ys);
-          console.log('y axis collision at column ' + x);
           printGrid(grid);
           collision = true;
           break;

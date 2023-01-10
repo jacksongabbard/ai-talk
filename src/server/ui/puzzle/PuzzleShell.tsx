@@ -51,7 +51,6 @@ const PuzzleShell: React.FC = () => {
           throw new Error('Cannot merge payload diff with no puzzle instance');
         }
         const { instance } = puzzleContext;
-        console.log({ instance, payloadDiff });
         if (instance.sequenceNumber !== payloadDiff.seq - 1) {
           throw new Error(
             'Received out-of-order payload diffs. Everything is ruined.',
