@@ -31,7 +31,7 @@ export const listPuzzles: RequestHandler = async (
       });
     } else if (req.context?.user) {
       instances = await PuzzleInstance.findAll({
-        where: { teamId: req.context?.user.id },
+        where: { userId: req.context?.user.id },
       });
     } else {
       bail400('No user or team, no puzzles. Capiche?', res);
