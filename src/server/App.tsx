@@ -74,10 +74,7 @@ const App: React.FC = () => {
     </ThemeProvider>
   );
 
-  if (cordToken) {
-    return <CordProvider clientAuthToken={cordToken}>{shell}</CordProvider>;
-  }
-  return shell;
+  return <CordProvider clientAuthToken={cordToken}>{shell}</CordProvider>;
 };
 
 export default App;

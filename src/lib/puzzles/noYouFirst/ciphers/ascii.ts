@@ -6,6 +6,7 @@ export function toAscii(input: string): string {
   return output.join(' ');
 }
 
+const nullValue = String.fromCharCode(0);
 export function fromAscii(input: string): string {
   const output = [];
   const parts = input.split(' ');
@@ -13,6 +14,8 @@ export function fromAscii(input: string): string {
     const integerMaybe = parseInt(part, 10);
     if (isNaN(integerMaybe)) {
       output.push('NaN');
+    } else if (String.fromCharCode(integerMaybe) === nullValue) {
+      output.push(part);
     } else {
       output.push(String.fromCharCode(integerMaybe));
     }
