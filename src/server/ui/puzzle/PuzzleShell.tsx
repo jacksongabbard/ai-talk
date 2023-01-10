@@ -87,7 +87,8 @@ const PuzzleShell: React.FC = () => {
   const onError = useCallback(
     (error: string) => {
       console.log('ERROR', error);
-      setErrorMessage(errorMessage);
+      setErrorMessage(error);
+      console.log('Yeah...did the thing...');
     },
     [connected, setErrorMessage],
   );
@@ -117,6 +118,7 @@ const PuzzleShell: React.FC = () => {
       css={{
         display: 'flex',
         flex: 1,
+        flexDirection: 'column',
         alignItems: 'center',
         justifyContent: 'center',
       }}
@@ -156,12 +158,12 @@ const PuzzleShell: React.FC = () => {
         <DialogContent>
           <DialogContentText>
             <strong>The follow error occurred:</strong>
-            <div>{errorMessage}</div>
-            <div>
-              When this happens, it's usually because the server got overwhelmed
-              with too many requests, too fast and Jackson's crappy architecture
-              can't handle it. Your best bet is to refresh the page.
-            </div>
+            <br />
+            <br />
+            {errorMessage}
+            <br />
+            <br />
+            Your best bet is to refresh the page.
           </DialogContentText>
         </DialogContent>
       </Dialog>

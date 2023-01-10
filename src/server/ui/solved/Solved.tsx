@@ -2,6 +2,9 @@ import { useEffect } from 'react';
 
 const Solved = () => {
   useEffect(() => {
+    window.scrollTo({
+      top: 0,
+    });
     const message = 'SOLVED';
     const bigMessage = document.createElement('div');
     bigMessage.className = 'bigMessage';

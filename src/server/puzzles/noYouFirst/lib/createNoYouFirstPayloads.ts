@@ -63,11 +63,12 @@ export const createNoYouFirstPayloads = (users: User[]) => {
     enabledButtonsPerUser,
     currentStates: encipheredParts,
     solvedParts: [false, false, false, false, false, false],
-    encipheredParts,
+    solutionAttempt: '',
   };
 
   const solutionPayload: NoYouFirstSolutionPayload = {
     parts,
+    encipheredParts,
     total,
   };
   return {
