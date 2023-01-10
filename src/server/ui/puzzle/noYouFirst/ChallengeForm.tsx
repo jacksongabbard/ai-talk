@@ -142,6 +142,7 @@ const ChallengeForm: React.FC<ChallengeFormProps> = ({
           <div css={{ display: 'flex', justifyContent: 'space-between' }}>
             <PresenceFacepile
               location={{ puzzle: 'noYouFirst', section: idx.toString() }}
+              excludeViewer={true}
             />
             <div css={{ textAlign: 'right', color: '#383' }}>
               Character Count {deciphered.length.toLocaleString()}
