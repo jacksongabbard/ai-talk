@@ -23,6 +23,8 @@ export async function handlePuzzleInstanceAction(
     throw new Error('No oldPI?1');
   }
 
+  console.log(JSON.stringify(oldPI, null, 4));
+
   const puzzleInstance = await PuzzleInstance.findOne({
     where: { id: oldPI.id },
   });
