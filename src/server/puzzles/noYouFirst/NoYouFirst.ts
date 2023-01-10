@@ -34,6 +34,7 @@ const deciphers = [
 ];
 
 const handleDecipher = (
+  userId: string,
   action: NoYouFirstCipherInstanceAction,
   instance: PuzzleInstance,
 ): ActionResult => {
@@ -45,6 +46,14 @@ const handleDecipher = (
   }
 
   const payload = assertIsNoYouFirstPuzzlePayload(instance.puzzlePayload);
+
+  if (
+    !hasOwnProperty(payload.enabledButtonsPerUser, userId) ||
+    payload.enabledButtonsPerUser[userId].includes(action.cipherIndex)
+  ) {
+    throw new Error('You are not allowed to do that.');
+  }
+
   const solution = assertIsNoYouFirstSolutionPayload(instance.solutionPayload);
   let payloadDiffValue = {
     currentStates: [...payload.currentStates],
@@ -132,7 +141,7 @@ const RaceToTheBottom: Puzzle = {
       return handleSolve(a, puzzleInstance);
     } else if (action.actionType === 'decipher') {
       const a = assertIsNoYouFirstCipherInstanceAction(action);
-      return handleDecipher(a, puzzleInstance);
+      return handleDecipher(user.id, a, puzzleInstance);
     }
     throw new Error(
       'Unexpected case in NoYouFirst instance action processing. Whoopsie!',

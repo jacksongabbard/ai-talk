@@ -6,6 +6,7 @@ type ChallengeFormProps = {
   idx: number;
   correct: boolean;
   onClick: (cipherIdx: number, partIndex: number) => void;
+  enabledButtons: number[];
 };
 
 const ChallengeForm: React.FC<ChallengeFormProps> = ({
@@ -13,6 +14,7 @@ const ChallengeForm: React.FC<ChallengeFormProps> = ({
   idx,
   correct,
   onClick,
+  enabledButtons,
 }) => {
   const [deciphered, setDeciphered] = useState(input);
 
@@ -56,6 +58,7 @@ const ChallengeForm: React.FC<ChallengeFormProps> = ({
           data-cipheridx="0"
           css={{ fontSize: 20 }}
           onClick={onCipherButtonPress}
+          disabled={enabledButtons.includes(0)}
         >
           🆘
         </Button>
@@ -63,6 +66,7 @@ const ChallengeForm: React.FC<ChallengeFormProps> = ({
           data-cipheridx="1"
           css={{ fontSize: 24 }}
           onClick={onCipherButtonPress}
+          disabled={enabledButtons.includes(1)}
         >
           👄
         </Button>
@@ -70,6 +74,7 @@ const ChallengeForm: React.FC<ChallengeFormProps> = ({
           data-cipheridx="2"
           css={{ fontSize: 24 }}
           onClick={onCipherButtonPress}
+          disabled={enabledButtons.includes(2)}
         >
           🪖
         </Button>
@@ -77,6 +82,7 @@ const ChallengeForm: React.FC<ChallengeFormProps> = ({
           data-cipheridx="3"
           css={{ fontSize: 24 }}
           onClick={onCipherButtonPress}
+          disabled={enabledButtons.includes(3)}
         >
           💾
         </Button>
@@ -84,6 +90,7 @@ const ChallengeForm: React.FC<ChallengeFormProps> = ({
           data-cipheridx="4"
           css={{ fontSize: 24 }}
           onClick={onCipherButtonPress}
+          disabled={enabledButtons.includes(4)}
         >
           🛞
         </Button>
@@ -91,6 +98,7 @@ const ChallengeForm: React.FC<ChallengeFormProps> = ({
           data-cipheridx="5"
           css={{ fontSize: 24 }}
           onClick={onCipherButtonPress}
+          disabled={enabledButtons.includes(5)}
         >
           ＠
         </Button>
@@ -98,6 +106,7 @@ const ChallengeForm: React.FC<ChallengeFormProps> = ({
           data-cipheridx="6"
           css={{ fontSize: 24 }}
           onClick={onCipherButtonPress}
+          disabled={enabledButtons.includes(6)}
         >
           ↔️
         </Button>
@@ -105,6 +114,7 @@ const ChallengeForm: React.FC<ChallengeFormProps> = ({
           data-cipheridx="7"
           css={{ fontSize: 24 }}
           onClick={onCipherButtonPress}
+          disabled={enabledButtons.includes(7)}
         >
           🧨
         </Button>

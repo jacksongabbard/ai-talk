@@ -1,8 +1,10 @@
+import React, { useCallback, useContext } from 'react';
+
 import type { SendInstanceAction } from 'src/client/hooks/useWebSocket';
 import type { ClientPuzzleInstance } from 'src/types/ClientPuzzleInstance';
 import { assertIsNoYouFirstPuzzlePayload } from 'src/types/puzzles/NoYouFirstTypes';
 import ChallengeForm from './ChallengeForm';
-import React, { useCallback, useState } from 'react';
+import { AppContext } from 'src/server/state/AppContext';
 
 type NoYouFirstProps = {
   instance: ClientPuzzleInstance;
@@ -13,6 +15,11 @@ const NoYouFirst: React.FC<NoYouFirstProps> = ({
   instance,
   sendInstanceAction,
 }) => {
+  const appContext = useContext(AppContext);
+  if (!appContext?.user) {
+    throw new Error('No user!? Sacre bleu!');
+  }
+
   const payload = assertIsNoYouFirstPuzzlePayload(instance.puzzlePayload);
 
   const onSolutionChange = useCallback(
@@ -36,6 +43,12 @@ const NoYouFirst: React.FC<NoYouFirstProps> = ({
     [sendInstanceAction],
   );
 
+  if (!payload.enabledButtonsPerUser[appContext.user.id]) {
+    throw new Error('No enabled buttons for user?!');
+  }
+
+  const enabledButtons = payload.enabledButtonsPerUser[appContext.user.id];
+
   return (
     <div>
       {payload.currentStates.map((s, idx) => (
@@ -44,6 +57,7 @@ const NoYouFirst: React.FC<NoYouFirstProps> = ({
           idx={idx}
           key={idx}
           correct={payload.solvedParts[idx]}
+          enabledButtons={enabledButtons}
           onClick={onClick}
         />
       ))}
