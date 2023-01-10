@@ -49,7 +49,7 @@ const handleDecipher = (
 
   if (
     !hasOwnProperty(payload.enabledButtonsPerUser, userId) ||
-    payload.enabledButtonsPerUser[userId].includes(action.cipherIndex)
+    !payload.enabledButtonsPerUser[userId].includes(action.cipherIndex)
   ) {
     throw new Error('You are not allowed to do that.');
   }

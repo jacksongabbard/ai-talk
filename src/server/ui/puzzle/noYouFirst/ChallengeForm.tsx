@@ -58,70 +58,78 @@ const ChallengeForm: React.FC<ChallengeFormProps> = ({
             marginRight: 'var(--spacing-large)',
           }}
         >
-          <Button
-            data-cipheridx="0"
-            css={{ fontSize: 20 }}
-            onClick={onCipherButtonPress}
-            disabled={enabledButtons.includes(0)}
-          >
-            🆘
-          </Button>
-          <Button
-            data-cipheridx="1"
-            css={{ fontSize: 24 }}
-            onClick={onCipherButtonPress}
-            disabled={enabledButtons.includes(1)}
-          >
-            👄
-          </Button>
-          <Button
-            data-cipheridx="2"
-            css={{ fontSize: 24 }}
-            onClick={onCipherButtonPress}
-            disabled={enabledButtons.includes(2)}
-          >
-            🪖
-          </Button>
-          <Button
-            data-cipheridx="3"
-            css={{ fontSize: 24 }}
-            onClick={onCipherButtonPress}
-            disabled={enabledButtons.includes(3)}
-          >
-            💾
-          </Button>
-          <Button
-            data-cipheridx="4"
-            css={{ fontSize: 24 }}
-            onClick={onCipherButtonPress}
-            disabled={enabledButtons.includes(4)}
-          >
-            🛞
-          </Button>
-          <Button
-            data-cipheridx="5"
-            css={{ fontSize: 24 }}
-            onClick={onCipherButtonPress}
-            disabled={enabledButtons.includes(5)}
-          >
-            ＠
-          </Button>
-          <Button
-            data-cipheridx="6"
-            css={{ fontSize: 24 }}
-            onClick={onCipherButtonPress}
-            disabled={enabledButtons.includes(6)}
-          >
-            ↔️
-          </Button>
-          <Button
-            data-cipheridx="7"
-            css={{ fontSize: 24 }}
-            onClick={onCipherButtonPress}
-            disabled={enabledButtons.includes(7)}
-          >
-            🧨
-          </Button>
+          {enabledButtons.includes(0) && (
+            <Button
+              data-cipheridx="0"
+              css={{ fontSize: 20 }}
+              onClick={onCipherButtonPress}
+            >
+              🆘
+            </Button>
+          )}
+          {enabledButtons.includes(1) && (
+            <Button
+              data-cipheridx="1"
+              css={{ fontSize: 24 }}
+              onClick={onCipherButtonPress}
+            >
+              👄
+            </Button>
+          )}
+          {enabledButtons.includes(2) && (
+            <Button
+              data-cipheridx="2"
+              css={{ fontSize: 24 }}
+              onClick={onCipherButtonPress}
+            >
+              🪖
+            </Button>
+          )}
+          {enabledButtons.includes(3) && (
+            <Button
+              data-cipheridx="3"
+              css={{ fontSize: 24 }}
+              onClick={onCipherButtonPress}
+            >
+              💾
+            </Button>
+          )}
+          {enabledButtons.includes(4) && (
+            <Button
+              data-cipheridx="4"
+              css={{ fontSize: 24 }}
+              onClick={onCipherButtonPress}
+            >
+              🛞
+            </Button>
+          )}
+          {enabledButtons.includes(5) && (
+            <Button
+              data-cipheridx="5"
+              css={{ fontSize: 24 }}
+              onClick={onCipherButtonPress}
+            >
+              ＠
+            </Button>
+          )}
+          {enabledButtons.includes(6) && (
+            <Button
+              data-cipheridx="6"
+              css={{ fontSize: 24 }}
+              onClick={onCipherButtonPress}
+            >
+              ↔️
+            </Button>
+          )}
+          {enabledButtons.includes(7) && (
+            <Button
+              data-cipheridx="7"
+              css={{ fontSize: 24 }}
+              onClick={onCipherButtonPress}
+            >
+              🧨
+            </Button>
+          )}
         </div>
         <div>
           <textarea
@@ -142,7 +150,6 @@ const ChallengeForm: React.FC<ChallengeFormProps> = ({
           <div css={{ display: 'flex', justifyContent: 'space-between' }}>
             <PresenceFacepile
               location={{ puzzle: 'noYouFirst', section: idx.toString() }}
-              excludeViewer={true}
             />
             <div css={{ textAlign: 'right', color: '#383' }}>
               Character Count {deciphered.length.toLocaleString()}
