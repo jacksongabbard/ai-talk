@@ -36,16 +36,35 @@ export function generateSudoku(): SolvedSudoku {
           continue;
         }
 
+        // look to see if the maybe number appears
+        // in the row already. If it does, skip it.
         for (let mx = 0; mx < x; mx++) {
           if (grid[y][mx] === maybe) {
             continue candidateLoop;
           }
         }
 
+        // If we're here, we've got a number that hasn't yet appeared
+        // in the row, so we're good there. Now we need to check if it
+        // appears yet in the column.
         for (let my = 0; my < y; my++) {
-          // We found a repeat, so we need to step back up and try again
+          // Darn. The maybe number would be a repeat, so we need to
+          // step back up and try again
           if (grid[my][x] === maybe) {
             continue candidateLoop;
+          }
+        }
+
+        // Now I need to check the 3x3 grid that the maybe number will
+        // join. If the number already exists in the 3x3, I'm really
+        // hosed and need to backtrack.
+        const gridXStart = Math.floor(x / 3) * 3;
+        const gridYStart = Math.floor(y / 3) * 3;
+        for (let gy = gridYStart; gy < gridYStart + 3 && gy <= y; gy++) {
+          for (let gx = gridXStart; gx < gridXStart + 3; gx++) {
+            if (grid[gy][gx] === maybe) {
+              continue candidateLoop;
+            }
           }
         }
 
@@ -61,9 +80,11 @@ export function generateSudoku(): SolvedSudoku {
 }
 
 export function printGrid(g: SolvedSudoku) {
-  console.log('------------------');
+  const output = ['------------------'];
+
   for (let y = 0; y < 9; y++) {
-    console.log(g[y].join(' '));
+    output.push(g[y].join(' '));
   }
-  console.log('------------------');
+  output.push('------------------');
+  console.log(output.join('\n'));
 }
