@@ -76,7 +76,7 @@ const Puzzles: React.FC = () => {
         </Typography>
       )}
       {puzzleMap && (
-        <div css={{ flex: 1, display: 'flex' }}>
+        <div css={{ flex: 1, display: 'flex', flexWrap: 'wrap' }}>
           {Object.keys(puzzleMap).map((slug) => {
             const p = puzzleMap[slug].puzzle;
             const solved = puzzleMap[slug].solved;
