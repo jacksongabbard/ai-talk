@@ -70,7 +70,19 @@ const PushTheButton: Puzzle = {
     };
   },
 
-  filterPayloadForUser: (user: User, payload: object) => {
+  filterPuzzlePayloadForUser: (
+    user: User,
+    puzzlePayload: object,
+    solutionPayload: object,
+  ) => {
+    return puzzlePayload;
+  },
+
+  filterPayloadDiffValueForUser: (
+    user: User,
+    payload: object,
+    solutionPayload: object,
+  ) => {
     return payload;
   },
 

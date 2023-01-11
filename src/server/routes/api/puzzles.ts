@@ -147,9 +147,12 @@ export const getPuzzleInfo: RequestHandler = async (
                 },
               });
             } else {
-              const filteredPuzzlePayload = pmap[slug].filterPayloadForUser(
+              const filteredPuzzlePayload = pmap[
+                slug
+              ].filterPuzzlePayloadForUser(
                 req.context.user,
                 pi.puzzlePayload,
+                pi.solutionPayload,
               );
               instance = {
                 ...puzzleInstanceToClientPuzzleInstance(pi),
@@ -289,9 +292,10 @@ export const generatePuzzleInstance: RequestHandler = async (
             await Promise.all(instanceMemberPromises);
             await transaction.commit();
 
-            const filteredPuzzlePayload = puzzle.filterPayloadForUser(
+            const filteredPuzzlePayload = puzzle.filterPuzzlePayloadForUser(
               req.context.user,
               instance.puzzlePayload,
+              instance.solutionPayload,
             );
 
             res.status(200);

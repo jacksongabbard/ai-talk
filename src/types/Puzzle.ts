@@ -34,7 +34,25 @@ export type Puzzle = ClientPuzzle & {
     teamMembers: User[],
     team?: Team,
   ) => PuzzleInstanceData;
-  filterPayloadForUser: (user: User, payload: object) => object;
+
+  // This function filters an entire puzzle payload
+  // for the given user.
+  filterPuzzlePayloadForUser: (
+    user: User,
+    puzzlePayload: object,
+    solutionPayload: object,
+  ) => object;
+
+  // This function filters just the payload diff value
+  // for a particular puzzle instance for a particular
+  // user. This will usually be a fragment of the full
+  // puzzlePayload.
+  filterPayloadDiffValueForUser: (
+    user: User,
+    payloadDiffValue: object,
+    solutionPayload: object,
+  ) => object;
+
   receiveAction: (
     user: User,
     puzzleInstance: PuzzleInstance,

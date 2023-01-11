@@ -105,7 +105,7 @@ const handleSolve = (
   };
 };
 
-const RaceToTheBottom: Puzzle = {
+const NoYouFirst: Puzzle = {
   name: 'No, You First',
   slug: 'no_you_first',
   minPlayers: 2,
@@ -120,7 +120,19 @@ const RaceToTheBottom: Puzzle = {
     };
   },
 
-  filterPayloadForUser: (user: User, payload: object) => {
+  filterPuzzlePayloadForUser: (
+    user: User,
+    puzzlePayload: object,
+    solutionPayload: object,
+  ) => {
+    return puzzlePayload;
+  },
+
+  filterPayloadDiffValueForUser: (
+    user: User,
+    payload: object,
+    solutionPayload: object,
+  ) => {
     return payload;
   },
 
@@ -155,4 +167,4 @@ const RaceToTheBottom: Puzzle = {
   },
 };
 
-export default RaceToTheBottom;
+export default NoYouFirst;

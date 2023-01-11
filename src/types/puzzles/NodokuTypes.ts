@@ -1,34 +1,48 @@
 import { makeValidator } from 'src/lib/ajv/makeValidator';
+import { UUIDRegexString } from 'src/lib/validation/UUIDRegex';
+
+const CoordRegexp = '^[0-8]_[0-8]$';
 
 export type NodokuPuzzlePayloadType = {
-  grid: number[][];
-  correct: boolean[][];
+  grid: { [x_y: string]: number };
+  correct: { [x_y: string]: boolean };
+  metavalues: { [x_y: string]: number };
+  solutionAttempt: string;
 };
 
 const nodokuPuzzlePayloadValidator = makeValidator({
   type: 'object',
   properties: {
     grid: {
-      type: 'array',
-      maxItems: 9,
-      items: {
-        type: 'array',
-        maxItems: 9,
-        items: { type: 'number', minimum: 0, maximum: 9 },
+      type: 'object',
+      patternProperties: {
+        [CoordRegexp]: {
+          type: 'number',
+        },
       },
     },
     correct: {
-      type: 'array',
-      maxItems: 9,
-      items: {
-        type: 'array',
-        maxItems: 9,
-        items: { type: 'boolean' },
+      type: 'object',
+      patternProperties: {
+        [CoordRegexp]: {
+          type: 'boolean',
+        },
       },
+    },
+    metavalues: {
+      type: 'object',
+      patternProperties: {
+        [CoordRegexp]: {
+          type: 'number',
+        },
+      },
+    },
+    solutionAttempt: {
+      type: 'string',
     },
   },
   additionalProperties: false,
-  required: ['grid', 'correct'],
+  required: ['grid', 'correct', 'metavalues', 'solutionAttempt'],
 });
 
 export function assertIsNodokuPuzzlePayload(thing: any) {
@@ -42,24 +56,41 @@ export function assertIsNodokuPuzzlePayload(thing: any) {
 }
 
 export type NodokuSolutionPayloadType = {
-  grid: number[][];
+  grid: { [x_y: string]: number };
+  metavalues: { [x_y: string]: number };
+  metacode: string;
+  rowsPerUser: { [uuid: string]: number[] };
 };
 
 const nodokuSolutionPayloadValidator = makeValidator({
   type: 'object',
   properties: {
     grid: {
-      type: 'array',
-      maxItems: 9,
-      items: {
-        type: 'array',
-        maxItems: 9,
-        items: { type: 'number', minimum: 0, maximum: 9 },
+      type: 'object',
+      patternProperties: {
+        [CoordRegexp]: {
+          type: 'number',
+        },
+      },
+    },
+    metavalues: {
+      type: 'object',
+      patternProperties: {
+        [CoordRegexp]: {
+          type: 'number',
+        },
+      },
+    },
+    metacode: { type: 'string' },
+    rowsPerUser: {
+      type: 'object',
+      patternProperties: {
+        [UUIDRegexString]: { type: 'array', items: { type: 'number' } },
       },
     },
   },
   additionalProperties: false,
-  required: ['grid'],
+  required: ['grid', 'metavalues', 'metacode', 'rowsPerUser'],
 });
 
 export function assertIsNodokuSolutionPayload(thing: any) {
@@ -72,24 +103,22 @@ export function assertIsNodokuSolutionPayload(thing: any) {
   );
 }
 
-export type NodokuInstanceActionType = {
-  x: number;
-  y: number;
+export type NodokuEntryInstanceActionType = {
+  actionType: 'entry';
+  coord: string;
   value: number;
 };
 
-const nodokuInstanceActionValidator = makeValidator({
+const nodokuEntryInstanceActionValidator = makeValidator({
   type: 'object',
   properties: {
-    x: {
-      type: 'number',
-      minimum: 0,
-      maximum: 8,
+    actionType: {
+      type: 'string',
+      pattern: '^(entry|solve)$',
     },
-    y: {
-      type: 'number',
-      minimum: 0,
-      maximum: 8,
+    coord: {
+      type: 'string',
+      pattern: CoordRegexp,
     },
     value: {
       type: 'number',
@@ -98,15 +127,46 @@ const nodokuInstanceActionValidator = makeValidator({
     },
   },
   additionalProperties: false,
-  required: ['x', 'y', 'value'],
+  required: ['coord', 'value'],
 });
 
-export function assertIsNodokuInstanceAction(thing: any) {
-  if (nodokuInstanceActionValidator(thing)) {
-    return thing as NodokuInstanceActionType;
+export function assertIsNodokuEntryInstanceAction(thing: any) {
+  if (nodokuEntryInstanceActionValidator(thing)) {
+    return thing as NodokuEntryInstanceActionType;
   }
   throw new Error(
-    'Object provided is not a NodokuInstanceAction: ' +
+    'Object provided is not a NodokuEntryInstanceAction: ' +
       JSON.stringify(thing, null, 4),
+  );
+}
+
+export type NodokuSolutionInstanceAction = {
+  actionType: 'solve';
+  solution: string;
+};
+
+export const nodokuSolutionInstanceActionValidator = makeValidator({
+  type: 'object',
+  properties: {
+    actionType: {
+      type: 'string',
+    },
+    solution: {
+      type: 'string',
+    },
+  },
+  additionalProperties: false,
+  required: ['actionType', 'solution'],
+});
+
+export function assertIsNodokuSolutionInstanceAction(
+  thing: unknown,
+): NodokuSolutionInstanceAction {
+  if (nodokuSolutionInstanceActionValidator(thing)) {
+    return thing as NodokuSolutionInstanceAction;
+  }
+  throw new Error(
+    'Provided input is not a Nodoku solution instance action: ' +
+      JSON.stringify(thing),
   );
 }

@@ -1,6 +1,6 @@
 import { shuffle } from 'lodash';
 
-type SolvedSudoku = number[][];
+export type SolvedSudoku = number[][];
 
 // arr[y][x];
 

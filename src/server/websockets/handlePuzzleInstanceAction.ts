@@ -118,7 +118,11 @@ export async function handlePuzzleInstanceAction(
       return;
     }
 
-    const value = puzzle.filterPayloadForUser(user, payloadDiff.value);
+    const value = puzzle.filterPayloadDiffValueForUser(
+      user,
+      payloadDiff.value,
+      puzzleInstance.solutionPayload,
+    );
     s.send(
       JSON.stringify({
         type: PAYLOAD_DIFF,
