@@ -59,8 +59,20 @@ export async function handlePuzzleInstanceAction(
     // Maybe there's a better way to do this. Or maybe
     // there's not. Idk. Definitely a race condition
     // here if teammates move quickly enough.
-    const res = await SequelizeInstance.query({
+    await SequelizeInstance.query({
       query: `
+        UPDATE puzzle_instances
+        SET
+          puzzle_payload = ?,
+          sequence_number = (
+            SELECT COUNT(*) + 1
+            FROM puzzle_instance_actions 
+            WHERE puzzle_instance_id = ?
+          ),
+          solved_at = ?
+        WHERE
+          id = ?;
+
         INSERT INTO puzzle_instance_actions (
           id,
           puzzle_instance_id,
@@ -71,15 +83,25 @@ export async function handlePuzzleInstanceAction(
           ?,
           ?,
           ?,
-          (SELECT COUNT(*) + 1 FROM puzzle_instance_actions WHERE puzzle_instance_id = ?),
+          (
+            SELECT COUNT(*) + 1
+            FROM puzzle_instance_actions
+            WHERE puzzle_instance_id = ?
+          ),
           ?
-        );`,
+        );
+      `,
       values: [
+        JSON.stringify(puzzlePayload),
+        puzzleInstance.id,
+        isSolved ? new Date() : null,
+        puzzleInstance.id,
+
         puzzleInstanceActionID,
         puzzleInstance.id,
         user.id,
         puzzleInstance.id,
-        JSON.stringify(puzzlePayload),
+        JSON.stringify(payloadDiff),
       ],
     });
     pia = await PuzzleInstanceAction.findOne({
@@ -89,25 +111,9 @@ export async function handlePuzzleInstanceAction(
     if (!pia) {
       throw new Error('Failed to record puzzle instance action');
     }
-
-    const updatedFields: {
-      puzzlePayload: object;
-      sequenceNumber: number;
-      solvedAt?: Date;
-    } = {
-      puzzlePayload,
-      sequenceNumber: pia.sequenceNumber,
-    };
-    if (isSolved) {
-      updatedFields.solvedAt = new Date();
-    }
-    await PuzzleInstance.update(updatedFields, {
-      where: {
-        id: puzzleInstance.id,
-      },
-    });
   } catch (e) {
     console.log('puzzle-instance-action-failure', e);
+    throw new Error('Failed to store the most recent action. My bad.');
   }
 
   const sockets = getSocketsForPuzzleInstance(puzzleInstance.id);
