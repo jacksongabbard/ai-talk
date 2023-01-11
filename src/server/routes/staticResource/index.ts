@@ -13,7 +13,7 @@ export const staticResource: RequestHandler = (req, res, next) => {
     /^\/static\/([a-zA-Z\-_]+)(\.js|\.js\.map)$/,
   );
   if (!match || match.length !== 3) {
-    console.log('No match');
+    console.log('No match: ' + req.path);
     res.status(500);
     res.send('Bad request');
     return;
