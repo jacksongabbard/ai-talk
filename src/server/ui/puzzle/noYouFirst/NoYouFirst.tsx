@@ -5,6 +5,7 @@ import type { ClientPuzzleInstance } from 'src/types/ClientPuzzleInstance';
 import { assertIsNoYouFirstPuzzlePayload } from 'src/types/puzzles/NoYouFirstTypes';
 import ChallengeForm from './ChallengeForm';
 import { AppContext } from 'src/server/state/AppContext';
+import { PresenceFacepile, PresenceObserver } from '@cord-sdk/react';
 
 type NoYouFirstProps = {
   instance: ClientPuzzleInstance;
@@ -72,21 +73,29 @@ const NoYouFirst: React.FC<NoYouFirstProps> = ({
             &nbsp;
           </div>
         </div>
-        <div>
-          <input
-            type="string"
-            value={payload.solutionAttempt}
-            onChange={onSolutionChange}
-            placeholder="Enter the solution..."
-            css={{
-              fontSize: 24,
-              color: '#3f3',
-              background: '#000',
-              border: '1px #3f3 solid',
-              width: '60vw',
-              maxWidth: '60vw',
-            }}
-          />
+        <div css={{ position: 'relative' }}>
+          <PresenceObserver location={{ puzzle: 'noYouFirst', solutionBox: 1 }}>
+            <input
+              type="string"
+              value={payload.solutionAttempt}
+              onChange={onSolutionChange}
+              placeholder="Enter the solution..."
+              css={{
+                fontSize: 24,
+                color: '#3f3',
+                background: '#000',
+                border: '1px #3f3 solid',
+                width: '60vw',
+                maxWidth: '60vw',
+              }}
+            />
+
+            <div css={{ position: 'absolute', bottom: 4, right: 4 }}>
+              <PresenceFacepile
+                location={{ puzzle: 'noYouFirst', solutionBox: 1 }}
+              />
+            </div>
+          </PresenceObserver>
         </div>
       </div>
     </div>
