@@ -51,12 +51,15 @@ export const createNoYouFirstPayloads = (users: User[]) => {
 
   const enabledButtonsPerUser: { [uuid: string]: number[] } = {};
   const uuids = shuffle(users.map((u) => u.id));
-  for (let i = 0; i < ciphers.length + 1; i++) {
-    // The +1 here is for the reset button
+  for (let i = 0; i < ciphers.length; i++) {
     if (!enabledButtonsPerUser[uuids[i % uuids.length]]) {
       enabledButtonsPerUser[uuids[i % uuids.length]] = [];
     }
     enabledButtonsPerUser[uuids[i % uuids.length]].push(i);
+  }
+
+  for (const uuid of uuids) {
+    enabledButtonsPerUser[uuid].push(7);
   }
 
   const puzzlePayload: NoYouFirstPuzzlePayload = {
