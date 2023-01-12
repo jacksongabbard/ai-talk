@@ -24,7 +24,7 @@ const ciphers = [
 ];
 
 export const createNoYouFirstPayloads = (users: User[]) => {
-  let total = 5000 + Math.round(Math.random() * 10000);
+  let total = 0;
   const parts: number[] = [];
   const encipheredParts: string[] = [];
   for (let i = 0; i < 6; i++) {
@@ -35,7 +35,7 @@ export const createNoYouFirstPayloads = (users: User[]) => {
 
     let msg = num.toString(10);
     if (i === 0) {
-      msg = 'solve: ' + num;
+      msg = 'solve: ' + num + ' plus ';
     } else if (i === 5) {
       msg = num + ' =';
     } else {
