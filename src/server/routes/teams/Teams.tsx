@@ -76,7 +76,7 @@ const Teams: React.FC = () => {
                     <TableCell component="th" scope="row">
                       {t.teamName}
                     </TableCell>
-                    <TableCell align="right">{t.location}</TableCell>
+                    <TableCell>{t.location}</TableCell>
                   </TableRow>
                 ))}
               </TableBody>
