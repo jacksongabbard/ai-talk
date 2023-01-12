@@ -41,6 +41,12 @@ const Nav: React.FC = () => {
           </ListItemIcon>
           <ListItemText>Team</ListItemText>
         </NavMenuItem>
+        <NavMenuItem to="/teams">
+          <ListItemIcon>
+            <Group fontSize="small" />
+          </ListItemIcon>
+          <ListItemText>All Teams</ListItemText>
+        </NavMenuItem>
       </MenuList>
     </Paper>
   );

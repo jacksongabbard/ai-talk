@@ -10,6 +10,8 @@ import SequelizeInstance from 'src/lib/db/SequelizeInstance';
 import { isLikelyOffensive } from 'src/lib/moderation/bannedWords';
 import type { ClientUser } from 'src/types/ClientUser';
 import { userToClientUser } from 'src/types/ClientUser';
+import { errorThingToString } from 'src/lib/error/errorThingToString';
+import { teamToClientTeam } from 'src/types/ClientTeam';
 
 export const checkTeamNameIsAvailable: RequestHandler = async (
   req: Request,
@@ -299,6 +301,25 @@ export const listTeamMembers: RequestHandler = async (
     return;
   } else {
     bail400('Bad input', res);
+    return;
+  }
+};
+
+export const listTeams: RequestHandler = async (
+  req: Request,
+  res: Response,
+) => {
+  try {
+    if (!req.context?.user) {
+      throw new Error('No user');
+    }
+
+    const teams = await Team.findAll({ order: [['team_name', 'ASC']] });
+    const clientTeams = teams.map((t) => teamToClientTeam(t));
+    res.status(200);
+    res.send(JSON.stringify({ teams: clientTeams }));
+  } catch (e) {
+    bail400(errorThingToString(e), res);
     return;
   }
 };

@@ -16,6 +16,7 @@ import { useContext, useEffect } from 'react';
 import { AppContext } from './state/AppContext';
 import callAPI from 'src/client/lib/callAPI';
 import { hasOwnProperty } from 'src/lib/hasOwnProperty';
+import Teams from './routes/teams/Teams';
 
 const darkTheme = createTheme({
   palette: {
@@ -64,6 +65,7 @@ const App: React.FC = () => {
           <Route path="/home" element={<Home />} />
           <Route path="/profile" element={<Profile />} />
           <Route path="/team" element={<Team />} />
+          <Route path="/teams" element={<Teams />} />
           <Route path="/create-team" element={<CreateTeam />} />
           <Route path="/join-team" element={<JoinTeam />} />
           <Route path="/auth" element={<Auth />} />

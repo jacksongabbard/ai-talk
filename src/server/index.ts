@@ -14,6 +14,7 @@ import { authMiddleware } from './lib/authMiddleware';
 import { home } from './routes/home';
 import { profile } from './routes/profile';
 import { team } from './routes/team';
+import { teams } from './routes/teams';
 import { createTeam } from './routes/createTeam';
 import { puzzles } from './routes/puzzles';
 import {
@@ -31,6 +32,7 @@ import {
   checkTeamNameIsAvailable,
   createTeam as createTeamAPI,
   listTeamMembers,
+  listTeams,
   updateTeam as updateTeamAPI,
 } from './routes/api/team';
 import { initWebSockets } from './websockets/initWebSockets';
@@ -62,6 +64,7 @@ console.log('Bootstrapping the server...');
   router.get('/puzzles', authMiddleware, puzzles);
   router.get('/puzzle/:slug', authMiddleware, puzzle);
   router.get('/team', authMiddleware, team);
+  router.get('/teams', authMiddleware, teams);
   router.get('/create-team', authMiddleware, createTeam);
   router.get('/join-team', authMiddleware, joinTeam);
   router.get('/auth', auth);
@@ -92,6 +95,7 @@ console.log('Bootstrapping the server...');
     authMiddleware,
     generatePuzzleInstance,
   );
+  router.post('/api/list-teams', authMiddleware, listTeams);
   router.post('/api/list-team-members', authMiddleware, listTeamMembers);
   router.post('/api/generate-join-code', authMiddleware, generateJoinCode);
   router.post('/api/try-join-code', authMiddleware, tryJoinCode);
