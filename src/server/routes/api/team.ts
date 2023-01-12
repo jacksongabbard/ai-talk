@@ -314,7 +314,10 @@ export const listTeams: RequestHandler = async (
       throw new Error('No user');
     }
 
-    const teams = await Team.findAll({ order: [['team_name', 'ASC']] });
+    const teams = await Team.findAll({
+      where: { public: true },
+      order: [['team_name', 'ASC']],
+    });
     const clientTeams = teams.map((t) => teamToClientTeam(t));
     res.status(200);
     res.send(JSON.stringify({ teams: clientTeams }));
