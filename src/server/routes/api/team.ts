@@ -326,3 +326,93 @@ export const listTeams: RequestHandler = async (
     return;
   }
 };
+
+export const getTeamIdForTeamName: RequestHandler = async (
+  req: Request,
+  res: Response,
+) => {
+  if (!req.context?.user) {
+    bail400('Thou shalt not list team members, ya twat.', res);
+    return;
+  }
+
+  if (
+    req.body &&
+    hasOwnProperty(req.body, 'data') &&
+    typeof req.body.data === 'object' &&
+    hasOwnProperty(req.body.data, 'teamName') &&
+    typeof req.body.data.teamName === 'string'
+  ) {
+    let requesterTeamId = '';
+    if (req.context?.team && req.context.team !== undefined) {
+      requesterTeamId = req.context.team.id;
+    }
+
+    const team = await Team.findOne({
+      where: {
+        teamName: req.body.data.teamName,
+      },
+    });
+    const isOwnTeam = team && requesterTeamId === team.id;
+    if (!team) {
+      bail400('No such team, my friend', res);
+      return;
+    }
+
+    if (!team.public && !isOwnTeam) {
+      error200('Team not public', res);
+      return;
+    }
+
+    res.status(200);
+    res.send(JSON.stringify({ teamId: team.id }));
+    return;
+  }
+
+  bail400('Bad input', res);
+};
+
+export const getTeamById: RequestHandler = async (
+  req: Request,
+  res: Response,
+) => {
+  if (!req.context?.user) {
+    bail400('Thou shalt not list team members, ya twat.', res);
+    return;
+  }
+
+  if (
+    req.body &&
+    hasOwnProperty(req.body, 'data') &&
+    typeof req.body.data === 'object' &&
+    hasOwnProperty(req.body.data, 'teamId') &&
+    typeof req.body.data.teamId === 'string'
+  ) {
+    let requesterTeamId = '';
+    if (req.context?.team && req.context.team !== undefined) {
+      requesterTeamId = req.context.team.id;
+    }
+
+    const team = await Team.findOne({
+      where: {
+        id: req.body.data.teamId,
+      },
+    });
+    const isOwnTeam = team && requesterTeamId === team.id;
+    if (!team) {
+      bail400('No such team, my friend', res);
+      return;
+    }
+
+    if (!team.public && !isOwnTeam) {
+      error200('Team not public', res);
+      return;
+    }
+
+    res.status(200);
+    res.send(JSON.stringify({ team: teamToClientTeam(team) }));
+    return;
+  }
+
+  bail400('Bad input', res);
+};

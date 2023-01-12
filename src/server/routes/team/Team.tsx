@@ -2,8 +2,6 @@ import React, { useCallback, useContext, useEffect, useState } from 'react';
 import Button from '@mui/material/Button';
 import Typography from '@mui/material/Typography';
 
-import { AppContext } from 'src/server/state/AppContext';
-import Page from 'src/server/ui/page/Page';
 import {
   Dialog,
   DialogActions,
@@ -13,6 +11,9 @@ import {
   Divider,
   Input,
 } from '@mui/material';
+
+import { AppContext } from 'src/server/state/AppContext';
+import Page from 'src/server/ui/page/Page';
 import NoTeam from './NoTeam';
 import TeamForm from 'src/server/ui/team/TeamForm';
 import { ClientUser, hydrateSerializedClientUser } from 'src/types/ClientUser';
@@ -20,12 +21,9 @@ import callAPI from 'src/client/lib/callAPI';
 import { hasOwnProperty } from 'src/lib/hasOwnProperty';
 import MessageBox from 'src/server/ui/messageBox/MessageBox';
 import { errorThingToString } from 'src/lib/error/errorThingToString';
-import {
-  CordContext,
-  PagePresence,
-  PresenceFacepile,
-  Thread,
-} from '@cord-sdk/react';
+import { CordContext } from '@cord-sdk/react';
+import { useParams } from 'react-router-dom';
+import { ClientTeam, hydrateSerializedClientTeam } from 'src/types/ClientTeam';
 
 // For some godforsaken reason, if I call this component 'Team', I get
 // hydration errors. Specifically, the error:
@@ -45,11 +43,69 @@ import {
 const TeamPage: React.FC = () => {
   const appContext = useContext(AppContext);
   const user = appContext?.user;
-  const team = appContext?.team;
-  const teamId = team?.id;
+  const params = useParams();
+  const [teamId, setTeamId] = useState<string>();
   const [errorMessage, setErrorMessage] = useState('');
+  const [team, setTeam] = useState<ClientTeam | undefined>(
+    params.teamName ? undefined : appContext?.team,
+  );
   const [members, setMembers] = useState<ClientUser[]>([]);
   const [omittedMembers, setOmittedMembers] = useState(false);
+
+  useEffect(() => {
+    (async () => {
+      if (params.teamName) {
+        let resp = {};
+        try {
+          resp = await callAPI('get-team-id-for-team-name', {
+            teamName: params.teamName,
+          });
+        } catch (e) {
+          console.log('ERROR: ');
+          setErrorMessage(errorThingToString(e));
+          return;
+        }
+
+        if (hasOwnProperty(resp, 'error') && typeof resp.error === 'string') {
+          setErrorMessage(resp.error);
+          return;
+        }
+
+        if (hasOwnProperty(resp, 'teamId') && typeof resp.teamId === 'string') {
+          setTeamId(resp.teamId);
+          return;
+        }
+        throw new Error("Backend didn't give us back a teamId. Wth.");
+      } else if (team?.id) {
+        setTeamId(team.id);
+      }
+    })();
+  }, [team, params.teamName, setErrorMessage, setTeamId]);
+
+  useEffect(() => {
+    (async () => {
+      try {
+        if (!teamId) {
+          return;
+        }
+        const resp = await callAPI('get-team-by-id', { teamId });
+        if (hasOwnProperty(resp, 'error') && typeof resp.error === 'string') {
+          setErrorMessage(resp.error);
+          return;
+        }
+
+        if (hasOwnProperty(resp, 'team') && typeof resp.team === 'object') {
+          const t = hydrateSerializedClientTeam(resp.team);
+          setTeam(t);
+        } else {
+          throw new Error("Backend didn't give us back a team. Smdh.");
+        }
+      } catch (e) {
+        setErrorMessage(errorThingToString(e));
+      }
+    })();
+  }, [teamId, setErrorMessage, setTeam]);
+
   useEffect(() => {
     appContext?.setShowNavigation(true);
   }, [appContext?.setShowNavigation]);
@@ -125,122 +181,123 @@ const TeamPage: React.FC = () => {
     cordContext.setLocation({ route: '/team' });
   }, [cordContext.setLocation]);
 
-  console.log(cordContext);
-
   return (
     <Page title="Team">
-      {errorMessage !== '' && (
-        <MessageBox type="error">{errorMessage}</MessageBox>
-      )}
-      {!team && <NoTeam />}
-      {team && !editing && (
-        <div css={{ flex: 1 }}>
-          <div css={{ marginBottom: 'var(--spacing-large)' }}>
-            <Typography variant="overline">Team</Typography>
-            <Typography variant="h5">{team.teamName}</Typography>
-          </div>
-          {team.location && (
+      <div>
+        {errorMessage !== '' && (
+          <MessageBox type="error">{errorMessage}</MessageBox>
+        )}
+        {!team && !params.teamName && <NoTeam />}
+        {team && !editing && (
+          <div css={{ flex: 1 }}>
             <div css={{ marginBottom: 'var(--spacing-large)' }}>
-              <Typography variant="overline">Location</Typography>
-              <Typography variant="body1">{team.location}</Typography>
+              <Typography variant="overline">Team</Typography>
+              <Typography variant="h5">{team.teamName}</Typography>
             </div>
-          )}
-          {members.length > 0 && (
-            <>
-              <Typography variant="overline">Members</Typography>
-              {members.length === 0 && omittedMembers && (
-                <div css={{ marginBottom: 'var(--spacing-large)' }}>
-                  <Typography variant="body1">
-                    All users on this team are non-public
-                  </Typography>
-                </div>
-              )}
-              {members.length > 0 && (
-                <>
-                  <ul css={{ marginBottom: 'var(--spacing-large)' }}>
-                    {members.map((m) => (
-                      <li
-                        css={{ marginBottom: 'var(--spacing-large)' }}
-                        key={m.id}
-                      >
-                        <Typography variant="body1">{m.userName}</Typography>
-                      </li>
-                    ))}
-                  </ul>
-                  {omittedMembers && (
-                    <Typography variant="subtitle2">
-                      Some non-public members have been omitted from this list.
+            {team.location && (
+              <div css={{ marginBottom: 'var(--spacing-large)' }}>
+                <Typography variant="overline">Location</Typography>
+                <Typography variant="body1">{team.location}</Typography>
+              </div>
+            )}
+            {members.length > 0 && (
+              <>
+                <Typography variant="overline">Members</Typography>
+                {members.length === 0 && omittedMembers && (
+                  <div css={{ marginBottom: 'var(--spacing-large)' }}>
+                    <Typography variant="body1">
+                      All users on this team are non-public
                     </Typography>
-                  )}
-                </>
-              )}
-            </>
-          )}
-          {user?.teamId === team.id && (
-            <div
-              css={{
-                marginTop: 'var(--spacing-xlarge)',
-              }}
-            >
-              <Divider />
+                  </div>
+                )}
+                {members.length > 0 && (
+                  <>
+                    <ul css={{ marginBottom: 'var(--spacing-large)' }}>
+                      {members.map((m) => (
+                        <li
+                          css={{ marginBottom: 'var(--spacing-large)' }}
+                          key={m.id}
+                        >
+                          <Typography variant="body1">{m.userName}</Typography>
+                        </li>
+                      ))}
+                    </ul>
+                    {omittedMembers && (
+                      <Typography variant="subtitle2">
+                        Some non-public members have been omitted from this
+                        list.
+                      </Typography>
+                    )}
+                  </>
+                )}
+              </>
+            )}
+            {user?.teamId === team.id && (
               <div
                 css={{
-                  display: 'flex',
-                  justifyContent: 'end',
-                  marginTop: 'var(--spacing-large)',
+                  marginTop: 'var(--spacing-xlarge)',
                 }}
               >
-                {members && members.length < 6 && (
+                <Divider />
+                <div
+                  css={{
+                    display: 'flex',
+                    justifyContent: 'end',
+                    marginTop: 'var(--spacing-large)',
+                  }}
+                >
+                  {members && members.length < 6 && (
+                    <Button
+                      variant="text"
+                      onClick={inviteMembers}
+                      css={{ marginLeft: 'var(--spacing-large)' }}
+                    >
+                      Invite members
+                    </Button>
+                  )}
                   <Button
                     variant="text"
-                    onClick={inviteMembers}
+                    onClick={startEditingTeam}
                     css={{ marginLeft: 'var(--spacing-large)' }}
                   >
-                    Invite members
+                    Edit team
                   </Button>
-                )}
-                <Button
-                  variant="text"
-                  onClick={startEditingTeam}
-                  css={{ marginLeft: 'var(--spacing-large)' }}
-                >
-                  Edit team
-                </Button>
+                </div>
               </div>
-            </div>
-          )}
-        </div>
-      )}
-      {team && editing && (
-        <TeamForm onUpdate={stopEditingTeam} onCancel={stopEditingTeam} />
-      )}
-      <Dialog onClose={closeDialog} open={inviteDialogOpen}>
-        <DialogTitle>Create a join code</DialogTitle>
-        <DialogContent>
-          <DialogContentText>
-            Use the join code below to invite a member to your team. They can
-            use the join code to add themselves.
-          </DialogContentText>
-        </DialogContent>
-        <DialogContent>
-          {!joinCode && (
-            <Button variant="contained" onClick={generateJoinCode}>
-              Generate join code
-            </Button>
-          )}
-          {joinCode && (
-            <Input css={{ fontSize: '5vw' }} value={joinCode} fullWidth />
-          )}
-          <DialogActions>
-            <Button
-              onClick={closeDialog}
-              css={{ marginLeft: 'var(--spacing-large)' }}
-            >
-              Close
-            </Button>
-          </DialogActions>
-        </DialogContent>
-      </Dialog>
+            )}
+          </div>
+        )}
+        {team && editing && (
+          <TeamForm onUpdate={stopEditingTeam} onCancel={stopEditingTeam} />
+        )}
+        <Dialog onClose={closeDialog} open={inviteDialogOpen}>
+          <DialogTitle>Create a join code</DialogTitle>
+          <DialogContent>
+            <DialogContentText>
+              Use the join code below to invite a member to your team. They can
+              use the join code to add themselves.
+            </DialogContentText>
+          </DialogContent>
+          <DialogContent>
+            {!joinCode && (
+              <Button variant="contained" onClick={generateJoinCode}>
+                Generate join code
+              </Button>
+            )}
+            {joinCode && (
+              <Input css={{ fontSize: '5vw' }} value={joinCode} fullWidth />
+            )}
+            <DialogActions>
+              <Button
+                onClick={closeDialog}
+                css={{ marginLeft: 'var(--spacing-large)' }}
+              >
+                Close
+              </Button>
+            </DialogActions>
+          </DialogContent>
+        </Dialog>
+      </div>
     </Page>
   );
 };

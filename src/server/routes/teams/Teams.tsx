@@ -17,6 +17,7 @@ import {
   TableCell,
   TableBody,
 } from '@mui/material';
+import { Link } from 'react-router-dom';
 
 const Teams: React.FC = () => {
   const appContext = useContext(AppContext);
@@ -65,6 +66,7 @@ const Teams: React.FC = () => {
                 <TableRow>
                   <TableCell>Team Name</TableCell>
                   <TableCell>Location</TableCell>
+                  <TableCell>Joined On</TableCell>
                 </TableRow>
               </TableHead>
               <TableBody>
@@ -74,9 +76,10 @@ const Teams: React.FC = () => {
                     sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
                   >
                     <TableCell component="th" scope="row">
-                      {t.teamName}
+                      <Link to={'/team/' + t.teamName}>{t.teamName}</Link>
                     </TableCell>
                     <TableCell>{t.location}</TableCell>
+                    <TableCell>{t.createdAt.toLocaleDateString()}</TableCell>
                   </TableRow>
                 ))}
               </TableBody>

@@ -31,6 +31,8 @@ import { saveProfile, checkUserNameIsAvailable } from './routes/api/profile';
 import {
   checkTeamNameIsAvailable,
   createTeam as createTeamAPI,
+  getTeamById,
+  getTeamIdForTeamName,
   listTeamMembers,
   listTeams,
   updateTeam as updateTeamAPI,
@@ -64,6 +66,7 @@ console.log('Bootstrapping the server...');
   router.get('/puzzles', authMiddleware, puzzles);
   router.get('/puzzle/:slug', authMiddleware, puzzle);
   router.get('/team', authMiddleware, team);
+  router.get('/team/:teamName', authMiddleware, team);
   router.get('/teams', authMiddleware, teams);
   router.get('/create-team', authMiddleware, createTeam);
   router.get('/join-team', authMiddleware, joinTeam);
@@ -97,6 +100,12 @@ console.log('Bootstrapping the server...');
   );
   router.post('/api/list-teams', authMiddleware, listTeams);
   router.post('/api/list-team-members', authMiddleware, listTeamMembers);
+  router.post(
+    '/api/get-team-id-for-team-name',
+    authMiddleware,
+    getTeamIdForTeamName,
+  );
+  router.post('/api/get-team-by-id', authMiddleware, getTeamById);
   router.post('/api/generate-join-code', authMiddleware, generateJoinCode);
   router.post('/api/try-join-code', authMiddleware, tryJoinCode);
   router.post(
