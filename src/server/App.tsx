@@ -87,6 +87,7 @@ const App: React.FC = () => {
     </ThemeProvider>
   );
 
+  console.log('Rending Cord with authToken: ' + cordToken);
   return <CordProvider clientAuthToken={cordToken}>{shell}</CordProvider>;
 };
 
