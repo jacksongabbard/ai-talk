@@ -86,3 +86,12 @@ export function removeWebSocketFromMaps(ws: WebSocket) {
     }
   }
 }
+
+export function getAllWebSockets() {
+  const s: WebSocket[] = [];
+
+  for (const wsSet of Object.values(puzzleInstanceIdToSockets)) {
+    s.push(...Array.from(wsSet));
+  }
+  return s;
+}
