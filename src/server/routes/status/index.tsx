@@ -6,6 +6,9 @@ import {
   getAllWebSockets,
   getDetailsForSocket,
 } from 'src/server/websockets/SocketMaps';
+import PuzzleInstance from 'src/lib/db/PuzzleInstance';
+import { convertSecondsToTime } from 'src/lib/time/util';
+import { renderPage } from 'src/server/ui/util';
 
 export const status: RequestHandler = async (req: Request, res: Response) => {
   if (!req.context?.user) {
@@ -36,6 +39,7 @@ export const status: RequestHandler = async (req: Request, res: Response) => {
   output.push('------------');
   const sockets = getAllWebSockets();
   output.push(sockets.length + ' connected users');
+  output.push('<table>');
   for (const s of sockets) {
     const row: string[] = [];
     const deets = getDetailsForSocket(s);
@@ -57,23 +61,57 @@ export const status: RequestHandler = async (req: Request, res: Response) => {
       row.push('Unknown puzzle');
     }
 
-    output.push(row.join('\t\t\t'));
+    output.push(
+      '<tr>' + row.map((cell) => `<td>|${cell}</td>`).join('') + '</tr>',
+    );
   }
+  output.push('</table>');
 
   output.push('\n');
   output.push('Users: ' + users.length);
+  output.push('-----------------------------');
   output.push('<table>');
   for (let user of users) {
     output.push(
       `<tr>
-        <td>${user.userName}</td>
-        <td>${user.teamId ? teamIdToName[user.teamId] : '<no team>'}</td>
-        <td>${user.createdAt.toLocaleString()}</td>
+        <td>|${user.createdAt.toLocaleString()}</td>
+        <td>|${user.userName}</td>
+        <td>|${user.teamId ? teamIdToName[user.teamId] : '<no team>'}</td>
       </tr>`,
     );
   }
   output.push('</table>');
 
+  const puzzleInstances = await PuzzleInstance.findAll({
+    order: [['updatedAt', 'DESC']],
+  });
+  output.push('\n');
+  output.push('Puzzle Instances: ' + puzzleInstances.length);
+  output.push('------------------------------------------');
+  output.push('<table>');
+  for (const pi of puzzleInstances) {
+    output.push(`
+      <tr>
+        <td>|${pi.updatedAt.toLocaleString()}</td>
+        <td>|${pi.puzzleId}</td> 
+        <td>|${pi.teamId ? teamIdToName[pi.teamId] : ''}</td>
+        <td>|${pi.userId ? userIdToName[pi.userId] : ''}</td>
+        <td>|${pi.sequenceNumber}</td>
+        <td>|${pi.solvedAt ? pi.solvedAt?.toLocaleString() : ''}</td>
+        <td>|${
+          pi.solvedAt
+            ? convertSecondsToTime(
+                (pi.solvedAt.getTime() - pi.createdAt?.getTime()) / 1000,
+                '.',
+              )
+            : ''
+        }</td>
+      </tr>
+    `);
+  }
+  output.push('</table>');
+  let html = '<pre>' + output.join('\n') + '</pre>';
+  html += `<script type="text/javascript">setTimeout(() => { window.location.reload(); }, 5000);</script>`;
   res.status(200);
-  res.send('<pre>' + output.join('\n') + '</pre>');
+  res.send(renderPage(<div dangerouslySetInnerHTML={{ __html: html }} />));
 };
