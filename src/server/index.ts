@@ -43,6 +43,8 @@ import { joinTeam } from './routes/joinTeam';
 import { generateJoinCode, tryJoinCode } from './routes/api/joinCode';
 import { getCordClientAuthToken } from './routes/api/cord';
 import { getUserById, getUserIdFromUserName } from './routes/api/user';
+import { fetchLeaderboard } from './routes/api/leaderboard';
+import { leaderboard } from './routes/leaderboard';
 
 const config = getDotEnv();
 
@@ -63,6 +65,7 @@ console.log('Bootstrapping the server...');
   // Pages
   router.get('/', authMiddleware, home);
   router.get('/home', authMiddleware, home);
+  router.get('/leaderboard', authMiddleware, leaderboard);
   router.get('/profile', authMiddleware, profile);
   router.get('/profile/:userName', authMiddleware, profile);
   router.get('/puzzles', authMiddleware, puzzles);
@@ -100,6 +103,7 @@ console.log('Bootstrapping the server...');
     authMiddleware,
     generatePuzzleInstance,
   );
+  router.post('/api/fetch-leaderboard', authMiddleware, fetchLeaderboard);
   router.post('/api/list-teams', authMiddleware, listTeams);
   router.post('/api/list-team-members', authMiddleware, listTeamMembers);
   router.post(

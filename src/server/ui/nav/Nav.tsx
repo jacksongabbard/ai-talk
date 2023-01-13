@@ -7,6 +7,7 @@ import Group from '@mui/icons-material/Group';
 import Paper from '@mui/material/Paper';
 import Person from '@mui/icons-material/Person';
 import NavMenuItem from '../navMenuItem/NavMenuItem';
+import { Leaderboard } from '@mui/icons-material';
 
 const Nav: React.FC = () => {
   return (
@@ -46,6 +47,12 @@ const Nav: React.FC = () => {
             <Group fontSize="small" />
           </ListItemIcon>
           <ListItemText>All Teams</ListItemText>
+        </NavMenuItem>
+        <NavMenuItem to="/leaderboard">
+          <ListItemIcon>
+            <Leaderboard fontSize="small" />
+          </ListItemIcon>
+          <ListItemText>Leaderboard</ListItemText>
         </NavMenuItem>
       </MenuList>
     </Paper>

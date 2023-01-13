@@ -17,6 +17,7 @@ import { AppContext } from './state/AppContext';
 import callAPI from 'src/client/lib/callAPI';
 import { hasOwnProperty } from 'src/lib/hasOwnProperty';
 import Teams from './routes/teams/Teams';
+import Leaderboard from './routes/leaderboard/Leaderboard';
 
 const darkTheme = createTheme({
   palette: {
@@ -63,6 +64,7 @@ const App: React.FC = () => {
         <Routes>
           <Route path="/" element={<Home />} />
           <Route path="/home" element={<Home />} />
+          <Route path="/leaderboard" element={<Leaderboard />} />
           <Route path="/profile" element={<Profile />} />
           <Route path="/profile/:userName" element={<Profile />} />
           <Route path="/team" element={<Team />} />
