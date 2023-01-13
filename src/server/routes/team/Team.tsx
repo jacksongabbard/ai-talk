@@ -3,6 +3,7 @@ import Button from '@mui/material/Button';
 import Typography from '@mui/material/Typography';
 
 import {
+  Avatar,
   Dialog,
   DialogActions,
   DialogContent,
@@ -212,12 +213,25 @@ const TeamPage: React.FC = () => {
                 )}
                 {members.length > 0 && (
                   <>
-                    <ul css={{ marginBottom: 'var(--spacing-large)' }}>
+                    <ul
+                      css={{ marginBottom: 'var(--spacing-large)', padding: 0 }}
+                    >
                       {members.map((m) => (
                         <li
-                          css={{ marginBottom: 'var(--spacing-large)' }}
+                          css={{
+                            marginBottom: 'var(--spacing-large)',
+                            display: 'flex',
+                            flexDirection: 'row',
+                            alignItems: 'center',
+                          }}
                           key={m.id}
                         >
+                          <div css={{ paddingRight: 8 }}>
+                            {m.profilePic && <Avatar src={m.profilePic} />}
+                            {!m.profilePic && (
+                              <Avatar>{m.userName[0].toUpperCase()}</Avatar>
+                            )}
+                          </div>
                           <Typography variant="body1">
                             <Link to={'/profile/' + m.userName}>
                               {m.userName}
