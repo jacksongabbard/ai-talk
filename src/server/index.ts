@@ -42,6 +42,7 @@ import { healthCheck } from './routes/healthCheck';
 import { joinTeam } from './routes/joinTeam';
 import { generateJoinCode, tryJoinCode } from './routes/api/joinCode';
 import { getCordClientAuthToken } from './routes/api/cord';
+import { getUserById, getUserIdFromUserName } from './routes/api/user';
 
 const config = getDotEnv();
 
@@ -63,6 +64,7 @@ console.log('Bootstrapping the server...');
   router.get('/', authMiddleware, home);
   router.get('/home', authMiddleware, home);
   router.get('/profile', authMiddleware, profile);
+  router.get('/profile/:userName', authMiddleware, profile);
   router.get('/puzzles', authMiddleware, puzzles);
   router.get('/puzzle/:slug', authMiddleware, puzzle);
   router.get('/team', authMiddleware, team);
@@ -108,6 +110,12 @@ console.log('Bootstrapping the server...');
   router.post('/api/get-team-by-id', authMiddleware, getTeamById);
   router.post('/api/generate-join-code', authMiddleware, generateJoinCode);
   router.post('/api/try-join-code', authMiddleware, tryJoinCode);
+  router.post(
+    '/api/get-user-id-for-user-name',
+    authMiddleware,
+    getUserIdFromUserName,
+  );
+  router.post('/api/get-user-by-id', authMiddleware, getUserById);
   router.post(
     '/api/get-cord-client-auth-token',
     authMiddleware,

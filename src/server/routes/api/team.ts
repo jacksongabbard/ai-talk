@@ -332,7 +332,7 @@ export const getTeamIdForTeamName: RequestHandler = async (
   res: Response,
 ) => {
   if (!req.context?.user) {
-    bail400('Thou shalt not list team members, ya twat.', res);
+    bail400('Thou shalt not swap usernames for ids, ya twat.', res);
     return;
   }
 
@@ -377,7 +377,7 @@ export const getTeamById: RequestHandler = async (
   res: Response,
 ) => {
   if (!req.context?.user) {
-    bail400('Thou shalt not list team members, ya twat.', res);
+    bail400('Thou shalt not get this team, ya twat.', res);
     return;
   }
 

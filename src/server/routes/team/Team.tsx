@@ -22,7 +22,7 @@ import { hasOwnProperty } from 'src/lib/hasOwnProperty';
 import MessageBox from 'src/server/ui/messageBox/MessageBox';
 import { errorThingToString } from 'src/lib/error/errorThingToString';
 import { CordContext } from '@cord-sdk/react';
-import { useParams } from 'react-router-dom';
+import { Link, useParams } from 'react-router-dom';
 import { ClientTeam, hydrateSerializedClientTeam } from 'src/types/ClientTeam';
 
 // For some godforsaken reason, if I call this component 'Team', I get
@@ -218,7 +218,11 @@ const TeamPage: React.FC = () => {
                           css={{ marginBottom: 'var(--spacing-large)' }}
                           key={m.id}
                         >
-                          <Typography variant="body1">{m.userName}</Typography>
+                          <Typography variant="body1">
+                            <Link to={'/profile/' + m.userName}>
+                              {m.userName}
+                            </Link>
+                          </Typography>
                         </li>
                       ))}
                     </ul>

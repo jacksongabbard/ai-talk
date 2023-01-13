@@ -7,7 +7,6 @@ export type ClientUser = {
   teamId?: string;
   userName: string;
   location: string;
-  emailAddress?: string;
   profilePic?: string;
   active: boolean;
   public: boolean;
@@ -32,7 +31,6 @@ type SerializedClientUser = {
   teamId?: string;
   userName: string;
   location: string;
-  emailAddress?: string;
   profilePic?: string;
   active: boolean;
   public: boolean;
@@ -46,7 +44,6 @@ export const validateIsSerializedClientUser = makeValidator({
     teamId: { type: 'string' },
     userName: { type: 'string' },
     location: { type: 'string' },
-    emailAddress: { type: 'string' },
     profilePic: { type: 'string' },
     active: { type: 'boolean' },
     public: { type: 'boolean' },
@@ -64,7 +61,6 @@ export function hydrateSerializedClientUser(thing: any): ClientUser {
       teamId: t.teamId,
       userName: t.userName,
       location: t.location,
-      emailAddress: t.emailAddress,
       profilePic: t.profilePic,
       active: t.active,
       public: t.public,
