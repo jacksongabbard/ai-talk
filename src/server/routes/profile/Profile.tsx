@@ -115,7 +115,8 @@ const Profile: React.FC = () => {
 
   useEffect(() => {
     appContext?.setShowNavigation(true);
-  }, [appContext?.setShowNavigation]);
+    appContext?.setGlobalCordContext(true);
+  }, [appContext?.setShowNavigation, appContext?.setGlobalCordContext]);
 
   const [editingProfile, setEditingProfile] = useState(false);
 

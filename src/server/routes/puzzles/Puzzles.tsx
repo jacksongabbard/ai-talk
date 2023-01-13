@@ -25,7 +25,8 @@ const Puzzles: React.FC = () => {
 
   useEffect(() => {
     appContext?.setShowNavigation(true);
-  }, [appContext?.setShowNavigation]);
+    appContext?.setGlobalCordContext(false);
+  }, [appContext?.setShowNavigation, appContext?.setGlobalCordContext]);
 
   useEffect(() => {
     (async () => {

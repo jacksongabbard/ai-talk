@@ -29,7 +29,8 @@ const Teams: React.FC = () => {
   const [loading, setLoading] = useState(false);
   useEffect(() => {
     appContext?.setShowNavigation(true);
-  }, [appContext?.setShowNavigation]);
+    appContext?.setGlobalCordContext(true);
+  }, [appContext?.setShowNavigation, appContext?.setGlobalCordContext]);
 
   useEffect(() => {
     (async () => {

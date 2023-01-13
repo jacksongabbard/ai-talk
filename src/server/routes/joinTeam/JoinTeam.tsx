@@ -23,7 +23,8 @@ const JoinTeam: React.FC = () => {
 
   useEffect(() => {
     appContext?.setShowNavigation(true);
-  }, [appContext?.setShowNavigation]);
+    appContext?.setGlobalCordContext(false);
+  }, [appContext?.setShowNavigation, appContext?.setGlobalCordContext]);
 
   const onJoinCodeChange = useCallback(
     (e: React.ChangeEvent<HTMLInputElement>) => {

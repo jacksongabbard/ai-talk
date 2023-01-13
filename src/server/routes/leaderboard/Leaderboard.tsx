@@ -6,7 +6,6 @@ import callAPI from 'src/client/lib/callAPI';
 import { hasOwnProperty } from 'src/lib/hasOwnProperty';
 import MessageBox from 'src/server/ui/messageBox/MessageBox';
 import { CordContext } from '@cord-sdk/react';
-import { ClientTeam, hydrateSerializedClientTeam } from 'src/types/ClientTeam';
 import {
   Paper,
   TableContainer,
@@ -32,9 +31,11 @@ const LeaderboardPage: React.FC = () => {
   const [leaderboardData, setLeaderboardData] = useState<
     LeaderboardData | undefined
   >();
+
   useEffect(() => {
     appContext?.setShowNavigation(true);
-  }, [appContext?.setShowNavigation]);
+    appContext?.setGlobalCordContext(true);
+  }, [appContext?.setShowNavigation, appContext?.setGlobalCordContext]);
 
   useEffect(() => {
     (async () => {

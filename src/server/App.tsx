@@ -47,7 +47,10 @@ const App: React.FC = () => {
   useEffect(() => {
     (async () => {
       if (appContext?.team && appContext?.setCordClientAuthToken) {
-        const resp = await callAPI('get-cord-client-auth-token');
+        const resp = await callAPI(
+          'get-cord-client-auth-token',
+          appContext.globalCordContext ? { global: true } : {},
+        );
         if (
           hasOwnProperty(resp, 'clientAuthToken') &&
           typeof resp.clientAuthToken === 'string'
@@ -56,7 +59,11 @@ const App: React.FC = () => {
         }
       }
     })();
-  }, [appContext?.team, appContext?.setCordClientAuthToken]);
+  }, [
+    appContext?.team,
+    appContext?.setCordClientAuthToken,
+    appContext?.globalCordContext,
+  ]);
 
   const shell = (
     <ThemeProvider theme={darkTheme}>

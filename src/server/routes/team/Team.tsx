@@ -109,7 +109,8 @@ const TeamPage: React.FC = () => {
 
   useEffect(() => {
     appContext?.setShowNavigation(true);
-  }, [appContext?.setShowNavigation]);
+    appContext?.setGlobalCordContext(true);
+  }, [appContext?.setShowNavigation, appContext?.setGlobalCordContext]);
 
   const [editing, setEditing] = useState(false);
   const startEditingTeam = useCallback(() => {

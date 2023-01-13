@@ -13,6 +13,8 @@ export type TAppContext = null | {
   setShowHeader: (b: boolean) => void;
   cordClientAuthToken?: string;
   setCordClientAuthToken: (s: string) => void;
+  globalCordContext?: boolean;
+  setGlobalCordContext: (b: boolean) => void;
 };
 
 export type TAppContextExport = {
@@ -21,6 +23,7 @@ export type TAppContextExport = {
   showNavigation?: boolean | undefined;
   showHeader?: boolean | undefined;
   cordClientAuthToken?: string | undefined;
+  globalCordContext: boolean | undefined;
 };
 
 export const AppContext = React.createContext<TAppContext>(null);
@@ -31,6 +34,7 @@ type AppContextProviderProps = {
   showNavigation?: boolean;
   showHeader?: boolean;
   cordClientAuthToken?: string;
+  globalCordContext: boolean;
   children: React.ReactNode;
 };
 
@@ -52,6 +56,7 @@ export const AppContextProvider: React.FC<AppContextProviderProps> = ({
   const [cordClientAuthToken, setCordClientAuthToken] = useState<
     string | undefined
   >();
+  const [globalCordContext, setGlobalCordContext] = useState(false);
   return (
     <AppContext.Provider
       value={{
@@ -65,6 +70,8 @@ export const AppContextProvider: React.FC<AppContextProviderProps> = ({
         setShowHeader,
         cordClientAuthToken,
         setCordClientAuthToken,
+        globalCordContext,
+        setGlobalCordContext,
       }}
     >
       {children}
