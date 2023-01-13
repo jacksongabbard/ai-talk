@@ -58,7 +58,7 @@ const Teams: React.FC = () => {
       {errorMessage !== '' && (
         <MessageBox type="error">{errorMessage}</MessageBox>
       )}
-      <div>
+      <div css={{ flex: 1 }}>
         {loading && <MessageBox type="info">Loading</MessageBox>}
         {teams && (
           <TableContainer component={Paper}>

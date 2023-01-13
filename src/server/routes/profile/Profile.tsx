@@ -130,7 +130,7 @@ const Profile: React.FC = () => {
 
   return (
     <Page title="Profile">
-      <div>
+      <div css={{ flex: 1 }}>
         {errorMessage !== '' && (
           <MessageBox type="error">{errorMessage}</MessageBox>
         )}

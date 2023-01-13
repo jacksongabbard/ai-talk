@@ -185,7 +185,7 @@ const TeamPage: React.FC = () => {
 
   return (
     <Page title="Team">
-      <div>
+      <div css={{ flex: 1 }}>
         {errorMessage !== '' && (
           <MessageBox type="error">{errorMessage}</MessageBox>
         )}

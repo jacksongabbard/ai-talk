@@ -9,7 +9,10 @@ const TeamChat = () => {
   const cordContext = useContext(CordContext);
   const location = useLocation();
 
-  if (!cordContext.hasProvider || !appContext?.team) {
+  if (
+    !cordContext.hasProvider ||
+    (!appContext?.team && !appContext?.globalCordContext)
+  ) {
     return null;
   }
 
