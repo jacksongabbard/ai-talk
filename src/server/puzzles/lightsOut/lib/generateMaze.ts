@@ -1,7 +1,8 @@
-// import type Team from 'src/lib/db/Team';
 import { shuffle } from 'lodash';
 
-type Maze = {
+// import type Team from 'src/lib/db/Team';
+
+export type Maze = {
   size: number;
   grid: {
     [x_y: string]: {
@@ -15,11 +16,11 @@ type Maze = {
   exit: string;
 };
 
-function coord(x: number, y: number) {
+export function coord(x: number, y: number) {
   return x + '_' + y;
 }
 
-function populateMaze(m: Maze, visited: Set<string>) {
+function populateMaze(m: Maze) {
   /*
   Copypasta'd from Wikipedia:
   The Aldous-Broder algorithm also produces uniform spanning trees.
@@ -33,6 +34,7 @@ function populateMaze(m: Maze, visited: Set<string>) {
       Make the chosen neighbour the current cell.
   */
 
+  const visited = new Set<string>();
   let current = { x: 0, y: 0 };
   outer: while (visited.size < Math.pow(m.size, 2)) {
     const eligibleNeighbors = [];
@@ -142,61 +144,35 @@ export function generateMaze(size: number, entryPoints: number) {
   const visited = new Set<string>();
   // Top Left
   if (entryPoints >= 1) {
-    maze.grid[coord(0, 0)].down = true;
-    maze.grid[coord(0, 1)].up = true;
-    visited.add(coord(0, 0));
-    visited.add(coord(0, 1));
     maze.entryPoints.push(coord(0, 0));
   }
 
-  /*
   // Bottom Right
   if (entryPoints >= 2) {
-    maze.grid[coord(size - 1, size - 1)].up = true;
-    maze.grid[coord(size - 1, size - 2)].down = true;
-    visited.add(coord(size - 1, size - 1));
-    visited.add(coord(size - 1, size - 2));
     maze.entryPoints.push(coord(size - 1, size - 1));
   }
 
   // Top Right
   if (entryPoints >= 3) {
-    maze.grid[coord(size - 1, 0)].down = true;
-    maze.grid[coord(size - 1, 1)].up = true;
-    visited.add(coord(size - 1, 0));
-    visited.add(coord(size - 1, 1));
     maze.entryPoints.push(coord(size - 1, 0));
   }
 
   // Bottom left
   if (entryPoints >= 4) {
-    maze.grid[coord(0, size - 1)].up = true;
-    maze.grid[coord(0, size - 2)].down = true;
-    visited.add(coord(0, size - 1));
-    visited.add(coord(0, size - 2));
     maze.entryPoints.push(coord(0, size - 1));
   }
 
   // Left Center
   if (entryPoints >= 5) {
-    maze.grid[coord(0, Math.floor(size / 2))].right = true;
-    maze.grid[coord(1, Math.floor(size / 2))].left = true;
-    visited.add(coord(0, Math.floor(size / 2)));
-    visited.add(coord(1, Math.floor(size / 2)));
     maze.entryPoints.push(coord(0, Math.floor(size / 2)));
   }
 
   // Right Center
   if (entryPoints >= 6) {
-    maze.grid[coord(size - 1, Math.floor(size / 2))].left = true;
-    maze.grid[coord(size - 2, Math.floor(size / 2))].right = true;
-    visited.add(coord(size - 1, Math.floor(size / 2)));
-    visited.add(coord(size - 2, Math.floor(size / 2)));
     maze.entryPoints.push(coord(size - 1, Math.floor(size / 2)));
   }
-  */
 
-  populateMaze(maze, visited);
+  populateMaze(maze);
 
   return maze;
 }
