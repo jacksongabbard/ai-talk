@@ -34,9 +34,14 @@ function populateMaze(m: Maze) {
       Make the chosen neighbour the current cell.
   */
 
+  let current = {
+    x: Math.round(Math.random() * (m.size - 1)),
+    y: Math.round(Math.random() * (m.size - 1)),
+  };
+  // const visited = new Set<string>(coord(current.x, current.y));
   const visited = new Set<string>();
-  let current = { x: 0, y: 0 };
   outer: while (visited.size < Math.pow(m.size, 2)) {
+    visited.add(coord(current.x, current.y));
     const eligibleNeighbors = [];
     const canGoLeft = current.x > 0;
     const canGoRight = current.x < m.size - 1;
@@ -76,7 +81,6 @@ function populateMaze(m: Maze) {
           // Left
           !visited.has(coord(x - 1, y))
         ) {
-          visited.add(coord(x, y));
           current.x = x;
           current.y = y;
           continue outer;
@@ -111,7 +115,6 @@ function populateMaze(m: Maze) {
       m.grid[coord(randomNeighbor.x, randomNeighbor.y)].right = true;
     }
 
-    visited.add(coord(randomNeighbor.x, randomNeighbor.y));
     current.x = randomNeighbor.x;
     current.y = randomNeighbor.y;
   }
