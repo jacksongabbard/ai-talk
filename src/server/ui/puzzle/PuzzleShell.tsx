@@ -14,12 +14,16 @@ import {
 } from 'src/types/SocketMessage';
 import Nodoku from './nodoku/Nodoku';
 import {
+  Button,
   Dialog,
   DialogContent,
   DialogContentText,
   DialogTitle,
 } from '@mui/material';
 import NoYouFirst from './noYouFirst/NoYouFirst';
+import LightsOut from './lightsOut/LightsOut';
+import { ArrowBack } from '@mui/icons-material';
+import { useNavigate } from 'react-router-dom';
 
 const PuzzleShell: React.FC = () => {
   const appContext = useContext(AppContext);
@@ -117,6 +121,8 @@ const PuzzleShell: React.FC = () => {
     }
   }, [setPuzzle, instance?.puzzleId, connected]);
 
+  const navigate = useNavigate();
+
   return (
     <div
       css={{
@@ -143,18 +149,42 @@ const PuzzleShell: React.FC = () => {
           sendInstanceAction={sendInstanceAction}
         />
       )}
+      {instance && instance.puzzleId === 'lights_out' && (
+        <LightsOut
+          instance={instance}
+          sendInstanceAction={sendInstanceAction}
+        />
+      )}
       {instance && instance.solvedAt && (
         <div
           css={{
+            alignItems: 'stretch',
+            display: 'flex',
             position: 'absolute',
             top: '5vmin',
             left: '5vmin',
-            background: '#3f3',
-            color: '#000',
-            padding: 'var(--spacing-large)',
           }}
         >
-          SOLVED!
+          <Button
+            onClick={() => {
+              navigate('/puzzles', { replace: true });
+            }}
+            variant="contained"
+            css={{
+              borderRadius: 0,
+            }}
+          >
+            <ArrowBack />
+          </Button>
+          <div
+            css={{
+              background: '#3f3',
+              color: '#000',
+              padding: 'var(--spacing-large)',
+            }}
+          >
+            SOLVED!
+          </div>
         </div>
       )}
       <Dialog open={errorMessage !== ''} onClose={onErrorDialogClose}>
