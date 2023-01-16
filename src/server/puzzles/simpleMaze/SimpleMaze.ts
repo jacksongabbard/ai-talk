@@ -19,7 +19,7 @@ const SimpleMaze: Puzzle = {
   maxPlayers: 6,
   minPlayers: 2,
   createInstance: (user: User, members: User[], team?: Team) => {
-    const size = 17;
+    const size = 25;
     const maze = generateMaze(size, members.length);
 
     const solvePath = solveMaze(
@@ -104,9 +104,6 @@ const SimpleMaze: Puzzle = {
       throw new Error('User does not appear in playerPositions');
     }
 
-    const occupiedPositions = Object.values(playerPositions).map((c) =>
-      coord(c.x, c.y),
-    );
     const currentCoord = playerPositions[user.id];
     const grid = pi.maze.grid;
     const currentCoordStr = coord(currentCoord.x, currentCoord.y);
