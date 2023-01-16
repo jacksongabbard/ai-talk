@@ -49,6 +49,25 @@ const LightsOut: React.FC<LightsOutProps> = ({
               borderTop: '1px #020 solid',
             }}
           >
+            {payload.maze.exit === c && (
+              <div
+                css={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  fontSize: 30,
+                  lineHeight: 30,
+                  background: '#3f3',
+                  width: '33%', // intentionally a smidge small
+                  height: '33%', // intentionally a smidge small
+                  position: 'absolute',
+                  top: '33.33%',
+                  left: '33.33%',
+                  borderRadius: '100%',
+                  zIndex: 1,
+                }}
+              ></div>
+            )}
             <Paths cell={payload.maze.grid[c]} />
             {payload.maze.exit === c && (
               <div
@@ -58,12 +77,13 @@ const LightsOut: React.FC<LightsOutProps> = ({
                   justifyContent: 'center',
                   fontSize: 30,
                   lineHeight: 30,
-                  color: '#3f3',
+                  color: '#000',
                   width: '100%',
                   height: '100%',
                   position: 'absolute',
                   top: 0,
                   left: 0,
+                  zIndex: 3,
                 }}
               >
                 ★
@@ -121,9 +141,16 @@ const LightsOut: React.FC<LightsOutProps> = ({
   });
 
   useEffect(() => {
-    const onKeyPress = (e: KeyboardEvent) => {
-      e.preventDefault();
-      e.stopImmediatePropagation();
+    const onKey = (e: KeyboardEvent) => {
+      if (
+        e.key === 'ArrowUp' ||
+        e.key === 'ArrowDown' ||
+        e.key === 'ArrowLeft' ||
+        e.key === 'ArrowRight'
+      ) {
+        e.preventDefault();
+        e.stopImmediatePropagation();
+      }
 
       let direction: 'up' | 'right' | 'down' | 'left' | undefined = undefined;
 
@@ -151,10 +178,9 @@ const LightsOut: React.FC<LightsOutProps> = ({
       });
     };
 
-    window.addEventListener('keyup', onKeyPress);
-
+    window.addEventListener('keydown', onKey, true);
     return () => {
-      window.removeEventListener('keyup', onKeyPress);
+      window.removeEventListener('keydown', onKey, true);
     };
   }, [sendInstanceAction]);
 
@@ -182,7 +208,6 @@ const LightsOut: React.FC<LightsOutProps> = ({
         {grid}
         {playerElements}
       </div>
-      <pre>{JSON.stringify(instance, null, 4)}</pre>
     </div>
   );
 };

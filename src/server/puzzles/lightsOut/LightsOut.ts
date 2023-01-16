@@ -10,6 +10,7 @@ import {
   LightsOutSolutionPayload,
   assertIsLightsOutInstanceAction,
   assertIsLightsOutPuzzlePayload,
+  assertIsLightsOutSolutionPayload,
 } from 'src/types/puzzles/LightsOut';
 
 const LightsOut: Puzzle = {
@@ -109,35 +110,19 @@ const LightsOut: Puzzle = {
     const currentCoord = playerPositions[user.id];
     const grid = pi.maze.grid;
     const currentCoordStr = coord(currentCoord.x, currentCoord.y);
-    if (
-      ia.direction === 'up' &&
-      grid[currentCoordStr].up &&
-      !occupiedPositions.includes(coord(currentCoord.x, currentCoord.y - 1))
-    ) {
+    if (ia.direction === 'up' && grid[currentCoordStr].up) {
       playerPositions = {
         [user.id]: { x: currentCoord.x, y: currentCoord.y - 1 },
       };
-    } else if (
-      ia.direction === 'right' &&
-      grid[currentCoordStr].right &&
-      !occupiedPositions.includes(coord(currentCoord.x + 1, currentCoord.y))
-    ) {
+    } else if (ia.direction === 'right' && grid[currentCoordStr].right) {
       playerPositions = {
         [user.id]: { x: currentCoord.x + 1, y: currentCoord.y },
       };
-    } else if (
-      ia.direction === 'down' &&
-      grid[currentCoordStr].down &&
-      !occupiedPositions.includes(coord(currentCoord.x, currentCoord.y + 1))
-    ) {
+    } else if (ia.direction === 'down' && grid[currentCoordStr].down) {
       playerPositions = {
         [user.id]: { x: currentCoord.x, y: currentCoord.y + 1 },
       };
-    } else if (
-      ia.direction === 'left' &&
-      grid[currentCoordStr].left &&
-      !occupiedPositions.includes(coord(currentCoord.x - 1, currentCoord.y))
-    ) {
+    } else if (ia.direction === 'left' && grid[currentCoordStr].left) {
       playerPositions = {
         [user.id]: { x: currentCoord.x - 1, y: currentCoord.y },
       };
@@ -157,7 +142,9 @@ const LightsOut: Puzzle = {
   },
 
   isSolved: (puzzlePayload, solutionPayload) => {
-    return isEqual(puzzlePayload, solutionPayload);
+    const p = assertIsLightsOutPuzzlePayload(puzzlePayload);
+    const s = assertIsLightsOutSolutionPayload(solutionPayload);
+    return isEqual(p.playerPositions, s.playerPositions);
   },
 };
 export default LightsOut;
