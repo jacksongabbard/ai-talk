@@ -1,6 +1,6 @@
 import { shuffle } from 'lodash';
-import { coord } from 'src/server/ui/puzzle/lightsOut/LightsOut';
-import type { Maze } from 'src/types/puzzles/LightsOut';
+import { coord } from 'src/server/ui/puzzle/simpleMaze/SimpleMaze';
+import type { Maze } from 'src/types/puzzles/SimpleMaze';
 
 function populateMaze(m: Maze) {
   /*

@@ -1,6 +1,6 @@
 import { cloneDeep } from 'lodash';
-import { coord } from 'src/server/ui/puzzle/lightsOut/LightsOut';
-import type { Maze, Coord, Path } from 'src/types/puzzles/LightsOut';
+import { coord } from 'src/server/ui/puzzle/simpleMaze/SimpleMaze';
+import type { Maze, Coord, Path } from 'src/types/puzzles/SimpleMaze';
 
 export function validateGrid(m: Maze) {
   for (let y = 0; y < m.size; y++) {

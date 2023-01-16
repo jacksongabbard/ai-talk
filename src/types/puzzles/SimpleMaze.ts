@@ -27,7 +27,7 @@ export type Path = {
   visited: Set<string>;
 };
 
-export type LightsOutPuzzlePayload = {
+export type SimpleMazePuzzlePayload = {
   maze: Maze;
   playerPositions: {
     [uuid: string]: { x: number; y: number };
@@ -80,19 +80,19 @@ const lightsOutPuzzlePayloadValidator = makeValidator({
   required: ['maze', 'playerPositions'],
 });
 
-export const assertIsLightsOutPuzzlePayload = (
+export const assertIsSimpleMazePuzzlePayload = (
   thing: any,
-): LightsOutPuzzlePayload => {
+): SimpleMazePuzzlePayload => {
   if (lightsOutPuzzlePayloadValidator(thing)) {
-    return thing as LightsOutPuzzlePayload;
+    return thing as SimpleMazePuzzlePayload;
   }
   throw new Error(
-    'Provided object is not a LightsOutSolutionPayload: ' +
+    'Provided object is not a SimpleMazeSolutionPayload: ' +
       JSON.stringify(thing, null, 4),
   );
 };
 
-export type LightsOutSolutionPayload = {
+export type SimpleMazeSolutionPayload = {
   playerPositions: {
     [uuid: string]: { x: number; y: number };
   };
@@ -118,19 +118,19 @@ export const lightsOutSolutionPayloadValidator = makeValidator({
   required: ['playerPositions'],
 });
 
-export const assertIsLightsOutSolutionPayload = (
+export const assertIsSimpleMazeSolutionPayload = (
   thing: any,
-): LightsOutSolutionPayload => {
+): SimpleMazeSolutionPayload => {
   if (lightsOutSolutionPayloadValidator(thing)) {
-    return thing as LightsOutSolutionPayload;
+    return thing as SimpleMazeSolutionPayload;
   }
   throw new Error(
-    'Provided object is not a LightsOutSolutionPayload: ' +
+    'Provided object is not a SimpleMazeSolutionPayload: ' +
       JSON.stringify(thing, null, 4),
   );
 };
 
-export type LightsOutInstanceAction = {
+export type SimpleMazeInstanceAction = {
   direction: 'up' | 'right' | 'down' | 'left';
 };
 
@@ -146,14 +146,14 @@ export const lightsOutInstanceActionValidator = makeValidator({
   required: ['direction'],
 });
 
-export const assertIsLightsOutInstanceAction = (
+export const assertIsSimpleMazeInstanceAction = (
   thing: any,
-): LightsOutInstanceAction => {
+): SimpleMazeInstanceAction => {
   if (lightsOutInstanceActionValidator(thing)) {
-    return thing as LightsOutInstanceAction;
+    return thing as SimpleMazeInstanceAction;
   }
   throw new Error(
-    'Provided object is not a LightsOutInstanceAction: ' +
+    'Provided object is not a SimpleMazeInstanceAction: ' +
       JSON.stringify(thing, null, 4),
   );
 };

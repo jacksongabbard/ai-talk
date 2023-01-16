@@ -5,15 +5,15 @@ import type User from 'src/lib/db/User';
 import type { ActionResult, Puzzle } from 'src/types/Puzzle';
 import { generateMaze } from './lib/generateMaze';
 import { solveMaze } from './lib/solveMaze';
-import { coord } from 'src/server/ui/puzzle/lightsOut/LightsOut';
+import { coord } from 'src/server/ui/puzzle/simpleMaze/SimpleMaze';
 import {
-  LightsOutSolutionPayload,
-  assertIsLightsOutInstanceAction,
-  assertIsLightsOutPuzzlePayload,
-  assertIsLightsOutSolutionPayload,
-} from 'src/types/puzzles/LightsOut';
+  SimpleMazeSolutionPayload,
+  assertIsSimpleMazeInstanceAction,
+  assertIsSimpleMazePuzzlePayload,
+  assertIsSimpleMazeSolutionPayload,
+} from 'src/types/puzzles/SimpleMaze';
 
-const LightsOut: Puzzle = {
+const SimpleMaze: Puzzle = {
   name: 'Lights Out',
   slug: 'lights_out',
   maxPlayers: 6,
@@ -27,7 +27,7 @@ const LightsOut: Puzzle = {
       { x: 0, y: 0 },
       { x: Math.floor(size / 2), y: Math.floor(size / 2) },
     );
-    const solutionPayload: LightsOutSolutionPayload = {
+    const solutionPayload: SimpleMazeSolutionPayload = {
       playerPositions: {},
     };
     const middle = { x: Math.floor(size / 2), y: Math.floor(size / 2) };
@@ -95,8 +95,8 @@ const LightsOut: Puzzle = {
     puzzleInstance: PuzzleInstance,
     action: object,
   ): ActionResult => {
-    const ia = assertIsLightsOutInstanceAction(action);
-    const pi = assertIsLightsOutPuzzlePayload(puzzleInstance.puzzlePayload);
+    const ia = assertIsSimpleMazeInstanceAction(action);
+    const pi = assertIsSimpleMazePuzzlePayload(puzzleInstance.puzzlePayload);
 
     let { playerPositions } = pi;
 
@@ -142,9 +142,9 @@ const LightsOut: Puzzle = {
   },
 
   isSolved: (puzzlePayload, solutionPayload) => {
-    const p = assertIsLightsOutPuzzlePayload(puzzlePayload);
-    const s = assertIsLightsOutSolutionPayload(solutionPayload);
+    const p = assertIsSimpleMazePuzzlePayload(puzzlePayload);
+    const s = assertIsSimpleMazeSolutionPayload(solutionPayload);
     return isEqual(p.playerPositions, s.playerPositions);
   },
 };
-export default LightsOut;
+export default SimpleMaze;

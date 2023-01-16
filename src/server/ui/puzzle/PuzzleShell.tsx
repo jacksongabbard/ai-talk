@@ -21,7 +21,7 @@ import {
   DialogTitle,
 } from '@mui/material';
 import NoYouFirst from './noYouFirst/NoYouFirst';
-import LightsOut from './lightsOut/LightsOut';
+import SimpleMaze from './simpleMaze/SimpleMaze';
 import { ArrowBack } from '@mui/icons-material';
 import { useNavigate } from 'react-router-dom';
 
@@ -150,7 +150,7 @@ const PuzzleShell: React.FC = () => {
         />
       )}
       {instance && instance.puzzleId === 'lights_out' && (
-        <LightsOut
+        <SimpleMaze
           instance={instance}
           sendInstanceAction={sendInstanceAction}
         />

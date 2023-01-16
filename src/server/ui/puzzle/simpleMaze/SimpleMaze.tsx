@@ -4,20 +4,19 @@ import { Button } from '@mui/material';
 import type { SendInstanceAction } from 'src/client/hooks/useWebSocket';
 import { AppContext } from 'src/server/state/AppContext';
 import type { ClientPuzzleInstance } from 'src/types/ClientPuzzleInstance';
-import { assertIsLightsOutPuzzlePayload } from 'src/types/puzzles/LightsOut';
+import { assertIsSimpleMazePuzzlePayload } from 'src/types/puzzles/SimpleMaze';
 import Paths from './Paths';
-import { hasOwnProperty } from 'src/lib/hasOwnProperty';
 
 export function coord(x: number, y: number) {
   return x + '_' + y;
 }
 
-type LightsOutProps = {
+type SimpleMazeProps = {
   instance: ClientPuzzleInstance;
   sendInstanceAction: SendInstanceAction;
 };
 
-const LightsOut: React.FC<LightsOutProps> = ({
+const SimpleMaze: React.FC<SimpleMazeProps> = ({
   instance,
   sendInstanceAction,
 }) => {
@@ -28,7 +27,7 @@ const LightsOut: React.FC<LightsOutProps> = ({
     throw new Error('This puzzle requires a team!');
   }
 
-  const payload = assertIsLightsOutPuzzlePayload(instance.puzzlePayload);
+  const payload = assertIsSimpleMazePuzzlePayload(instance.puzzlePayload);
 
   const grid = useMemo(() => {
     const grid: React.ReactNode[] = [];
@@ -212,4 +211,4 @@ const LightsOut: React.FC<LightsOutProps> = ({
   );
 };
 
-export default LightsOut;
+export default SimpleMaze;

@@ -2,11 +2,11 @@ import {
   coord,
   generateMaze,
   printMaze,
-} from './src/server/puzzles/lightsOut/lib/generateMaze';
+} from './src/server/puzzles/simpleMaze/lib/generateMaze';
 import {
   solveMaze,
   validateGrid,
-} from './src/server/puzzles/lightsOut/lib/solveMaze';
+} from './src/server/puzzles/simpleMaze/lib/solveMaze';
 
 for (let i = 13; i < 51; i += 2) {
   const startTime = performance.now();
