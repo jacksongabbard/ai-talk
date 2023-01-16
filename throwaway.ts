@@ -1,16 +1,25 @@
-const chars = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789 .-';
+import {
+  coord,
+  generateMaze,
+  printMaze,
+} from './src/server/puzzles/lightsOut/lib/generateMaze';
+import {
+  Path,
+  solveMaze,
+  validateGrid,
+} from './src/server/puzzles/lightsOut/lib/solveMaze';
 
-const table: { [c: string]: string }  = {};
-const reverseTable: { [c: string]: string } = {};
-
-for (let c of chars) {
-  table[c] = c.charCodeAt(0).toString();
-  reverseTable[c.charCodeAt(0).toString()] = c;
+for (let i = 13; i < 51; i += 2) {
+  const startTime = performance.now();
+  const size = i;
+  const maze = generateMaze(size, 6);
+  validateGrid(maze);
+  const finishTime = performance.now();
+  console.log('Generated in: ' + (finishTime - startTime) + 'ms');
+  const path = solveMaze(
+    maze,
+    { x: 0, y: 0 },
+    { x: Math.floor(size / 2), y: Math.floor(size / 2) },
+  );
+  printMaze(maze, path && path.steps.map((c) => coord(c.x, c.y)));
 }
-
-console.log(JSON.stringify(table, null, 4));
-console.log(JSON.stringify(reverseTable, null, 4));
-
-
-
-

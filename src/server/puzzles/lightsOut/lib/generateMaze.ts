@@ -209,7 +209,19 @@ const stringToMazeChar: { [dirString: string]: string } = {
 };
 */
 
-export function printMaze(m: Maze) {
+function blueSquare() {
+  return `\x1b[34m█\x1b[0m`;
+}
+
+function greenSquare() {
+  return `\x1b[32m█\x1b[0m`;
+}
+
+function redSquare() {
+  return `\x1b[31m█\x1b[0m`;
+}
+
+export function printMaze(m: Maze, solvePath?: string[]) {
   const output: string[][] = [];
   for (let y = 0; y < m.size * 3; y += 3) {
     for (let yInner = 0; yInner < 3; yInner++) {
@@ -224,27 +236,48 @@ export function printMaze(m: Maze) {
 
   for (let y = 0; y < m.size; y++) {
     for (let x = 0; x < m.size; x++) {
-      const exits = m.grid[coord(x, y)];
+      const c = coord(x, y);
+      const exits = m.grid[c];
 
       // Mark the center
       const adjustedX = x * 3 + 1;
       const adjustedY = y * 3 + 1;
-      output[adjustedY][adjustedX] = ' ';
+
+      let solvePathIdx = -1;
+      if (solvePath) {
+        solvePathIdx = solvePath.indexOf(c);
+      }
+      output[adjustedY][adjustedX] = solvePathIdx !== -1 ? greenSquare() : ' ';
 
       if (exits.up) {
-        output[adjustedY - 1][adjustedX] = ' ';
+        let char = ' ';
+        if (solvePathIdx !== -1 && solvePath?.includes(coord(x, y - 1))) {
+          char = greenSquare();
+        }
+        output[adjustedY - 1][adjustedX] = char;
       }
 
       if (exits.right) {
-        output[adjustedY][adjustedX + 1] = ' ';
+        let char = ' ';
+        if (solvePathIdx !== -1 && solvePath?.includes(coord(x + 1, y))) {
+          char = greenSquare();
+        }
+        output[adjustedY][adjustedX + 1] = char;
       }
 
       if (exits.down) {
-        output[adjustedY + 1][adjustedX] = ' ';
+        let char = ' ';
+        if (solvePathIdx !== -1 && solvePath?.includes(coord(x, y + 1))) {
+          char = greenSquare();
+        }
+        output[adjustedY + 1][adjustedX] = char;
       }
-
       if (exits.left) {
-        output[adjustedY][adjustedX - 1] = ' ';
+        let char = ' ';
+        if (solvePathIdx !== -1 && solvePath?.includes(coord(x - 1, y))) {
+          char = greenSquare();
+        }
+        output[adjustedY][adjustedX - 1] = char;
       }
 
       if (coord(x, y) === m.exit) {
