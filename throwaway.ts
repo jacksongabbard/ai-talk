@@ -4,7 +4,6 @@ import {
   printMaze,
 } from './src/server/puzzles/lightsOut/lib/generateMaze';
 import {
-  Path,
   solveMaze,
   validateGrid,
 } from './src/server/puzzles/lightsOut/lib/solveMaze';

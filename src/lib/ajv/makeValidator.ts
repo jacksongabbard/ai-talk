@@ -12,6 +12,8 @@ const schema = {
 */
 
 export function makeValidator(schema: Schema) {
-  const ajv = new AJV();
+  const ajv = new AJV({
+    verbose: true,
+  });
   return ajv.compile(schema);
 }

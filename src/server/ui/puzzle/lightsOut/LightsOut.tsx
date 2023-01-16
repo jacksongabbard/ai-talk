@@ -1,13 +1,16 @@
+import React, { useContext, useEffect, useMemo, useRef } from 'react';
 import { Button } from '@mui/material';
-import { useCallback, useContext, useEffect, useState } from 'react';
+
 import type { SendInstanceAction } from 'src/client/hooks/useWebSocket';
-import { generateMaze } from 'src/server/puzzles/lightsOut/lib/generateMaze';
 import { AppContext } from 'src/server/state/AppContext';
 import type { ClientPuzzleInstance } from 'src/types/ClientPuzzleInstance';
-import {
-  PushTheButtonPuzzlePayloadType,
-  assertIsPushTheButtonPuzzlePayload,
-} from 'src/types/puzzles/PuzzleTheButtonTypes';
+import { assertIsLightsOutPuzzlePayload } from 'src/types/puzzles/LightsOut';
+import Paths from './Paths';
+import { hasOwnProperty } from 'src/lib/hasOwnProperty';
+
+export function coord(x: number, y: number) {
+  return x + '_' + y;
+}
 
 type LightsOutProps = {
   instance: ClientPuzzleInstance;
@@ -25,19 +28,161 @@ const LightsOut: React.FC<LightsOutProps> = ({
     throw new Error('This puzzle requires a team!');
   }
 
-  const maze = generateMaze();
+  const payload = assertIsLightsOutPuzzlePayload(instance.puzzlePayload);
+
+  const grid = useMemo(() => {
+    const grid: React.ReactNode[] = [];
+    for (let y = 0; y < payload.maze.size; y++) {
+      for (let x = 0; x < payload.maze.size; x++) {
+        const c = coord(x, y);
+        grid.push(
+          <div
+            key={'cell-' + coord(x, y)}
+            css={{
+              top: y * 100,
+              left: x * 100,
+              width: 100,
+              height: 100,
+              position: 'absolute',
+              boxSizing: 'border-box',
+              borderLeft: '1px #020 solid',
+              borderTop: '1px #020 solid',
+            }}
+          >
+            <Paths cell={payload.maze.grid[c]} />
+            {payload.maze.exit === c && (
+              <div
+                css={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  fontSize: 30,
+                  lineHeight: 30,
+                  color: '#3f3',
+                  width: '100%',
+                  height: '100%',
+                  position: 'absolute',
+                  top: 0,
+                  left: 0,
+                }}
+              >
+                ★
+              </div>
+            )}
+          </div>,
+        );
+      }
+    }
+    return <>{grid}</>;
+  }, [payload.maze.grid]);
+
+  const { playerRefs, playerElements } = useMemo(() => {
+    if (!appContext.user) {
+      throw new Error('No user in AppContext');
+    }
+    const playerRefs: { [uuid: string]: React.Ref<HTMLDivElement> } = {};
+    const playerElements: React.ReactNode[] = [];
+
+    for (let uuid in payload.playerPositions) {
+      const coordinate = payload.playerPositions[uuid];
+      const ref = React.createRef<HTMLDivElement>();
+      playerRefs[uuid] = ref;
+      playerElements.push(
+        <div
+          key={uuid}
+          ref={ref}
+          style={{
+            width: 33.33,
+            height: 33.33,
+            background: uuid === appContext.user.id ? '#3f3' : '#1d1',
+            position: 'absolute',
+            transition: 'top 0.2s, left 0.2s',
+          }}
+        ></div>,
+      );
+    }
+    return {
+      playerRefs,
+      playerElements,
+    };
+  }, [appContext.user]);
+
+  Object.keys(playerRefs).forEach((uuid) => {
+    if (!playerRefs[uuid]) {
+      throw new Error("The puzzle is broken. I'm really sorry. 😔");
+    }
+    console.log(playerRefs[uuid]);
+    if (playerRefs[uuid]!.current) {
+      playerRefs[uuid].current.style.top =
+        payload.playerPositions[uuid].y * 100 + 33.33 + 'px';
+      playerRefs[uuid].current.style.left =
+        payload.playerPositions[uuid].x * 100 + 33.33 + 'px';
+    }
+  });
+
+  useEffect(() => {
+    const onKeyPress = (e: KeyboardEvent) => {
+      e.preventDefault();
+      e.stopImmediatePropagation();
+
+      let direction: 'up' | 'right' | 'down' | 'left' | undefined = undefined;
+
+      switch (e.key) {
+        case 'ArrowUp':
+          direction = 'up';
+          break;
+        case 'ArrowRight':
+          direction = 'right';
+          break;
+        case 'ArrowDown':
+          direction = 'down';
+          break;
+        case 'ArrowLeft':
+          direction = 'left';
+          break;
+      }
+
+      if (!direction) {
+        return;
+      }
+
+      sendInstanceAction({
+        direction,
+      });
+    };
+
+    window.addEventListener('keyup', onKeyPress);
+
+    return () => {
+      window.removeEventListener('keyup', onKeyPress);
+    };
+  }, [sendInstanceAction]);
 
   return (
     <div
       css={{
         flex: 1,
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'center',
-        flexDirection: 'column',
       }}
     >
-      {JSON.stringify(maze, null, 4)}
+      <div
+        css={{
+          position: 'relative',
+          flex: 0,
+          flexGrow: 0,
+          flexShrink: 0,
+          boxSizing: 'content-box',
+          borderTop: '5px #383 solid',
+          borderLeft: '5px #383 solid',
+          borderRight: '6px #383 solid',
+          borderBottom: '6px #383 solid',
+          height: payload.maze.size * 100,
+          width: payload.maze.size * 100,
+        }}
+      >
+        {grid}
+        {playerElements}
+      </div>
+      <pre>{JSON.stringify(instance, null, 4)}</pre>
     </div>
   );
 };

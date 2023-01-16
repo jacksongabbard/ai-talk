@@ -1,24 +1,6 @@
 import { shuffle } from 'lodash';
-
-// import type Team from 'src/lib/db/Team';
-
-export type Maze = {
-  size: number;
-  grid: {
-    [x_y: string]: {
-      up?: boolean;
-      right?: boolean;
-      down?: boolean;
-      left?: boolean;
-    };
-  };
-  entryPoints: string[];
-  exit: string;
-};
-
-export function coord(x: number, y: number) {
-  return x + '_' + y;
-}
+import { coord } from 'src/server/ui/puzzle/lightsOut/LightsOut';
+import type { Maze } from 'src/types/puzzles/LightsOut';
 
 function populateMaze(m: Maze) {
   /*

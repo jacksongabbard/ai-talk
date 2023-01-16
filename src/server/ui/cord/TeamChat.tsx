@@ -22,6 +22,7 @@ const TeamChat = () => {
       <div
         css={{
           display: 'flex',
+          flexDirection: 'column',
           alignItems: 'stretch',
           justifyContent: 'space-between',
           paddingBottom: 'var(--spacing-large)',
@@ -32,8 +33,9 @@ const TeamChat = () => {
           Team Chat
         </Typography>
         <PagePresence location={{ route: location.pathname }} />
+        <Thread threadId={appContext.team?.id + '-' + location.pathname} />
       </div>
-      */}
+*/}
       <Sidebar
         location={{ route: location.pathname }}
         onOpen={(info) => {
