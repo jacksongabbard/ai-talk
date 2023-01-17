@@ -15,44 +15,44 @@ const Paths: React.FC<PathProps> = ({ cell }) => {
       {cell.up && cell.down && (
         <div
           css={{
-            width: '33%',
+            width: '33.33%',
             height: '100%',
             backgroundColor: bgColor,
             position: 'absolute',
-            left: '33%',
+            left: '33.33%',
           }}
         ></div>
       )}
       {cell.left && cell.right && (
         <div
           css={{
-            height: '33%',
+            height: '33.33%',
             width: '100%',
             backgroundColor: bgColor,
             position: 'absolute',
-            top: '33%',
+            top: '33.33%',
           }}
         ></div>
       )}
       {cell.left && !cell.right && (
         <div
           css={{
-            height: '33%',
+            height: '33.33%',
             width: '66.66%',
             backgroundColor: bgColor,
             position: 'absolute',
-            top: '33%',
+            top: '33.33%',
           }}
         ></div>
       )}
       {cell.right && !cell.left && (
         <div
           css={{
-            height: '33%',
+            height: '33.33%',
             width: '66.66%',
             backgroundColor: bgColor,
             position: 'absolute',
-            top: '33%',
+            top: '33.33%',
             right: 0,
           }}
         ></div>
@@ -60,24 +60,24 @@ const Paths: React.FC<PathProps> = ({ cell }) => {
       {cell.up && !cell.down && (
         <div
           css={{
-            width: '33%',
+            width: '33.33%',
             height: '66.66%',
             backgroundColor: bgColor,
             position: 'absolute',
             top: 0,
-            left: '33%',
+            left: '33.33%',
           }}
         ></div>
       )}
       {cell.down && !cell.up && (
         <div
           css={{
-            width: '33%',
+            width: '33.33%',
             height: '66.66%',
             backgroundColor: bgColor,
             position: 'absolute',
             bottom: 0,
-            left: '33%',
+            left: '33.33%',
           }}
         ></div>
       )}
