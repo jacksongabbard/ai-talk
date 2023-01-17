@@ -14,8 +14,8 @@ import {
 } from 'src/types/puzzles/SimpleMaze';
 
 const SimpleMaze: Puzzle = {
-  name: 'Lights Out',
-  slug: 'lights_out',
+  name: 'A Simple Maze',
+  slug: 'simple_maze',
   maxPlayers: 6,
   minPlayers: 2,
   createInstance: (user: User, members: User[], team?: Team) => {

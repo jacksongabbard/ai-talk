@@ -130,7 +130,6 @@ const SimpleMaze: React.FC<SimpleMazeProps> = ({
     if (!playerRefs[uuid]) {
       throw new Error("The puzzle is broken. I'm really sorry. 😔");
     }
-    console.log(playerRefs[uuid]);
     if (playerRefs[uuid]!.current) {
       playerRefs[uuid].current.style.top =
         payload.playerPositions[uuid].y * 100 + 33.33 + 'px';
