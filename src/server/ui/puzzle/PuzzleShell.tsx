@@ -73,7 +73,6 @@ const PuzzleShell: React.FC = () => {
             return a.seq - b.seq;
           });
 
-          console.log(JSON.stringify(actionResultBuffer.current, null, 4));
           while (
             actionResultBuffer.current.length &&
             actionResultBuffer.current[0].seq === instance.sequenceNumber + 1
@@ -95,7 +94,6 @@ const PuzzleShell: React.FC = () => {
           );
           newInstance.sequenceNumber = payloadDiff.seq;
         }
-        console.log('New sequence number: ' + instance.sequenceNumber);
         puzzleContext.setInstance(newInstance);
       } else if (sm.type === PUZZLE_SOLVED) {
         puzzleContext.setSolved(true);
