@@ -1,5 +1,5 @@
-import { useCallback, useContext, useEffect, useState } from 'react';
-import { merge } from 'lodash';
+import { useCallback, useContext, useEffect, useRef, useState } from 'react';
+import { cloneDeep, merge } from 'lodash';
 
 import { useWebSocket } from 'src/client/hooks/useWebSocket';
 import PushTheButton from './pushTheButton/PushTheButton';
@@ -9,6 +9,7 @@ import { PuzzleContext } from 'src/server/state/PuzzleContext';
 import {
   PAYLOAD_DIFF,
   PUZZLE_SOLVED,
+  PayloadDiff,
   assertIsPayloadDiff,
   assertIsSocketMessage,
 } from 'src/types/SocketMessage';
@@ -46,6 +47,7 @@ const PuzzleShell: React.FC = () => {
     setConnected(false);
   }, [setConnected]);
 
+  const actionResultBuffer = useRef<PayloadDiff[]>([]);
   const onMessage = useCallback(
     (message: object) => {
       const sm = assertIsSocketMessage(message);
@@ -55,25 +57,46 @@ const PuzzleShell: React.FC = () => {
           throw new Error('Cannot merge payload diff with no puzzle instance');
         }
         const { instance } = puzzleContext;
-        if (instance.sequenceNumber !== payloadDiff.seq - 1) {
-          throw new Error(
-            'Received out-of-order payload diffs. Everything is ruined.',
+        const newInstance = cloneDeep(instance);
+        if (
+          instance.sequenceNumber !== payloadDiff.seq - 1 &&
+          actionResultBuffer.current.length === 0
+        ) {
+          actionResultBuffer.current.push(payloadDiff);
+          if (actionResultBuffer.current.length > 20) {
+            throw new Error(
+              'PayloadDiff buffer has gotten too big. This is probably a bug or the server is borked.',
+            );
+          }
+
+          actionResultBuffer.current.sort((a, b) => {
+            return a.seq - b.seq;
+          });
+
+          console.log(JSON.stringify(actionResultBuffer.current, null, 4));
+          while (
+            actionResultBuffer.current.length &&
+            actionResultBuffer.current[0].seq === instance.sequenceNumber + 1
+          ) {
+            const actionResult = actionResultBuffer.current.shift();
+            if (!actionResult) {
+              throw new Error('actionResultBuffer was unexpectedly empty');
+            }
+            newInstance.puzzlePayload = merge(
+              instance.puzzlePayload,
+              payloadDiff.value,
+            );
+            newInstance.sequenceNumber = actionResult.seq;
+          }
+        } else {
+          newInstance.puzzlePayload = merge(
+            instance.puzzlePayload,
+            payloadDiff.value,
           );
+          newInstance.sequenceNumber = payloadDiff.seq;
         }
-
-        // TODO: Add some guarantee here that the payload diff is correct
-        // for the puzzle
-
-        const newPuzzlePayload = merge(
-          instance.puzzlePayload,
-          payloadDiff.value,
-        );
-
-        puzzleContext.setInstance({
-          ...instance,
-          sequenceNumber: payloadDiff.seq,
-          puzzlePayload: newPuzzlePayload,
-        });
+        console.log('New sequence number: ' + instance.sequenceNumber);
+        puzzleContext.setInstance(newInstance);
       } else if (sm.type === PUZZLE_SOLVED) {
         puzzleContext.setSolved(true);
         if (puzzleContext.instance) {
@@ -149,7 +172,7 @@ const PuzzleShell: React.FC = () => {
           sendInstanceAction={sendInstanceAction}
         />
       )}
-      {instance && instance.puzzleId === 'lights_out' && (
+      {instance && instance.puzzleId === 'simple_maze' && (
         <SimpleMaze
           instance={instance}
           sendInstanceAction={sendInstanceAction}

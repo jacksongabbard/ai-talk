@@ -83,7 +83,7 @@ export const validateIsPayloadDiff = makeValidator({
   additionalProperties: false,
 });
 
-type PayloadDiff = {
+export type PayloadDiff = {
   seq: number;
   value: object;
 };
