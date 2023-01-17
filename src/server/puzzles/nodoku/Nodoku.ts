@@ -73,6 +73,7 @@ const Nodoku: Puzzle = {
   slug: 'nodoku',
   minPlayers: 2,
   maxPlayers: 6,
+  published: true,
   createInstance: (user: User, members: User[], team?: Team) => {
     const arrayGrid = generateSudoku();
     const grid = toFlatGrid(arrayGrid);

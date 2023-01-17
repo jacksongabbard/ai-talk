@@ -80,6 +80,11 @@ const Puzzles: React.FC = () => {
         <div css={{ flex: 1, display: 'flex', flexWrap: 'wrap' }}>
           {Object.keys(puzzleMap).map((slug) => {
             const p = puzzleMap[slug].puzzle;
+            console.log(p);
+            if (p.published === false) {
+              return <></>;
+            }
+
             const solved = puzzleMap[slug].solved;
             return (
               <Link to={'/puzzle/' + slug} key={slug}>

@@ -18,6 +18,7 @@ const SimpleMaze: Puzzle = {
   slug: 'simple_maze',
   maxPlayers: 6,
   minPlayers: 2,
+  published: false,
   createInstance: (user: User, members: User[], team?: Team) => {
     const size = 25;
     const maze = generateMaze(size, members.length);

@@ -39,6 +39,7 @@ const PushTheButton: Puzzle = {
   slug: 'push_the_button',
   minPlayers: 2,
   maxPlayers: 6,
+  published: true,
   createInstance: (user: User, members: User[], team?: Team) => {
     const solutionPayload: PushTheButtonPuzzlePayloadType = {
       pressed: {

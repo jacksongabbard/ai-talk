@@ -13,6 +13,7 @@ export type ClientPuzzle = {
   slug: string;
   minPlayers: number;
   maxPlayers: number;
+  published: boolean;
 };
 
 export type DiffObject = {
@@ -67,6 +68,7 @@ export function puzzleToClientPuzzle(p: Puzzle): ClientPuzzle {
     slug: p.slug,
     minPlayers: p.minPlayers,
     maxPlayers: p.maxPlayers,
+    published: p.published,
   };
 }
 
@@ -81,13 +83,16 @@ export function assertIsClientPuzzle(thing: unknown): ClientPuzzle {
     hasOwnProperty(thing, 'minPlayers') &&
     typeof thing.minPlayers === 'number' &&
     hasOwnProperty(thing, 'maxPlayers') &&
-    typeof thing.maxPlayers === 'number'
+    typeof thing.maxPlayers === 'number' &&
+    hasOwnProperty(thing, 'published') &&
+    typeof thing.published === 'boolean'
   ) {
     return {
       name: thing.name,
       slug: thing.slug,
       minPlayers: thing.minPlayers,
       maxPlayers: thing.maxPlayers,
+      published: thing.published,
     };
   }
 

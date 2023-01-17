@@ -110,6 +110,7 @@ const NoYouFirst: Puzzle = {
   slug: 'no_you_first',
   minPlayers: 2,
   maxPlayers: 6,
+  published: true,
   createInstance: (user: User, members: User[], team?: Team) => {
     const { puzzlePayload, solutionPayload } =
       createNoYouFirstPayloads(members);

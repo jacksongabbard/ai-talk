@@ -4,8 +4,8 @@ import { Button } from '@mui/material';
 import type { SendInstanceAction } from 'src/client/hooks/useWebSocket';
 import { AppContext } from 'src/server/state/AppContext';
 import type { ClientPuzzleInstance } from 'src/types/ClientPuzzleInstance';
-import { assertIsSimpleMazePuzzlePayload } from 'src/types/puzzles/SimpleMaze';
 import Paths from './Paths';
+import { assertIsSimpleMazePuzzlePayload } from 'src/types/puzzles/SimpleMaze';
 
 export function coord(x: number, y: number) {
   return x + '_' + y;
@@ -138,6 +138,30 @@ const SimpleMaze: React.FC<SimpleMazeProps> = ({
     }
   });
 
+  const scrolledOnce = useRef(false);
+  const scrollContainerRef = useRef<HTMLDivElement>(null);
+  useEffect(() => {
+    if (
+      scrolledOnce.current ||
+      !appContext.user ||
+      !scrollContainerRef.current
+    ) {
+      return;
+    }
+
+    console.log('Setting the scroll position');
+    if (!payload.playerPositions[appContext.user.id]) {
+      throw new Error(
+        "PlayerPositions doesn't have the current user?! Unpossible!",
+      );
+    }
+
+    const x = payload.playerPositions[appContext.user.id].x * 100 + 50;
+    const y = payload.playerPositions[appContext.user.id].y * 100 + 50;
+
+    scrollContainerRef.current.scrollTo(x, y);
+  }, [payload, appContext.user]);
+
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
       if (
@@ -184,8 +208,15 @@ const SimpleMaze: React.FC<SimpleMazeProps> = ({
 
   return (
     <div
+      ref={scrollContainerRef}
       css={{
         flex: 1,
+        position: 'absolute',
+        top: 0,
+        left: 0,
+        width: '100vw',
+        height: '100vh',
+        overflow: 'auto',
       }}
     >
       <div
