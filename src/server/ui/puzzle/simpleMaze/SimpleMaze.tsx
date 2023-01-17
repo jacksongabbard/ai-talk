@@ -1,5 +1,5 @@
 import React, { useContext, useEffect, useMemo, useRef } from 'react';
-import { Button } from '@mui/material';
+import { Button, iconButtonClasses } from '@mui/material';
 
 import type { SendInstanceAction } from 'src/client/hooks/useWebSocket';
 import { AppContext } from 'src/server/state/AppContext';
@@ -29,6 +29,10 @@ const SimpleMaze: React.FC<SimpleMazeProps> = ({
 
   const payload = assertIsSimpleMazePuzzlePayload(instance.puzzlePayload);
 
+  if (!appContext.user) {
+    throw new Error('No user in SimpleMaze. Wat!?');
+  }
+  const revealedLetters = payload.revealedLetterGrids[appContext.user.id];
   const grid = useMemo(() => {
     const grid: React.ReactNode[] = [];
     for (let y = 0; y < payload.maze.size; y++) {
@@ -88,12 +92,36 @@ const SimpleMaze: React.FC<SimpleMazeProps> = ({
                 ★
               </div>
             )}
+            {
+              <div
+                key={'letter-' + c}
+                css={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  fontSize: 30,
+                  fontFamily: 'monospace',
+                  lineHeight: 30,
+                  color: '#282',
+                  width: '100%',
+                  height: '100%',
+                  position: 'absolute',
+                  opacity: revealedLetters && revealedLetters[c] ? 1 : 0,
+                  top: 0,
+                  left: 0,
+                  zIndex: 3,
+                  transition: 'opacity .5s',
+                }}
+              >
+                {revealedLetters && revealedLetters[c]}
+              </div>
+            }
           </div>,
         );
       }
     }
     return <>{grid}</>;
-  }, [payload.maze.grid]);
+  }, [payload.maze.grid, revealedLetters]);
 
   const { playerRefs, playerElements } = useMemo(() => {
     if (!appContext.user) {
@@ -130,6 +158,8 @@ const SimpleMaze: React.FC<SimpleMazeProps> = ({
     if (!playerRefs[uuid]) {
       throw new Error("The puzzle is broken. I'm really sorry. 😔");
     }
+    // Typescript is unhappy about this. I don't know why. I'm too
+    // tired to figure out why.
     if (playerRefs[uuid]!.current) {
       playerRefs[uuid].current.style.top =
         payload.playerPositions[uuid].y * 100 + 33.33 + 'px';
@@ -208,6 +238,8 @@ const SimpleMaze: React.FC<SimpleMazeProps> = ({
       window.removeEventListener('keydown', onKey, true);
     };
   }, [sendInstanceAction]);
+
+  console.log(JSON.stringify(payload.revealedLetterGrids, null, 4));
 
   return (
     <div

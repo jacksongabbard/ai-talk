@@ -1,4 +1,4 @@
-import { isEqual, merge } from 'lodash';
+import { cloneDeep, isEqual, merge } from 'lodash';
 import type PuzzleInstance from 'src/lib/db/PuzzleInstance';
 import type Team from 'src/lib/db/Team';
 import type User from 'src/lib/db/User';
@@ -7,11 +7,18 @@ import { generateMaze } from './lib/generateMaze';
 import { solveMaze } from './lib/solveMaze';
 import { coord } from 'src/server/ui/puzzle/simpleMaze/SimpleMaze';
 import {
+  SimpleMazePuzzlePayload,
   SimpleMazeSolutionPayload,
   assertIsSimpleMazeInstanceAction,
   assertIsSimpleMazePuzzlePayload,
   assertIsSimpleMazeSolutionPayload,
 } from 'src/types/puzzles/SimpleMaze';
+import {
+  generateLetterGrid,
+  hideMessageInGrids,
+  makeHiddenMessage,
+} from './lib/generateLetterGrids';
+import { hasOwnProperty } from 'src/lib/hasOwnProperty';
 
 const SimpleMaze: Puzzle = {
   name: 'A Simple Maze',
@@ -22,19 +29,23 @@ const SimpleMaze: Puzzle = {
   createInstance: (user: User, members: User[], team?: Team) => {
     const size = 25;
     const maze = generateMaze(size, members.length);
-
-    const solvePath = solveMaze(
-      maze,
-      { x: 0, y: 0 },
-      { x: Math.floor(size / 2), y: Math.floor(size / 2) },
-    );
+    const { secretWord, pairs } = makeHiddenMessage();
     const solutionPayload: SimpleMazeSolutionPayload = {
       playerPositions: {},
+      letterGrids: {},
+      secretWord,
     };
     const middle = { x: Math.floor(size / 2), y: Math.floor(size / 2) };
     for (const m of members) {
       solutionPayload.playerPositions[m.id] = middle;
+      solutionPayload.letterGrids[m.id] = generateLetterGrid(25);
     }
+
+    const secretMessage = pairs
+      .map((pair) => pair[0] + 'without' + pair[1])
+      .join('');
+    console.log(secretMessage);
+    hideMessageInGrids(solutionPayload.letterGrids, secretMessage);
 
     const playerPositions: { [uuid: string]: { x: number; y: number } } = {};
     if (members.length >= 2) {
@@ -64,9 +75,10 @@ const SimpleMaze: Puzzle = {
       playerPositions[members[5].id] = { x: size - 1, y: Math.floor(size / 2) };
     }
 
-    const puzzlePayload: object = {
+    const puzzlePayload: SimpleMazePuzzlePayload = {
       maze,
       playerPositions,
+      revealedLetterGrids: {},
     };
 
     return {
@@ -80,7 +92,15 @@ const SimpleMaze: Puzzle = {
     puzzlePayload: object,
     solutionPayload: object,
   ) => {
-    return puzzlePayload;
+    const p = assertIsSimpleMazePuzzlePayload(cloneDeep(puzzlePayload));
+
+    for (let uuid in p.revealedLetterGrids) {
+      if (uuid !== user.id) {
+        delete p.revealedLetterGrids[uuid];
+      }
+    }
+
+    return p;
   },
 
   filterPayloadDiffValueForUser: (
@@ -88,6 +108,18 @@ const SimpleMaze: Puzzle = {
     payload: object,
     solutionPayload: object,
   ) => {
+    const p = cloneDeep(payload);
+    if (
+      hasOwnProperty(p, 'revealedLetterGrids') &&
+      typeof p.revealedLetterGrids === 'object'
+    ) {
+      for (let uuid in p.revealedLetterGrids) {
+        if (uuid !== user.id && hasOwnProperty(p.revealedLetterGrids, uuid)) {
+          delete p.revealedLetterGrids[uuid];
+        }
+      }
+    }
+
     return payload;
   },
 
@@ -98,6 +130,9 @@ const SimpleMaze: Puzzle = {
   ): ActionResult => {
     const ia = assertIsSimpleMazeInstanceAction(action);
     const pi = assertIsSimpleMazePuzzlePayload(puzzleInstance.puzzlePayload);
+    const si = assertIsSimpleMazeSolutionPayload(
+      puzzleInstance.solutionPayload,
+    );
 
     let { playerPositions } = pi;
 
@@ -108,25 +143,37 @@ const SimpleMaze: Puzzle = {
     const currentCoord = playerPositions[user.id];
     const grid = pi.maze.grid;
     const currentCoordStr = coord(currentCoord.x, currentCoord.y);
+    let revealedLetter: { [coord: string]: string } = {};
     if (ia.direction === 'up' && grid[currentCoordStr].up) {
       playerPositions = {
         [user.id]: { x: currentCoord.x, y: currentCoord.y - 1 },
       };
+      revealedLetter[coord(currentCoord.x, currentCoord.y - 1)] =
+        si.letterGrids[user.id][coord(currentCoord.x, currentCoord.y - 1)];
     } else if (ia.direction === 'right' && grid[currentCoordStr].right) {
       playerPositions = {
         [user.id]: { x: currentCoord.x + 1, y: currentCoord.y },
       };
+      revealedLetter[coord(currentCoord.x + 1, currentCoord.y)] =
+        si.letterGrids[user.id][coord(currentCoord.x + 1, currentCoord.y)];
     } else if (ia.direction === 'down' && grid[currentCoordStr].down) {
       playerPositions = {
         [user.id]: { x: currentCoord.x, y: currentCoord.y + 1 },
       };
+      revealedLetter[coord(currentCoord.x, currentCoord.y + 1)] =
+        si.letterGrids[user.id][coord(currentCoord.x, currentCoord.y + 1)];
     } else if (ia.direction === 'left' && grid[currentCoordStr].left) {
       playerPositions = {
         [user.id]: { x: currentCoord.x - 1, y: currentCoord.y },
       };
+      revealedLetter[coord(currentCoord.x - 1, currentCoord.y)] =
+        si.letterGrids[user.id][coord(currentCoord.x - 1, currentCoord.y)];
     }
 
-    const payloadDiffValue = { playerPositions };
+    const payloadDiffValue = {
+      playerPositions,
+      revealedLetterGrids: { [user.id]: revealedLetter },
+    };
 
     const puzzlePayload = merge(puzzleInstance.puzzlePayload, payloadDiffValue);
 

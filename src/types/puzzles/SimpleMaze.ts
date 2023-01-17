@@ -32,6 +32,11 @@ export type SimpleMazePuzzlePayload = {
   playerPositions: {
     [uuid: string]: { x: number; y: number };
   };
+  revealedLetterGrids: {
+    [uuid: string]: {
+      [coord: string]: string;
+    };
+  };
 };
 
 const CoordRegexp = '^[0-8]+_[0-8]+$';
@@ -75,9 +80,22 @@ const lightsOutPuzzlePayloadValidator = makeValidator({
         },
       },
     },
+    revealedLetterGrids: {
+      patternProperties: {
+        [UUIDRegexString]: {
+          type: 'object',
+          patternProperties: {
+            [CoordRegexp]: {
+              type: 'string',
+              additionalProperties: false,
+            },
+          },
+        },
+      },
+    },
   },
   additionalProperties: false,
-  required: ['maze', 'playerPositions'],
+  required: ['maze', 'playerPositions', 'revealedLetterGrids'],
 });
 
 export const assertIsSimpleMazePuzzlePayload = (
@@ -96,6 +114,12 @@ export type SimpleMazeSolutionPayload = {
   playerPositions: {
     [uuid: string]: { x: number; y: number };
   };
+  letterGrids: {
+    [uuid: string]: {
+      [coord: string]: string;
+    };
+  };
+  secretWord: string;
 };
 
 export const lightsOutSolutionPayloadValidator = makeValidator({
@@ -113,9 +137,23 @@ export const lightsOutSolutionPayloadValidator = makeValidator({
         },
       },
     },
+    letterGrids: {
+      patternProperties: {
+        [UUIDRegexString]: {
+          type: 'object',
+          patternProperties: {
+            [CoordRegexp]: {
+              type: 'string',
+              additionalProperties: false,
+            },
+          },
+        },
+      },
+    },
+    secretWord: { type: 'string' },
   },
   additionalProperties: false,
-  required: ['playerPositions'],
+  required: ['playerPositions', 'letterGrids', 'secretWord'],
 });
 
 export const assertIsSimpleMazeSolutionPayload = (
