@@ -149,17 +149,20 @@ const SimpleMaze: React.FC<SimpleMazeProps> = ({
       return;
     }
 
-    console.log('Setting the scroll position');
     if (!payload.playerPositions[appContext.user.id]) {
       throw new Error(
         "PlayerPositions doesn't have the current user?! Unpossible!",
       );
     }
 
-    const x = payload.playerPositions[appContext.user.id].x * 100 + 50;
-    const y = payload.playerPositions[appContext.user.id].y * 100 + 50;
+    const w = window.innerWidth;
+    const h = window.innerHeight;
+
+    const x = payload.playerPositions[appContext.user.id].x * 100 - w / 2;
+    const y = payload.playerPositions[appContext.user.id].y * 100 - h / 2;
 
     scrollContainerRef.current.scrollTo(x, y);
+    scrolledOnce.current = true;
   }, [payload, appContext.user]);
 
   useEffect(() => {

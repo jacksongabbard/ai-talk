@@ -82,14 +82,14 @@ const PuzzleShell: React.FC = () => {
               throw new Error('actionResultBuffer was unexpectedly empty');
             }
             newInstance.puzzlePayload = merge(
-              instance.puzzlePayload,
+              newInstance.puzzlePayload,
               payloadDiff.value,
             );
             newInstance.sequenceNumber = actionResult.seq;
           }
         } else {
           newInstance.puzzlePayload = merge(
-            instance.puzzlePayload,
+            newInstance.puzzlePayload,
             payloadDiff.value,
           );
           newInstance.sequenceNumber = payloadDiff.seq;
