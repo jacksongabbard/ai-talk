@@ -11,7 +11,11 @@ export function generateLetterGrid(size: number): CoordGrid {
   const output: CoordGrid = {};
   for (let x = 0; x < size; x++) {
     for (let y = 0; y < size; y++) {
-      output[coord(x, y)] = getRandomEntry(dict);
+      if (x === Math.floor(size / 2) && y === Math.floor(size / 2)) {
+        output[coord(x, y)] = ' ';
+      } else {
+        output[coord(x, y)] = getRandomEntry(dict);
+      }
     }
   }
 
@@ -52,6 +56,10 @@ export function hideMessageInGrids(
           break placement;
         }
         if (walker === spacing) {
+          // Always skip the center
+          if (grid[coord(x, y)] === ' ') {
+            continue placement;
+          }
           grid[coord(x, y)] = part[partPos];
           partPos++;
           walker = 0;

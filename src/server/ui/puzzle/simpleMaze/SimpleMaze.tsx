@@ -102,7 +102,12 @@ const SimpleMaze: React.FC<SimpleMazeProps> = ({
                   fontSize: 30,
                   fontFamily: 'monospace',
                   lineHeight: 30,
-                  color: '#282',
+                  color:
+                    revealedLetters &&
+                    revealedLetters[c] &&
+                    revealedLetters[c].toLowerCase() === revealedLetters[c]
+                      ? '#3c3'
+                      : '#2a2',
                   width: '100%',
                   height: '100%',
                   position: 'absolute',
