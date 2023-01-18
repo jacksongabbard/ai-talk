@@ -1,3 +1,4 @@
+import { shuffle } from 'lodash';
 import Words from 'src/lib/dict/Words';
 import { getRandomEntry } from 'src/lib/dict/utils';
 import { isLikelyOffensive } from 'src/lib/moderation/bannedWords';
@@ -9,12 +10,13 @@ const dict = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'.split('');
 type CoordGrid = { [x_y: string]: string };
 export function generateLetterGrid(size: number): CoordGrid {
   const output: CoordGrid = {};
-  for (let x = 0; x < size; x++) {
-    for (let y = 0; y < size; y++) {
-      if (x === Math.floor(size / 2) && y === Math.floor(size / 2)) {
-        output[coord(x, y)] = ' ';
-      } else {
+  for (let y = 0; y < size; y++) {
+    for (let x = 0; x < size; x++) {
+      if (x !== Math.floor(size / 2) || y !== Math.floor(size / 2)) {
         output[coord(x, y)] = getRandomEntry(dict);
+      } else {
+        console.log('Skipping the center', x, y);
+        output[coord(x, y)] = ' ';
       }
     }
   }
@@ -23,6 +25,7 @@ export function generateLetterGrid(size: number): CoordGrid {
 }
 
 export function hideMessageInGrids(
+  size: number,
   grids: { [uuid: string]: CoordGrid },
   message: string,
 ) {
@@ -37,12 +40,12 @@ export function hideMessageInGrids(
   }
   parts.push(message.substring(pos));
 
+  const gridLength = Math.pow(size, 2);
   const uuids = Object.keys(grids);
   for (let i = 0; i < parts.length; i++) {
     const uuid = uuids[i];
     const grid = grids[uuid];
     const part = parts[i];
-    const gridLength = Object.keys(grids[uuids[i]]).length;
     const spacing = Math.floor(gridLength / (part.length + 1));
     if (spacing < 1) {
       throw new Error('Grid is too small for supplied message');
@@ -50,15 +53,16 @@ export function hideMessageInGrids(
 
     let walker = 0;
     let partPos = 0;
-    placement: for (let y = 0; y < Math.sqrt(gridLength); y++) {
-      for (let x = 0; x < Math.sqrt(gridLength); x++) {
+    yLoop: for (let y = 0; y < size; y++) {
+      xLoop: for (let x = 0; x < size; x++) {
         if (partPos === part.length) {
-          break placement;
+          break yLoop;
         }
         if (walker === spacing) {
           // Always skip the center
           if (grid[coord(x, y)] === ' ') {
-            continue placement;
+            console.log('skipping a space', x, y);
+            continue xLoop;
           }
           grid[coord(x, y)] = part[partPos];
           partPos++;
@@ -72,8 +76,8 @@ export function hideMessageInGrids(
 }
 
 export function makeHiddenMessage(): { secretWord: string; pairs: string[][] } {
-  const eightLetterWords = Words.filter(
-    (w) => w.length === 8 && w.toLowerCase() === w,
+  const eightLetterWords = shuffle(
+    Words.filter((w) => w.length === 8 && w.toLowerCase() === w),
   );
   const eightTrie = makeTrie();
   const eightReverseMap: { [sorted: string]: string } = {};
@@ -83,13 +87,12 @@ export function makeHiddenMessage(): { secretWord: string; pairs: string[][] } {
     eightTrie.addWord(sorted);
   }
 
-  const sevenLetterWords = Words.filter(
-    (w) => w.length === 7 && w.toLowerCase() === w,
+  const sevenLetterWords = shuffle(
+    Words.filter((w) => w.length === 7 && w.toLowerCase() === w),
   );
 
   let randomWord = getRandomEntry(sevenLetterWords);
   while (isLikelyOffensive(randomWord)) {
-    console.log(randomWord + 'is likely offensive. Trying again.');
     randomWord = getRandomEntry(sevenLetterWords);
   }
 

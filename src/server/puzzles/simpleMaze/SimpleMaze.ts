@@ -27,25 +27,28 @@ const SimpleMaze: Puzzle = {
   minPlayers: 2,
   published: false,
   createInstance: (user: User, members: User[], team?: Team) => {
-    const size = 25;
+    const size = 17;
     const maze = generateMaze(size, members.length);
+    console.log('size: ' + maze.size);
     const { secretWord, pairs } = makeHiddenMessage();
     const solutionPayload: SimpleMazeSolutionPayload = {
       playerPositions: {},
       letterGrids: {},
       secretWord,
+      pairs: [],
     };
     const middle = { x: Math.floor(size / 2), y: Math.floor(size / 2) };
     for (const m of members) {
       solutionPayload.playerPositions[m.id] = middle;
-      solutionPayload.letterGrids[m.id] = generateLetterGrid(25);
+      solutionPayload.letterGrids[m.id] = generateLetterGrid(size);
     }
 
+    solutionPayload.pairs = pairs;
     const secretMessage = pairs
       .map((pair) => pair[0] + 'without' + pair[1])
       .join('');
     console.log(secretMessage);
-    hideMessageInGrids(solutionPayload.letterGrids, secretMessage);
+    hideMessageInGrids(maze.size, solutionPayload.letterGrids, secretMessage);
 
     const playerPositions: { [uuid: string]: { x: number; y: number } } = {};
     if (members.length >= 2) {
@@ -78,7 +81,7 @@ const SimpleMaze: Puzzle = {
     const puzzlePayload: SimpleMazePuzzlePayload = {
       maze,
       playerPositions,
-      revealedLetterGrids: {},
+      revealedLetterGrids: solutionPayload.letterGrids,
     };
 
     return {

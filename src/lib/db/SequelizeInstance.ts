@@ -28,7 +28,7 @@ const SequelizeInstance = new Sequelize(
     dialect: 'postgres',
     host: POSTGRES_HOST,
     port: parseInt(POSTGRES_PORT, 10),
-    // logging: () => {},
+    logging: () => {},
     // logging: (...msg) => console.log(JSON.stringify(msg, null, 4)), // log everything
   },
 );

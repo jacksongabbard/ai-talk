@@ -120,6 +120,7 @@ export type SimpleMazeSolutionPayload = {
     };
   };
   secretWord: string;
+  pairs: string[][];
 };
 
 export const lightsOutSolutionPayloadValidator = makeValidator({
@@ -151,9 +152,16 @@ export const lightsOutSolutionPayloadValidator = makeValidator({
       },
     },
     secretWord: { type: 'string' },
+    pairs: {
+      type: 'array',
+      items: {
+        type: 'array',
+        items: { type: 'string' },
+      },
+    },
   },
   additionalProperties: false,
-  required: ['playerPositions', 'letterGrids', 'secretWord'],
+  required: ['playerPositions', 'letterGrids', 'secretWord', 'pairs'],
 });
 
 export const assertIsSimpleMazeSolutionPayload = (
