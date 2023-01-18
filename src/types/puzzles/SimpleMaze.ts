@@ -37,6 +37,8 @@ export type SimpleMazePuzzlePayload = {
       [coord: string]: string;
     };
   };
+  solutionAttempt: string;
+  showInput: boolean;
 };
 
 const CoordRegexp = '^[0-8]+_[0-8]+$';
@@ -93,9 +95,17 @@ const lightsOutPuzzlePayloadValidator = makeValidator({
         },
       },
     },
+    solutionAttempt: { type: 'string' },
+    showInput: { type: 'boolean' },
   },
   additionalProperties: false,
-  required: ['maze', 'playerPositions', 'revealedLetterGrids'],
+  required: [
+    'maze',
+    'playerPositions',
+    'revealedLetterGrids',
+    'solutionAttempt',
+    'showInput',
+  ],
 });
 
 export const assertIsSimpleMazePuzzlePayload = (
@@ -176,30 +186,67 @@ export const assertIsSimpleMazeSolutionPayload = (
   );
 };
 
-export type SimpleMazeInstanceAction = {
+export type SimpleMazeMoveInstanceAction = {
+  actionType: 'move';
   direction: 'up' | 'right' | 'down' | 'left';
 };
 
-export const lightsOutInstanceActionValidator = makeValidator({
+export const lightsOutMoveInstanceActionValidator = makeValidator({
   type: 'object',
   properties: {
+    actionType: {
+      type: 'string',
+      pattern: '^move$',
+    },
     direction: {
       type: 'string',
       pattern: '^(up|right|down|left)$',
     },
   },
   additionalProperties: false,
-  required: ['direction'],
+  required: ['actionType', 'direction'],
 });
 
-export const assertIsSimpleMazeInstanceAction = (
+export const assertIsSimpleMazeMoveInstanceAction = (
   thing: any,
-): SimpleMazeInstanceAction => {
-  if (lightsOutInstanceActionValidator(thing)) {
-    return thing as SimpleMazeInstanceAction;
+): SimpleMazeMoveInstanceAction => {
+  if (lightsOutMoveInstanceActionValidator(thing)) {
+    return thing as SimpleMazeMoveInstanceAction;
   }
   throw new Error(
-    'Provided object is not a SimpleMazeInstanceAction: ' +
+    'Provided object is not a SimpleMazeMoveInstanceAction: ' +
+      JSON.stringify(thing, null, 4),
+  );
+};
+
+export type SimpleMazeSolveInstanceAction = {
+  actionType: 'solve';
+  solution: string;
+};
+
+export const lightsOutSolveInstanceActionValidator = makeValidator({
+  type: 'object',
+  properties: {
+    actionType: {
+      type: 'string',
+      pattern: '^solve$',
+    },
+    solution: {
+      type: 'string',
+    },
+  },
+  additionalProperties: false,
+  required: ['actionType', 'solution'],
+});
+
+export const assertIsSimpleMazeSolveInstanceAction = (
+  thing: any,
+): SimpleMazeSolveInstanceAction => {
+  if (lightsOutSolveInstanceActionValidator(thing)) {
+    return thing as SimpleMazeSolveInstanceAction;
+  }
+  throw new Error(
+    'Provided object is not a SimpleMazeSolveInstanceAction: ' +
       JSON.stringify(thing, null, 4),
   );
 };

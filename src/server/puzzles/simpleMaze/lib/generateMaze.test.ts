@@ -1,4 +1,5 @@
-import { coord, generateMaze, printMaze } from './generateMaze';
+import { coord } from 'src/server/ui/puzzle/simpleMaze/SimpleMaze';
+import { generateMaze, printMaze } from './generateMaze';
 import { solveMaze, validateGrid } from './solveMaze';
 
 (() => {

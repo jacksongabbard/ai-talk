@@ -9,7 +9,8 @@ import { coord } from 'src/server/ui/puzzle/simpleMaze/SimpleMaze';
 import {
   SimpleMazePuzzlePayload,
   SimpleMazeSolutionPayload,
-  assertIsSimpleMazeInstanceAction,
+  assertIsSimpleMazeMoveInstanceAction,
+  assertIsSimpleMazeSolveInstanceAction,
   assertIsSimpleMazePuzzlePayload,
   assertIsSimpleMazeSolutionPayload,
 } from 'src/types/puzzles/SimpleMaze';
@@ -82,6 +83,8 @@ const SimpleMaze: Puzzle = {
       maze,
       playerPositions,
       revealedLetterGrids: solutionPayload.letterGrids,
+      showInput: false,
+      solutionAttempt: '',
     };
 
     return {
@@ -131,62 +134,100 @@ const SimpleMaze: Puzzle = {
     puzzleInstance: PuzzleInstance,
     action: object,
   ): ActionResult => {
-    const ia = assertIsSimpleMazeInstanceAction(action);
-    const pi = assertIsSimpleMazePuzzlePayload(puzzleInstance.puzzlePayload);
-    const si = assertIsSimpleMazeSolutionPayload(
-      puzzleInstance.solutionPayload,
-    );
-
-    let { playerPositions } = pi;
-
-    if (!playerPositions[user.id]) {
-      throw new Error('User does not appear in playerPositions');
+    if (
+      !hasOwnProperty(action, 'actionType') ||
+      typeof action.actionType !== 'string'
+    ) {
+      throw new Error('Invalid instance action');
     }
 
-    const currentCoord = playerPositions[user.id];
-    const grid = pi.maze.grid;
-    const currentCoordStr = coord(currentCoord.x, currentCoord.y);
-    let revealedLetter: { [coord: string]: string } = {};
-    if (ia.direction === 'up' && grid[currentCoordStr].up) {
-      playerPositions = {
-        [user.id]: { x: currentCoord.x, y: currentCoord.y - 1 },
+    if (action.actionType === 'move') {
+      const ia = assertIsSimpleMazeMoveInstanceAction(action);
+      const pi = assertIsSimpleMazePuzzlePayload(puzzleInstance.puzzlePayload);
+      const si = assertIsSimpleMazeSolutionPayload(
+        puzzleInstance.solutionPayload,
+      );
+
+      let { playerPositions } = pi;
+
+      if (!playerPositions[user.id]) {
+        throw new Error('User does not appear in playerPositions');
+      }
+
+      const currentCoord = playerPositions[user.id];
+      const grid = pi.maze.grid;
+      const currentCoordStr = coord(currentCoord.x, currentCoord.y);
+      let revealedLetter: { [coord: string]: string } = {};
+      if (ia.direction === 'up' && grid[currentCoordStr].up) {
+        playerPositions = {
+          [user.id]: { x: currentCoord.x, y: currentCoord.y - 1 },
+        };
+        revealedLetter[coord(currentCoord.x, currentCoord.y - 1)] =
+          si.letterGrids[user.id][coord(currentCoord.x, currentCoord.y - 1)];
+      } else if (ia.direction === 'right' && grid[currentCoordStr].right) {
+        playerPositions = {
+          [user.id]: { x: currentCoord.x + 1, y: currentCoord.y },
+        };
+        revealedLetter[coord(currentCoord.x + 1, currentCoord.y)] =
+          si.letterGrids[user.id][coord(currentCoord.x + 1, currentCoord.y)];
+      } else if (ia.direction === 'down' && grid[currentCoordStr].down) {
+        playerPositions = {
+          [user.id]: { x: currentCoord.x, y: currentCoord.y + 1 },
+        };
+        revealedLetter[coord(currentCoord.x, currentCoord.y + 1)] =
+          si.letterGrids[user.id][coord(currentCoord.x, currentCoord.y + 1)];
+      } else if (ia.direction === 'left' && grid[currentCoordStr].left) {
+        playerPositions = {
+          [user.id]: { x: currentCoord.x - 1, y: currentCoord.y },
+        };
+        revealedLetter[coord(currentCoord.x - 1, currentCoord.y)] =
+          si.letterGrids[user.id][coord(currentCoord.x - 1, currentCoord.y)];
+      }
+
+      const center = Math.floor(pi.maze.size / 2);
+      let everyoneIsOnCenter = true;
+      posCheck: for (let pp in playerPositions) {
+        if (
+          playerPositions[pp].x !== center ||
+          playerPositions[pp].y !== center
+        ) {
+          everyoneIsOnCenter = false;
+          break posCheck;
+        }
+      }
+
+      const payloadDiffValue = {
+        playerPositions,
+        revealedLetterGrids: { [user.id]: revealedLetter },
+        showInput: everyoneIsOnCenter,
       };
-      revealedLetter[coord(currentCoord.x, currentCoord.y - 1)] =
-        si.letterGrids[user.id][coord(currentCoord.x, currentCoord.y - 1)];
-    } else if (ia.direction === 'right' && grid[currentCoordStr].right) {
-      playerPositions = {
-        [user.id]: { x: currentCoord.x + 1, y: currentCoord.y },
+
+      const puzzlePayload = merge(
+        puzzleInstance.puzzlePayload,
+        payloadDiffValue,
+      );
+
+      return {
+        payloadDiff: {
+          // seq number comes externally
+          value: payloadDiffValue,
+        },
+        puzzlePayload,
       };
-      revealedLetter[coord(currentCoord.x + 1, currentCoord.y)] =
-        si.letterGrids[user.id][coord(currentCoord.x + 1, currentCoord.y)];
-    } else if (ia.direction === 'down' && grid[currentCoordStr].down) {
-      playerPositions = {
-        [user.id]: { x: currentCoord.x, y: currentCoord.y + 1 },
+    } else if (action.actionType === 'solve') {
+      const ia = assertIsSimpleMazeSolveInstanceAction(action);
+      const pi = assertIsSimpleMazePuzzlePayload(puzzleInstance.puzzlePayload);
+      const si = assertIsSimpleMazeSolutionPayload(
+        puzzleInstance.solutionPayload,
+      );
+      return {
+        payloadDiff: {
+          value: {},
+        },
+        puzzlePayload: pi,
       };
-      revealedLetter[coord(currentCoord.x, currentCoord.y + 1)] =
-        si.letterGrids[user.id][coord(currentCoord.x, currentCoord.y + 1)];
-    } else if (ia.direction === 'left' && grid[currentCoordStr].left) {
-      playerPositions = {
-        [user.id]: { x: currentCoord.x - 1, y: currentCoord.y },
-      };
-      revealedLetter[coord(currentCoord.x - 1, currentCoord.y)] =
-        si.letterGrids[user.id][coord(currentCoord.x - 1, currentCoord.y)];
     }
-
-    const payloadDiffValue = {
-      playerPositions,
-      revealedLetterGrids: { [user.id]: revealedLetter },
-    };
-
-    const puzzlePayload = merge(puzzleInstance.puzzlePayload, payloadDiffValue);
-
-    return {
-      payloadDiff: {
-        // seq number comes externally
-        value: payloadDiffValue,
-      },
-      puzzlePayload,
-    };
+    throw new Error('Invalid SimpleMaze action');
   },
 
   isSolved: (puzzlePayload, solutionPayload) => {

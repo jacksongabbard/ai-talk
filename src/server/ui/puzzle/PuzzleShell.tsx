@@ -184,6 +184,7 @@ const PuzzleShell: React.FC = () => {
             position: 'absolute',
             top: '5vmin',
             left: '5vmin',
+            zIndex: 1000,
           }}
         >
           <Button
