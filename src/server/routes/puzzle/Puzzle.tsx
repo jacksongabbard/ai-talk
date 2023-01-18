@@ -1,4 +1,10 @@
-import React, { useCallback, useContext, useEffect, useState } from 'react';
+import React, {
+  useCallback,
+  useContext,
+  useEffect,
+  useRef,
+  useState,
+} from 'react';
 import { Link, useParams } from 'react-router-dom';
 
 import { AppContext } from 'src/server/state/AppContext';
@@ -29,7 +35,8 @@ const Puzzle: React.FC = () => {
   const [generatingPuzzle, setGeneratingPuzzle] = useState<boolean>(false);
   const [errorMessage, setErrorMessage] = useState<string | undefined>();
   const [puzzleName, setPuzzleName] = useState<string | undefined>();
-
+  const [tick, setTick] = useState(0);
+  const tickTimeoutRef = useRef<NodeJS.Timeout>();
   const puzzleContext = useContext(PuzzleContext);
   const { instance, setInstance } = puzzleContext;
 
@@ -40,6 +47,7 @@ const Puzzle: React.FC = () => {
 
   useEffect(() => {
     (async () => {
+      tickTimeoutRef.current && clearTimeout(tickTimeoutRef.current);
       setLoading(true);
       const resp = await callAPI('puzzle-info', { slug });
       setLoading(false);
@@ -68,13 +76,28 @@ const Puzzle: React.FC = () => {
           ? assertIsSerializedPuzzleInstance(resp.instance)
           : undefined,
       );
+
+      if (!resp.instance) {
+        tickTimeoutRef.current = setTimeout(() => {
+          setTick(tick + 1);
+        }, 1000);
+      }
     })();
-  }, [setErrorMessage, setLoading, setPuzzleName, setInstance, slug]);
+  }, [
+    setErrorMessage,
+    setLoading,
+    setPuzzleName,
+    setInstance,
+    slug,
+    tick,
+    setTick,
+  ]);
 
   const createInstance = useCallback(() => {
     if (!!instance) {
       throw new Error('Cannot start a puzzle that has already been started');
     }
+    tickTimeoutRef.current && clearTimeout(tickTimeoutRef.current);
     setGeneratingPuzzle(true);
     (async () => {
       const resp = await callAPI('generate-puzzle-instance', { slug });
@@ -111,15 +134,7 @@ const Puzzle: React.FC = () => {
         }}
       >
         {errorMessage && <MessageBox type="error">{errorMessage}</MessageBox>}
-        {loading && (
-          <Typography
-            variant="subtitle2"
-            css={{ display: 'block', textAlign: 'center' }}
-          >
-            Loading...
-          </Typography>
-        )}
-        {!loading && puzzleName && !instance && (
+        {puzzleName && !instance && (
           <div
             css={{
               display: 'flex',
@@ -135,7 +150,11 @@ const Puzzle: React.FC = () => {
               {puzzleName}
             </Typography>
             {!generatingPuzzle && (
-              <Button variant="contained" onClick={createInstance}>
+              <Button
+                disabled={loading}
+                variant="contained"
+                onClick={createInstance}
+              >
                 Start
               </Button>
             )}
@@ -147,6 +166,17 @@ const Puzzle: React.FC = () => {
                 Generating puzzle...
               </Typography>
             )}
+            <div>
+              <Typography
+                variant="subtitle2"
+                css={{
+                  opacity: loading ? 1 : 0,
+                  transition: 'opacity 1s',
+                }}
+              >
+                Loading...
+              </Typography>
+            </div>
           </div>
         )}
       </div>

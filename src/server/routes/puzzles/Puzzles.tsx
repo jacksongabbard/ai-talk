@@ -139,10 +139,9 @@ const Puzzles: React.FC = () => {
                         background: '#3f3',
                         color: '#000',
                         padding: 'var(--spacing-medium)',
-                        zIndex: 1000,
                       }}
                     >
-                      Solved!
+                      SOLVED!
                     </Typography>
                   )}
                   {solved === false && (
@@ -157,7 +156,7 @@ const Puzzles: React.FC = () => {
                         padding: 'var(--spacing-medium)',
                       }}
                     >
-                      Started
+                      STARTED
                     </Typography>
                   )}
                 </div>

@@ -26,7 +26,7 @@ const SimpleMaze: Puzzle = {
   slug: 'simple_maze',
   maxPlayers: 6,
   minPlayers: 2,
-  published: false,
+  published: true,
   createInstance: (user: User, members: User[], team?: Team) => {
     const size = 17;
     const maze = generateMaze(size, members.length);
@@ -82,7 +82,7 @@ const SimpleMaze: Puzzle = {
     const puzzlePayload: SimpleMazePuzzlePayload = {
       maze,
       playerPositions,
-      revealedLetterGrids: solutionPayload.letterGrids,
+      revealedLetterGrids: {},
       showInput: false,
       solutionAttempt: '',
     };
@@ -185,14 +185,26 @@ const SimpleMaze: Puzzle = {
       }
 
       const center = Math.floor(pi.maze.size / 2);
-      let everyoneIsOnCenter = true;
-      posCheck: for (let pp in playerPositions) {
-        if (
-          playerPositions[pp].x !== center ||
-          playerPositions[pp].y !== center
-        ) {
-          everyoneIsOnCenter = false;
-          break posCheck;
+
+      // Check the current player first, since their position might have
+      // just changed
+      let everyoneIsOnCenter =
+        playerPositions[user.id].x === center &&
+        playerPositions[user.id].y === center;
+
+      // Then, if they're on center, check everyone else
+      if (everyoneIsOnCenter) {
+        posCheck: for (let pp in pi.playerPositions) {
+          if (pp === user.id) {
+            continue posCheck;
+          }
+          if (
+            pi.playerPositions[pp].x !== center ||
+            pi.playerPositions[pp].y !== center
+          ) {
+            everyoneIsOnCenter = false;
+            break posCheck;
+          }
         }
       }
 
@@ -222,9 +234,11 @@ const SimpleMaze: Puzzle = {
       );
       return {
         payloadDiff: {
-          value: {},
+          value: {
+            solutionAttempt: ia.solution,
+          },
         },
-        puzzlePayload: pi,
+        puzzlePayload: { ...cloneDeep(pi), solutionAttempt: ia.solution },
       };
     }
     throw new Error('Invalid SimpleMaze action');
@@ -233,7 +247,7 @@ const SimpleMaze: Puzzle = {
   isSolved: (puzzlePayload, solutionPayload) => {
     const p = assertIsSimpleMazePuzzlePayload(puzzlePayload);
     const s = assertIsSimpleMazeSolutionPayload(solutionPayload);
-    return isEqual(p.playerPositions, s.playerPositions);
+    return isEqual(p.solutionAttempt, s.secretWord);
   },
 };
 export default SimpleMaze;

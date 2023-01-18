@@ -5,7 +5,7 @@ import React, {
   useMemo,
   useRef,
 } from 'react';
-import { Button, iconButtonClasses } from '@mui/material';
+import { Button, Typography, iconButtonClasses } from '@mui/material';
 
 import type { SendInstanceAction } from 'src/client/hooks/useWebSocket';
 import { AppContext } from 'src/server/state/AppContext';
@@ -293,51 +293,76 @@ const SimpleMaze: React.FC<SimpleMazeProps> = ({
         {grid}
         {playerElements}
       </div>
-      {payload.showInput && (
+
+      <div
+        css={{
+          background: '#00000088',
+          display: 'flex',
+          alignItems: 'end',
+          justifyContent: 'center',
+          zIndex: 10,
+          transition: 'opacity .5s, top 0.5s',
+          overflow: 'hidden',
+          height: '100%',
+          width: '100%',
+          left: 0,
+          ...(payload.showInput
+            ? {
+                opacity: 1,
+                position: 'fixed',
+                top: 0,
+              }
+            : {
+                opacity: 0,
+                position: 'absolute',
+                top: '-100vh',
+              }),
+        }}
+      >
         <div
           css={{
-            position: 'fixed',
-            top: 0,
-            left: 0,
-            height: '100%',
-            width: '100%',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            zIndex: 10,
+            background: 'black',
+            padding: 50,
+            paddingTop: 80,
+            border: '1px #3f3 solid',
+            marginBottom: '10vh',
+            width: '60vw',
+            boxShadow: '0px 10px 77px 22px rgba(0,0,0,0.75)',
           }}
         >
-          <div
-            css={{ background: 'black', padding: 50, border: '1px #3f3 solid' }}
-          >
-            <PresenceObserver
-              location={{ puzzle: 'noYouFirst', solutionBox: 1 }}
-            >
-              <input
-                type="string"
-                value={payload.solutionAttempt}
-                onChange={onSolutionChange}
-                placeholder="Enter the solution..."
-                css={{
-                  fontSize: 24,
-                  color: '#3f3',
-                  background: '#000',
-                  border: '1px #3f3 solid',
-                  width: '60vw',
-                  maxWidth: '60vw',
-                  textAlign: 'center',
-                }}
-              />
+          <PresenceObserver location={{ puzzle: 'simpleMaze', solutionBox: 1 }}>
+            <input
+              type="string"
+              value={payload.solutionAttempt}
+              onChange={onSolutionChange}
+              autoFocus={true}
+              placeholder="Enter the solution..."
+              css={{
+                fontSize: 24,
+                color: '#3f3',
+                display: 'block',
+                background: '#000',
+                border: '1px #3f3 solid',
+                textAlign: 'center',
+                width: '100%',
+              }}
+            />
 
-              <div css={{ position: 'absolute', bottom: 4, right: 4 }}>
-                <PresenceFacepile
-                  location={{ puzzle: 'noYouFirst', solutionBox: 1 }}
-                />
-              </div>
-            </PresenceObserver>
-          </div>
+            <div
+              css={{
+                height: 32,
+                padding: 8,
+                display: 'flex',
+                justifyContent: 'center',
+              }}
+            >
+              <PresenceFacepile
+                location={{ puzzle: 'simpleMaze', solutionBox: 1 }}
+              />
+            </div>
+          </PresenceObserver>
         </div>
-      )}
+      </div>
     </div>
   );
 };
