@@ -65,8 +65,13 @@ export const fetchLeaderboard: RequestHandler = async (
   }
 
   const puzzles = puzzleMapFromList();
+  for (const slug in puzzles) {
+    if (puzzles[slug].published === false) {
+      delete puzzles[slug];
+    }
+  }
   const leaderboard: LeaderboardData = {};
-  for (let slug of Object.keys(puzzles)) {
+  for (let slug in puzzles) {
     if (!leaderboard[slug]) {
       leaderboard[slug] = {
         puzzleName: puzzles[slug].name,
@@ -94,8 +99,6 @@ export const fetchLeaderboard: RequestHandler = async (
           teamName: teamIdsToTeamName[pi.teamId] || 'error: unknown team',
           solveTime: pi.solvedAt?.getTime() - pi.createdAt.getTime(),
         });
-      } else {
-        throw new Error('Unexpected puzzle ID: ' + pi.puzzleId);
       }
     }
 
