@@ -13,6 +13,7 @@ import type { ClientPuzzleInstance } from 'src/types/ClientPuzzleInstance';
 import Paths from './Paths';
 import { assertIsSimpleMazePuzzlePayload } from 'src/types/puzzles/SimpleMaze';
 import { PresenceFacepile, PresenceObserver } from '@cord-sdk/react';
+import Ohvatar from '../../ohvatar/Ohvatar';
 
 export function coord(x: number, y: number) {
   return x + '_' + y;
@@ -156,8 +157,13 @@ const SimpleMaze: React.FC<SimpleMazeProps> = ({
             background: uuid === appContext.user.id ? '#3f3' : '#1d1',
             position: 'absolute',
             transition: 'top 0.2s, left 0.2s',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
           }}
-        ></div>,
+        >
+          <Ohvatar userId={uuid} />
+        </div>,
       );
     }
     return {
