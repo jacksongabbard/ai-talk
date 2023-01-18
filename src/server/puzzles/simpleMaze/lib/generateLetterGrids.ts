@@ -51,7 +51,11 @@ export function hideMessageInGrids(
       throw new Error('Grid is too small for supplied message');
     }
 
-    let walker = 0;
+    if (spacing * part.length > gridLength) {
+      throw new Error('Jackson is bad at maths.');
+    }
+
+    let walker = 1;
     let partPos = 0;
     yLoop: for (let y = 0; y < size; y++) {
       xLoop: for (let x = 0; x < size; x++) {
@@ -66,11 +70,14 @@ export function hideMessageInGrids(
           }
           grid[coord(x, y)] = part[partPos];
           partPos++;
-          walker = 0;
+          walker = 1;
         } else {
           walker++;
         }
       }
+    }
+    if (partPos < part.length) {
+      throw new Error('Could not fit the entire part in the puzzle!');
     }
   }
 }
