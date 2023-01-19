@@ -215,6 +215,12 @@ const SimpleMaze: React.FC<SimpleMazeProps> = ({
 
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
+      let n: HTMLElement | null = e.currentTarget as HTMLElement;
+
+      if (document.activeElement !== document.body) {
+        return;
+      }
+
       if (
         e.key === 'ArrowUp' ||
         e.key === 'ArrowDown' ||
@@ -229,15 +235,19 @@ const SimpleMaze: React.FC<SimpleMazeProps> = ({
 
       switch (e.key) {
         case 'ArrowUp':
+        case 'w':
           direction = 'up';
           break;
         case 'ArrowRight':
+        case 'd':
           direction = 'right';
           break;
         case 'ArrowDown':
+        case 's':
           direction = 'down';
           break;
         case 'ArrowLeft':
+        case 'a':
           direction = 'left';
           break;
       }
@@ -341,7 +351,6 @@ const SimpleMaze: React.FC<SimpleMazeProps> = ({
               type="string"
               value={payload.solutionAttempt}
               onChange={onSolutionChange}
-              autoFocus={true}
               placeholder="Enter the solution..."
               css={{
                 fontSize: 24,
