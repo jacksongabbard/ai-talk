@@ -66,8 +66,8 @@ const SimpleMaze: React.FC<SimpleMazeProps> = ({
                   display: 'flex',
                   alignItems: 'center',
                   justifyContent: 'center',
-                  fontSize: 30,
-                  lineHeight: 30,
+                  fontSize: '30px',
+                  lineHeight: '30px',
                   background: '#3f3',
                   width: '33%', // intentionally a smidge small
                   height: '33%', // intentionally a smidge small
@@ -86,8 +86,8 @@ const SimpleMaze: React.FC<SimpleMazeProps> = ({
                   display: 'flex',
                   alignItems: 'center',
                   justifyContent: 'center',
-                  fontSize: 30,
-                  lineHeight: 30,
+                  fontSize: '30px',
+                  lineHeight: '30px',
                   color: '#000',
                   width: '100%',
                   height: '100%',
@@ -107,9 +107,9 @@ const SimpleMaze: React.FC<SimpleMazeProps> = ({
                   display: 'flex',
                   alignItems: 'center',
                   justifyContent: 'center',
-                  fontSize: 30,
+                  fontSize: '30px',
+                  lineHeight: '30px',
                   fontFamily: 'monospace',
-                  lineHeight: 30,
                   color:
                     revealedLetters &&
                     revealedLetters[c] &&
@@ -304,6 +304,7 @@ const SimpleMaze: React.FC<SimpleMazeProps> = ({
           borderBottom: '6px #383 solid',
           height: payload.maze.size * 100,
           width: payload.maze.size * 100,
+          marginRight: '300px',
         }}
       >
         {grid}
