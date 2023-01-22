@@ -13,28 +13,35 @@ const TeamChat = () => {
     !cordContext.hasProvider ||
     (!appContext?.team && !appContext?.globalCordContext)
   ) {
-    console.log('nope');
     return null;
   }
+
+  console.log(
+    'thread-' +
+      (appContext?.globalCordContext ? 'global' : appContext?.team?.id) +
+      '-' +
+      location.pathname,
+  );
 
   return (
     <div
       css={{
+        display: 'flex',
+        alignItems: 'stretch',
         background: '#000',
         borderLeft: '1px #252 solid',
         boxSizing: 'border-box',
         padding: '16px',
         position: 'relative',
+        maxHeight: appContext.showHeader ? 'calc(100vh - 64px)' : '100vh',
         width: '300px',
         zIndex: 100,
       }}
     >
       <div
         css={{
-          alignItems: 'stretch',
           display: 'flex',
           flexDirection: 'column',
-          height: 'calc(100vh - 32px)',
           justifyContent: 'space-between',
         }}
       >
@@ -62,13 +69,12 @@ const TeamChat = () => {
         </div>
         <Thread
           threadId={
-            'thread-' +
+            'thread:' +
             (appContext?.globalCordContext ? 'global' : appContext?.team?.id) +
-            '-' +
+            ':' +
             location.pathname
           }
           css={{
-            background: 'green',
             width: 268,
             maxHeight: 'none',
           }}

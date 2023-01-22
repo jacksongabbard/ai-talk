@@ -32,7 +32,7 @@ const Header: React.FC<HeaderProps> = ({ title }) => {
   };
 
   return (
-    <AppBar position="static">
+    <AppBar position="static" css={{ height: 64, overflow: 'visible' }}>
       <Toolbar>
         {title && (
           <div css={{ flexGrow: 1 }}>
