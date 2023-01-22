@@ -16,71 +16,88 @@ const TeamChat = () => {
     return null;
   }
 
-  console.log(
-    'thread-' +
-      (appContext?.globalCordContext ? 'global' : appContext?.team?.id) +
-      '-' +
-      location.pathname,
-  );
+  const threadId =
+    't:' +
+    (appContext?.globalCordContext ? 'global' : appContext?.team?.id) +
+    ':' +
+    location.pathname;
+  console.log({ threadId });
+
+  const innerWidth = 360;
+  const margin = 8;
+  const padding = 8;
+  const headerHeight = 64;
 
   return (
     <div
       css={{
-        display: 'flex',
-        alignItems: 'stretch',
-        background: '#000',
-        borderLeft: '1px #252 solid',
-        boxSizing: 'border-box',
-        padding: '16px',
-        position: 'relative',
-        maxHeight: appContext.showHeader ? 'calc(100vh - 64px)' : '100vh',
-        width: '300px',
-        zIndex: 100,
+        width: innerWidth + 'px',
+        height: appContext.showHeader
+          ? `calc(100vh - ${headerHeight + margin} px)`
+          : '100vh',
       }}
     >
       <div
         css={{
           display: 'flex',
-          flexDirection: 'column',
-          justifyContent: 'space-between',
+          alignItems: 'stretch',
+          background: '#000',
+          borderLeft: '1px #252 solid',
+          borderRight: '1px #252 solid',
+          borderTop: '1px #252 solid',
+          boxSizing: 'border-box',
+          padding: padding + 'px',
+          position: 'fixed',
+          top: appContext.showHeader
+            ? headerHeight + margin + 'px'
+            : margin + 'px',
+          right: 8,
+          height: appContext.showHeader
+            ? `calc(100vh - ${headerHeight + margin}px)`
+            : `calc(100vh - ${margin}px)`,
+          width: innerWidth + 'px',
+          zIndex: 100,
         }}
       >
         <div
           css={{
-            alignItems: 'center',
             display: 'flex',
-            flexGrow: 0,
-            flex: 0,
-            flexDirection: 'row',
-            height: '40px',
+            flexDirection: 'column',
             justifyContent: 'space-between',
           }}
         >
-          <Typography
-            variant="h6"
-            css={{ marginBottom: 'var(--spacing-large)' }}
+          <div
+            css={{
+              alignItems: 'center',
+              display: 'flex',
+              flexGrow: 0,
+              flex: 0,
+              flexDirection: 'row',
+              height: '40px',
+              justifyContent: 'space-between',
+            }}
           >
-            {appContext?.team ? appContext.team.teamName : 'Chat'}
-          </Typography>
-          <PagePresence
-            location={{ route: location.pathname }}
-            durable={true}
+            <Typography variant="h6">
+              {!appContext.globalCordContext &&
+                appContext?.team &&
+                appContext.team.teamName}
+              {appContext.globalCordContext && 'Everyone'}
+            </Typography>
+            <PagePresence
+              location={{ route: location.pathname }}
+              durable={true}
+              maxUsers={6}
+            />
+          </div>
+          <Thread
+            threadId={threadId}
+            css={{
+              width: innerWidth - padding * 2,
+              maxHeight: 'none',
+            }}
           />
         </div>
-        <Thread
-          threadId={
-            'thread:' +
-            (appContext?.globalCordContext ? 'global' : appContext?.team?.id) +
-            ':' +
-            location.pathname
-          }
-          css={{
-            width: 268,
-            maxHeight: 'none',
-          }}
-        />
-      </div>
-      {/*
+        {/*
       <Sidebar
         location={{ route: location.pathname }}
         onOpen={(info) => {
@@ -91,6 +108,7 @@ const TeamChat = () => {
         }}
       />
       */}
+      </div>{' '}
     </div>
   );
 };

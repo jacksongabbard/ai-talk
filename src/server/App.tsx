@@ -45,8 +45,12 @@ const App: React.FC = () => {
   const appContext = useContext(AppContext);
   const cordToken = appContext?.cordClientAuthToken;
   useEffect(() => {
+    appContext?.setCordClientAuthToken('');
     (async () => {
-      if (appContext?.team && appContext?.setCordClientAuthToken) {
+      if (
+        (appContext?.globalCordContext || appContext?.team) &&
+        appContext?.setCordClientAuthToken
+      ) {
         const resp = await callAPI(
           'get-cord-client-auth-token',
           appContext.globalCordContext ? { global: true } : {},

@@ -304,7 +304,7 @@ const SimpleMaze: React.FC<SimpleMazeProps> = ({
           borderBottom: '6px #383 solid',
           height: payload.maze.size * 100,
           width: payload.maze.size * 100,
-          marginRight: '300px',
+          marginRight: '376px',
         }}
       >
         {grid}
