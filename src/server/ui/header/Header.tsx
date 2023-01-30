@@ -90,7 +90,15 @@ const Header: React.FC<HeaderProps> = ({ title }) => {
                 3. If you open notifications before page loads, they're rendered outside the viewport.
               */}
               <beta.NotificationList
-                style={{ height: '50vh', width: '350px' }}
+                style={{
+                  height: '50vh',
+                  width: '350px',
+                  // Because of `keepMounted`, MUI renders this component invisible
+                  // on the page. Users can still click on it though. :clown_emoji:
+                  pointerEvents: Boolean(notificationAnchorEl)
+                    ? undefined
+                    : 'none',
+                }}
               />
             </Menu>
 
@@ -114,7 +122,6 @@ const Header: React.FC<HeaderProps> = ({ title }) => {
                 vertical: 'bottom',
                 horizontal: 'right',
               }}
-              keepMounted
               transformOrigin={{
                 vertical: 'top',
                 horizontal: 'right',
