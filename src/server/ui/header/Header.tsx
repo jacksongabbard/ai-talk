@@ -1,4 +1,4 @@
-import React, { useContext, useState } from 'react';
+import React, { useContext, useEffect, useRef, useState } from 'react';
 import AppBar from '@mui/material/AppBar';
 import IconButton from '@mui/material/IconButton';
 import Avatar from '@mui/material/Avatar';
@@ -8,12 +8,13 @@ import ListItemText from '@mui/material/ListItemText';
 import LogoutIcon from '@mui/icons-material/Logout';
 import Menu from '@mui/material/Menu';
 import MenuItem from '@mui/material/MenuItem';
-import NotificationsNoneIcon from '@mui/icons-material/NotificationsNone';
+import NotificationsIcon from '@mui/icons-material/Notifications';
 import Toolbar from '@mui/material/Toolbar';
 import Typography from '@mui/material/Typography';
 import { beta } from '@cord-sdk/react';
 
 import { AppContext } from 'src/server/state/AppContext';
+import Badge from '@mui/material/Badge';
 
 type HeaderProps = {
   title?: string;
@@ -39,6 +40,37 @@ const Header: React.FC<HeaderProps> = ({ title }) => {
     setMenuAnchorEl(null);
     setNotificationAnchorEl(null);
   };
+
+  // Cord Notifications API doesn't expose a way of knowing when
+  // there are new notifications, so we just hook into the DOM and get
+  // that info ourselves. "_Hacker voice_: I'm in"
+  const [newNotificationsCount, setNewNotificationsCount] = useState(0);
+  // NotificationList doesn't expose a `ref` prop, hence why attaching to the container.
+  const notificationsContainerRef = useRef<HTMLDivElement>(null);
+  useEffect(() => {
+    const listenForNewNotifications = setInterval(() => {
+      if (!notificationsContainerRef.current) {
+        return;
+      }
+
+      const notificationListComponent =
+        notificationsContainerRef.current.querySelector(
+          'cord-notification-list',
+        );
+      if (!notificationListComponent || !notificationListComponent.shadowRoot) {
+        return;
+      }
+
+      const unreadBadgeClassname = `badge-`; // Final dash to avoid clashes with `badgeContainer`
+      const unreadBadgesCount =
+        notificationListComponent.shadowRoot.querySelectorAll(
+          `[class*="${unreadBadgeClassname}"`,
+        ).length;
+      setNewNotificationsCount(unreadBadgesCount);
+    }, 100); // Cheap operation, can do often.
+
+    return () => clearInterval(listenForNewNotifications);
+  }, []);
 
   return (
     <AppBar position="static" css={{ height: 64, overflow: 'visible' }}>
@@ -67,7 +99,9 @@ const Header: React.FC<HeaderProps> = ({ title }) => {
               edge="end"
               onClick={showNotificationsMenu}
             >
-              <NotificationsNoneIcon />
+              <Badge badgeContent={newNotificationsCount}>
+                <NotificationsIcon />
+              </Badge>
             </IconButton>
             <Menu
               id="notifications"
@@ -83,6 +117,7 @@ const Header: React.FC<HeaderProps> = ({ title }) => {
               }}
               open={Boolean(notificationAnchorEl)}
               onClose={handleClose}
+              ref={notificationsContainerRef}
             >
               {/* TODO(am):
                 1. Unread notification's background isn't different from read. 
