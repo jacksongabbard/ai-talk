@@ -99,7 +99,7 @@ type DecoderRingProps = {
 };
 
 const DecoderRing: React.FC<DecoderRingProps> = ({ onSolve }) => {
-  const letters = 'ABCDEҒGĤIJKLMNÔPQRŜTUVWXYZ'.split('');
+  const letters = 'ABCDEғGĤIJKLMNÔPQRŜTUVWXYZ'.split('');
   const rotationMap = useRef(makeRotMap());
   const userDragged = useRef(false);
   const initialSpinTimeout = useRef<NodeJS.Timeout>();
