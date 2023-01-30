@@ -35,17 +35,17 @@ const Header: React.FC<HeaderProps> = ({ title }) => {
     <AppBar position="static" css={{ height: 64, overflow: 'visible' }}>
       <Toolbar>
         {title && (
-          <div css={{ flexGrow: 1 }}>
-            <Link
-              href="/"
-              css={{ color: '#fff', textDecoration: 'none', display: 'block' }}
-            >
-              <Typography variant="h6">O.H.F.F.S.</Typography>
-            </Link>
-          </div>
+          <Link
+            href="/"
+            css={{ color: '#fff', textDecoration: 'none', display: 'block' }}
+          >
+            <Typography variant="h6">O.H.F.F.S.</Typography>
+          </Link>
         )}
         {user && (
-          <>
+          <div
+            css={{ display: 'flex', justifyContent: 'flex-end', flexGrow: 1 }}
+          >
             <IconButton
               size="large"
               color="inherit"
@@ -81,7 +81,7 @@ const Header: React.FC<HeaderProps> = ({ title }) => {
                 <ListItemText>Logout</ListItemText>
               </MenuItem>
             </Menu>
-          </>
+          </div>
         )}
       </Toolbar>
     </AppBar>
