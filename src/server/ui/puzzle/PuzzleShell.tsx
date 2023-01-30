@@ -25,6 +25,7 @@ import NoYouFirst from './noYouFirst/NoYouFirst';
 import SimpleMaze from './simpleMaze/SimpleMaze';
 import { ArrowBack } from '@mui/icons-material';
 import { useNavigate } from 'react-router-dom';
+import Blocked from 'src/server/ui/puzzle/blocked/Blocked';
 
 const PuzzleShell: React.FC = () => {
   const appContext = useContext(AppContext);
@@ -172,6 +173,12 @@ const PuzzleShell: React.FC = () => {
       )}
       {instance && instance.puzzleId === 'simple_maze' && (
         <SimpleMaze
+          instance={instance}
+          sendInstanceAction={sendInstanceAction}
+        />
+      )}
+      {instance && instance.puzzleId === 'blocked' && (
+        <Blocked
           instance={instance}
           sendInstanceAction={sendInstanceAction}
         />

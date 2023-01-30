@@ -9,7 +9,7 @@ import type PuzzleInstance from 'src/lib/db/PuzzleInstance';
 const Blocked: Puzzle = {
   name: 'Blocked',
   slug: 'blocked',
-  minPlayers: 2,
+  minPlayers: 1,
   maxPlayers: 6,
   published: true,
   createInstance: (user: User, members: User[], team?: Team) => {
