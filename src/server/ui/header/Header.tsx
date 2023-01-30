@@ -121,7 +121,7 @@ const Header: React.FC<HeaderProps> = ({ title }) => {
             >
               {/* TODO(am):
                 1. Unread notification's background isn't different from read. 
-                2. Add a counter to the bell icon. Wish Cord would do that for me!
+                2. Notifications messages `color` should be #3f3, but it isn't.
                 3. If you open notifications before page loads, they're rendered outside the viewport.
               */}
               <beta.NotificationList
