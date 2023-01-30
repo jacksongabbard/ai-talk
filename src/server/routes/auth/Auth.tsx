@@ -4,26 +4,15 @@ import Helmet from 'react-helmet';
 import { getRandomEntry } from 'src/lib/dict/utils';
 
 import { AppContext } from 'src/server/state/AppContext';
+import DecoderRing from './DecoderRing';
 
 declare var google: any;
 declare var GOOGLE_CLIENT_ID: string;
 declare var DTSG_TOKEN: string;
 
-const prompts = [
-  "I don't even know you!",
-  'And who mayhaps are you?',
-  "Let's see some ID there, buddy",
-  'You. Shall Not. Pass. (Unless you login.)',
-  'Stranger danger!',
-  'Speak friend and enter. And by that I mean login already.',
-];
 const Auth: React.FC = () => {
   const appContext = useContext(AppContext);
-  const [prompt, setPrompt] = useState('');
-
-  useEffect(() => {
-    setPrompt(getRandomEntry(prompts));
-  }, [setPrompt]);
+  const [solved, setSolved] = useState(false);
 
   useEffect(() => {
     appContext?.setShowNavigation(false);
@@ -50,6 +39,10 @@ const Auth: React.FC = () => {
     client.requestCode();
   }, []);
 
+  const onSolve = useCallback(() => {
+    setSolved(true);
+  }, [setSolved]);
+
   return (
     <div
       css={{
@@ -57,27 +50,53 @@ const Auth: React.FC = () => {
         flexDirection: 'column',
         alignItems: 'center',
         justifyContent: 'center',
-        height: '70vh',
+        height: '100vh',
         width: '100vw',
       }}
     >
       <Helmet>
         <title>Login</title>
       </Helmet>
-      {prompt !== '' && (
-        <div
-          css={{
-            margin: 'var(--spacing-xlarge)',
-          }}
-        >
-          <Typography variant="h5">{prompt}</Typography>
-        </div>
-      )}
-      {doAuth && (
+      <div
+        css={{
+          position: 'absolute',
+          top: 0,
+          left: 0,
+          width: '100%',
+          height: '100%',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          pointerEvents: solved ? 'none' : 'inherit',
+          opacity: solved ? 0 : 1,
+          transition: 'opacity 1s',
+        }}
+      >
+        <DecoderRing onSolve={onSolve} />
+      </div>
+      <div
+        css={{
+          alignItems: 'center',
+          display: 'flex',
+          flexDirection: 'column',
+          height: '100%',
+          justifyContent: 'center',
+          left: 0,
+          opacity: solved ? 1 : 0,
+          pointerEvents: solved ? 'inherit' : 'none',
+          position: 'absolute',
+          top: 0,
+          transition: 'opacity 1s',
+          width: '100%',
+        }}
+      >
+        <Typography variant="h6" css={{ marginBottom: '24px' }}>
+          Not too shabby. Go on then.
+        </Typography>
         <Button onClick={doAuth} size="large" variant="contained">
           Login with Google
         </Button>
-      )}
+      </div>
     </div>
   );
 };

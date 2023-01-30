@@ -18,6 +18,7 @@ const Chrome = ({ children, title }: ChromeProps): JSX.Element => {
     <html>
       <head>
         <title>{title || 'Puzzles'}</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
       </head>
       <style type="text/css" dangerouslySetInnerHTML={{ __html: css }}></style>
       <body>{children}</body>
