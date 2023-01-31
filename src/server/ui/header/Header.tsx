@@ -73,7 +73,10 @@ const Header: React.FC<HeaderProps> = ({ title }) => {
   }, []);
 
   return (
-    <AppBar position="static" css={{ height: 64, overflow: 'visible' }}>
+    <AppBar
+      position="static"
+      css={{ height: 'var(--header-height)', overflow: 'visible' }}
+    >
       <Toolbar>
         {title && (
           <Link
