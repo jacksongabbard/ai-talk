@@ -65,6 +65,8 @@ h6 {
   --theme-sea: #282;
   --theme-green: #141;
   --theme-bg-wash: #000;
+
+  --header-height: 64px;
 }
 
 html,

@@ -36,7 +36,7 @@ const Shell: React.FC<ShellProps> = ({ title, children }) => {
       {!appContext ||
         appContext.showHeader === undefined ||
         (appContext.showHeader && <Header title="O.H.F.F.S." />)}
-      <div css={{ display: 'flex', alignItems: 'stretch', minHeight: '100vh' }}>
+      <div css={{ display: 'flex', alignItems: 'stretch' }}>
         {(showNavigation === undefined || showNavigation) && <Nav />}
         <div
           css={{

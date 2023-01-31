@@ -10,11 +10,13 @@ import NavMenuItem from '../navMenuItem/NavMenuItem';
 import { Leaderboard } from '@mui/icons-material';
 
 const Nav: React.FC = () => {
+  const margin = 'var(--spacing-xlarge)';
   return (
     <Paper
       css={{
-        margin: 'var(--spacing-xlarge)',
+        margin,
         width: 240,
+        minHeight: `calc(100vh - var(--header-height) - calc(${margin} * 2))`,
       }}
     >
       <MenuList>

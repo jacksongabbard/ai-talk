@@ -26,14 +26,16 @@ const TeamChat = () => {
   const innerWidth = 360;
   const margin = 8;
   const padding = 8;
-  const headerHeight = 64;
+  const fullHeight = appContext.showHeader
+    ? `calc(100vh - var(--header-height) - ${margin}px)`
+    : `calc(100vh - ${margin}px)`;
 
   return (
     <div
       css={{
         width: innerWidth + 'px',
         height: appContext.showHeader
-          ? `calc(100vh - ${headerHeight + margin} px)`
+          ? `calc(100vh - var(--header-height) - ${margin}px)`
           : '100vh',
       }}
     >
@@ -49,12 +51,11 @@ const TeamChat = () => {
           padding: padding + 'px',
           position: 'fixed',
           top: appContext.showHeader
-            ? headerHeight + margin + 'px'
+            ? `calc(var(--header-height) + ${margin}px)`
             : margin + 'px',
           right: 8,
-          height: appContext.showHeader
-            ? `calc(100vh - ${headerHeight + margin}px)`
-            : `calc(100vh - ${margin}px)`,
+          minHeight: fullHeight,
+          maxHeight: fullHeight,
           width: innerWidth + 'px',
           zIndex: 100,
         }}
