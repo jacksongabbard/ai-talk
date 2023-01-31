@@ -1,7 +1,8 @@
+import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
 
 import Header from '../header/Header';
-import Nav from '../nav/Nav';
+import { NavSidebar } from '../nav/Nav';
 import { useContext } from 'react';
 import { AppContext } from 'src/server/state/AppContext';
 import TeamChat from '../cord/TeamChat';
@@ -36,8 +37,18 @@ const Shell: React.FC<ShellProps> = ({ title, children }) => {
       {!appContext ||
         appContext.showHeader === undefined ||
         (appContext.showHeader && <Header title="O.H.F.F.S." />)}
-      <div css={{ display: 'flex', alignItems: 'stretch' }}>
-        {(showNavigation === undefined || showNavigation) && <Nav />}
+      <Box
+        sx={{
+          display: 'flex',
+          alignItems: 'stretch',
+          marginLeft: {
+            xs: 'var(--spacing-large)',
+            sm: 'var(--spacing-large)',
+            md: 0,
+          },
+        }}
+      >
+        {(showNavigation === undefined || showNavigation) && <NavSidebar />}
         <div
           css={{
             flex: 1,
@@ -56,7 +67,7 @@ const Shell: React.FC<ShellProps> = ({ title, children }) => {
           {children}
         </div>
         <TeamChat />
-      </div>
+      </Box>
     </div>
   );
 };

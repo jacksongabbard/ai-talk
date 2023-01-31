@@ -1,5 +1,8 @@
 import React, { useContext, useEffect, useRef, useState } from 'react';
+
+import { beta } from '@cord-sdk/react';
 import AppBar from '@mui/material/AppBar';
+import Badge from '@mui/material/Badge';
 import IconButton from '@mui/material/IconButton';
 import Avatar from '@mui/material/Avatar';
 import Link from '@mui/material/Link';
@@ -11,10 +14,9 @@ import MenuItem from '@mui/material/MenuItem';
 import NotificationsIcon from '@mui/icons-material/Notifications';
 import Toolbar from '@mui/material/Toolbar';
 import Typography from '@mui/material/Typography';
-import { beta } from '@cord-sdk/react';
 
 import { AppContext } from 'src/server/state/AppContext';
-import Badge from '@mui/material/Badge';
+import { NavFloatingMenu } from 'src/server/ui/nav/Nav';
 
 type HeaderProps = {
   title?: string;
@@ -78,6 +80,7 @@ const Header: React.FC<HeaderProps> = ({ title }) => {
       css={{ height: 'var(--header-height)', overflow: 'visible' }}
     >
       <Toolbar>
+        <NavFloatingMenu />
         {title && (
           <Link
             href="/"
