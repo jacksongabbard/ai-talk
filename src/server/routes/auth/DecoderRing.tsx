@@ -99,7 +99,7 @@ type DecoderRingProps = {
 };
 
 const DecoderRing: React.FC<DecoderRingProps> = ({ onSolve }) => {
-  const letters = 'ABCDEғGĤIJKLMNÔPQRŜTUVWXYZ'.split('');
+  const letters = 'ABCDEғGнIJKLMNøPQRšTUVWXYZ'.split('');
   const rotationMap = useRef(makeRotMap());
   const userDragged = useRef(false);
   const initialSpinTimeout = useRef<NodeJS.Timeout>();
@@ -304,7 +304,7 @@ const DecoderRing: React.FC<DecoderRingProps> = ({ onSolve }) => {
         const moveAngle = Math.atan2(y, x) * (180 / Math.PI);
         let newAngle = (prevWheelRotation + (startAngle - moveAngle)) % 360;
         const lockingDistance = Math.abs((newAngle / SECTION_SIZE) % 1) * 100;
-        if (lockingDistance < 10 || lockingDistance > 90) {
+        if (lockingDistance < 20 || lockingDistance > 80) {
           newAngle = SECTION_SIZE * Math.round(newAngle / SECTION_SIZE);
         }
 
