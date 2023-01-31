@@ -35,6 +35,7 @@ import {
   getTeamIdForTeamName,
   listTeamMembers,
   listTeams,
+  removeUserFromTeam,
   updateTeam as updateTeamAPI,
 } from './routes/api/team';
 import { initWebSockets } from './websockets/initWebSockets';
@@ -116,6 +117,7 @@ console.log('Bootstrapping the server...');
   router.post('/api/get-team-by-id', authMiddleware, getTeamById);
   router.post('/api/generate-join-code', authMiddleware, generateJoinCode);
   router.post('/api/try-join-code', authMiddleware, tryJoinCode);
+  router.post('/api/remove-user-from-team', authMiddleware, removeUserFromTeam);
   router.post(
     '/api/get-user-id-for-user-name',
     authMiddleware,

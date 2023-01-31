@@ -25,6 +25,8 @@ import { errorThingToString } from 'src/lib/error/errorThingToString';
 import { CordContext } from '@cord-sdk/react';
 import { Link, useParams } from 'react-router-dom';
 import { ClientTeam, hydrateSerializedClientTeam } from 'src/types/ClientTeam';
+import useDialog from 'src/server/ui/dialogs/useDialog';
+import ConfirmationDialog from 'src/server/ui/dialogs/ConfirmationDialog';
 
 // For some godforsaken reason, if I call this component 'Team', I get
 // hydration errors. Specifically, the error:
@@ -178,6 +180,38 @@ const TeamPage: React.FC = () => {
     })();
   }, [setJoinCode, setErrorMessage]);
 
+  const [confirmationDialog, openConfirmationDialog] =
+    useDialog(ConfirmationDialog);
+  const handleRemoveUserFromTeam = useCallback(
+    (userId: string) => {
+      (async () => {
+        const isRemovingOneself = userId === user?.id;
+        const isConfirmed = await openConfirmationDialog({
+          action: isRemovingOneself ? 'leave' : 'yeet',
+          isActionDestructive: true,
+          object: isRemovingOneself
+            ? 'team'
+            : `${
+                members.find((m) => m.id === userId)?.userName ?? 'team member'
+              }`,
+        });
+        if (!isConfirmed) {
+          return;
+        }
+
+        const resp = await callAPI('remove-user-from-team', { userId });
+        if (hasOwnProperty(resp, 'error') && typeof resp.error === 'string') {
+          setErrorMessage(resp.error);
+          return;
+        }
+
+        // TODO: Should we also reload the page?
+        setMembers((prev) => prev.filter((m) => m.id !== userId));
+      })();
+    },
+    [confirmationDialog, members],
+  );
+
   const cordContext = useContext(CordContext);
   useEffect(() => {
     cordContext.setLocation({ route: '/team' });
@@ -185,6 +219,7 @@ const TeamPage: React.FC = () => {
 
   return (
     <Page title="Team">
+      {confirmationDialog}
       <div css={{ flex: 1 }}>
         {errorMessage !== '' && (
           <MessageBox type="error">{errorMessage}</MessageBox>
@@ -205,6 +240,7 @@ const TeamPage: React.FC = () => {
             {members.length > 0 && (
               <>
                 <Typography variant="overline">Members</Typography>
+                {/* // FIXME this block can't be reached, as it's inside a members.length > 0 */}
                 {members.length === 0 && omittedMembers && (
                   <div css={{ marginBottom: 'var(--spacing-large)' }}>
                     <Typography variant="body1">
@@ -238,6 +274,15 @@ const TeamPage: React.FC = () => {
                               {m.userName}
                             </Link>
                           </Typography>
+                          {user?.teamId === team.id && (
+                            <Button
+                              variant="text"
+                              css={{ marginLeft: 'auto' }}
+                              onClick={() => handleRemoveUserFromTeam(m.id)}
+                            >
+                              {m.id === user?.id ? 'Leave' : 'Kick'}
+                            </Button>
+                          )}
                         </li>
                       ))}
                     </ul>

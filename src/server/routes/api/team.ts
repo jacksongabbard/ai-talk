@@ -12,6 +12,7 @@ import type { ClientUser } from 'src/types/ClientUser';
 import { userToClientUser } from 'src/types/ClientUser';
 import { errorThingToString } from 'src/lib/error/errorThingToString';
 import { teamToClientTeam } from 'src/types/ClientTeam';
+import { sendNotificationToTeam } from 'src/server/lib/cord';
 
 export const checkTeamNameIsAvailable: RequestHandler = async (
   req: Request,
@@ -408,6 +409,76 @@ export const getTeamById: RequestHandler = async (
       error200('Team not public', res);
       return;
     }
+
+    res.status(200);
+    res.send(JSON.stringify({ team: teamToClientTeam(team) }));
+    return;
+  }
+
+  bail400('Bad input', res);
+};
+
+export const removeUserFromTeam: RequestHandler = async (
+  req: Request,
+  res: Response,
+) => {
+  if (!req.context?.user) {
+    bail400(
+      "Thank you for calling. Mrs API is not home, we'll call you back. Cheers.",
+      res,
+    );
+    return;
+  }
+
+  if (
+    req.body &&
+    hasOwnProperty(req.body, 'data') &&
+    typeof req.body.data === 'object' &&
+    hasOwnProperty(req.body.data, 'userId') &&
+    typeof req.body.data.userId === 'string'
+  ) {
+    let requesterTeamId = '';
+    if (req.context?.team && req.context.team !== undefined) {
+      requesterTeamId = req.context.team.id;
+    }
+
+    const team = await Team.findOne({
+      where: {
+        id: requesterTeamId,
+      },
+    });
+    if (!team) {
+      bail400('No such team, my friend', res);
+      return;
+    }
+
+    const isOwnTeam = team && requesterTeamId === team.id;
+    if (!isOwnTeam) {
+      // Can't be triggered directly via the UI, so
+      // it must be a forged request.
+      error200(
+        'If you want to disrupt other teams, you should focus on MS Teams',
+        res,
+      );
+      return;
+    }
+
+    const userIdToRemoveFromTeam = req.body.data.userId;
+    await User.update(
+      { teamId: null },
+      { where: { id: userIdToRemoveFromTeam } },
+    );
+
+    sendNotificationToTeam(
+      userIdToRemoveFromTeam,
+      requesterTeamId,
+      `{{actor}} ${
+        userIdToRemoveFromTeam === req.context.user.id
+          ? 'straight up left'
+          : 'was yeeted out of'
+      } ${team?.teamName}`,
+      req.baseUrl + '/team',
+    );
 
     res.status(200);
     res.send(JSON.stringify({ team: teamToClientTeam(team) }));
