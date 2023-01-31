@@ -106,6 +106,7 @@ const Header: React.FC<HeaderProps> = ({ title }) => {
             <Menu
               id="notifications"
               anchorEl={notificationAnchorEl}
+              MenuListProps={{ sx: { py: 0 } }}
               anchorOrigin={{
                 vertical: 'bottom',
                 horizontal: 'right',
@@ -120,9 +121,7 @@ const Header: React.FC<HeaderProps> = ({ title }) => {
               ref={notificationsContainerRef}
             >
               {/* TODO(am):
-                1. Unread notification's background isn't different from read. 
-                2. Notifications messages `color` should be #3f3, but it isn't.
-                3. If you open notifications before page loads, they're rendered outside the viewport.
+                1. If you open notifications before page loads, they're rendered outside the viewport.
               */}
               <beta.NotificationList
                 style={{
