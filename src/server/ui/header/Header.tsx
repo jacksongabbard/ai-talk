@@ -132,9 +132,7 @@ const Header: React.FC<HeaderProps> = ({ title }) => {
                   width: '350px',
                   // Because of `keepMounted`, MUI renders this component invisible
                   // on the page. Users can still click on it though. :clown_emoji:
-                  pointerEvents: Boolean(notificationAnchorEl)
-                    ? undefined
-                    : 'none',
+                  pointerEvents: notificationAnchorEl ? undefined : 'none',
                 }}
               />
             </Menu>

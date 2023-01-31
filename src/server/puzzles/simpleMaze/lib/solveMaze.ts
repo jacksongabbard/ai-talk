@@ -130,7 +130,7 @@ function findAllPathsFromCoord(m: Maze, start: Coord): Path[] {
 export function solveMaze(m: Maze, start: Coord, end: Coord): Path {
   const allPaths = findAllPathsFromCoord(m, start);
   let shortestPath = null;
-  for (let p of allPaths) {
+  for (const p of allPaths) {
     if (p.end && p.end.x === end.x && p.end.y === end.y) {
       if (!shortestPath || p.steps.length < shortestPath.steps.length) {
         shortestPath = p;

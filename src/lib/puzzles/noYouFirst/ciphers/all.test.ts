@@ -21,17 +21,17 @@ const ciphers = [
   test('a randomized list of ciphers is reversible', () => {
     const randomCiphers = shuffle(ciphers);
 
-    let input = 'abc123';
+    const input = 'abc123';
     let output = input;
     console.log('Starting: ' + output);
-    for (let c of randomCiphers) {
+    for (const c of randomCiphers) {
       output = c[0](output);
       console.log({ output });
     }
 
     console.log('Beginning the reversal...');
     const reversed = reverse(randomCiphers);
-    for (let c of randomCiphers) {
+    for (const c of randomCiphers) {
       output = c[1](output);
       console.log({ output });
     }

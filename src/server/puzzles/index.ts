@@ -5,7 +5,13 @@ import NoYouFirst from './noYouFirst/NoYouFirst';
 import SimpleMaze from './simpleMaze/SimpleMaze';
 import Blocked from './blocked/Blocked';
 
-export const PuzzleList = [PushTheButton, Nodoku, NoYouFirst, SimpleMaze, Blocked];
+export const PuzzleList = [
+  PushTheButton,
+  Nodoku,
+  NoYouFirst,
+  SimpleMaze,
+  Blocked,
+];
 
 export function puzzleMapFromList(): { [slug: string]: Puzzle } {
   const slugToName: { [slug: string]: Puzzle } = {};

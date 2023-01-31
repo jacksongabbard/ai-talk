@@ -20,7 +20,7 @@ export const generateJoinCode: RequestHandler = async (
     return;
   }
 
-  let code: string[] = [];
+  const code: string[] = [];
   for (let i = 0; i < JOIN_CODE_LENGTH; i++) {
     const entry = getRandomEntry(dict);
     code.push(entry);

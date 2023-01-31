@@ -127,9 +127,9 @@ const base = [
 const trie = makeTrie();
 
 const addVariants = (trie: Trie, word: string) => {
-  for (let letter in subtitutionMap) {
+  for (const letter in subtitutionMap) {
     if (word.includes(letter)) {
-      for (let sub of subtitutionMap[letter]) {
+      for (const sub of subtitutionMap[letter]) {
         const newWord = word.replace(letter, sub);
         trie.addWord(newWord);
         addVariants(trie, newWord);
@@ -138,7 +138,7 @@ const addVariants = (trie: Trie, word: string) => {
   }
 };
 
-for (let word of base) {
+for (const word of base) {
   trie.addWord(word);
   addVariants(trie, word);
 }
@@ -159,17 +159,17 @@ export function isLikelyOffensive(word: string): boolean {
         candidates.add(subword.replace(/[_-]/g, ''));
 
         const dashSeparatedParts = subword.split('-');
-        for (let part of dashSeparatedParts) {
+        for (const part of dashSeparatedParts) {
           candidates.add(part);
         }
 
         const underscoreSeparatedParts = subword.split('_');
-        for (let part of underscoreSeparatedParts) {
+        for (const part of underscoreSeparatedParts) {
           candidates.add(part);
         }
 
         const eitherSeparator = subword.split(/[_-]/g);
-        for (let part of eitherSeparator) {
+        for (const part of eitherSeparator) {
           candidates.add(part);
         }
 
@@ -178,7 +178,7 @@ export function isLikelyOffensive(word: string): boolean {
     }
   }
 
-  for (let w of Array.from(candidates)) {
+  for (const w of Array.from(candidates)) {
     if (trie.has(w)) {
       return true;
     }

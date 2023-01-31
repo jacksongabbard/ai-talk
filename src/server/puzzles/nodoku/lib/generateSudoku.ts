@@ -31,7 +31,7 @@ export function generateSudoku(): SolvedSudoku {
       const candidates = getRandomNumberArray();
 
       candidateLoop: while (candidates.length) {
-        let maybe = candidates.pop();
+        const maybe = candidates.pop();
         if (!maybe) {
           continue;
         }

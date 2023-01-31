@@ -20,7 +20,7 @@ export const listPuzzles: RequestHandler = async (
   try {
     const slugToPuzzle = puzzleMapFromList();
     const slugToClientPuzzle: { [slug: string]: ClientPuzzle } = {};
-    for (let key in slugToPuzzle) {
+    for (const key in slugToPuzzle) {
       slugToClientPuzzle[key] = puzzleToClientPuzzle(slugToPuzzle[key]);
     }
 
@@ -39,7 +39,7 @@ export const listPuzzles: RequestHandler = async (
     }
 
     const solvedMap: { [puzzleName: string]: boolean } = {};
-    for (let instance of instances) {
+    for (const instance of instances) {
       solvedMap[instance.puzzleId] = !!instance.solvedAt;
     }
 
@@ -282,7 +282,7 @@ export const generatePuzzleInstance: RequestHandler = async (
             const instance = await newPI.save({ transaction });
 
             const instanceMemberPromises: Promise<PuzzleInstanceUser>[] = [];
-            for (let member of teamMembers) {
+            for (const member of teamMembers) {
               const piu = PuzzleInstanceUser.build({
                 puzzleInstanceId: instance.id,
                 userId: member.id,

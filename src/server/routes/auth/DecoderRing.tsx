@@ -53,7 +53,7 @@ function positionAllLetters(
   letterRefs: { [keyName: string]: RefObject<HTMLDivElement> },
   rotationMap: RotationMap,
 ) {
-  for (let keyName in letterRefs) {
+  for (const keyName in letterRefs) {
     if (!hasOwnProperty(letterRefs, keyName)) {
       throw new Error('letterRefs does not contain: ' + keyName);
     }
@@ -230,7 +230,7 @@ const DecoderRing: React.FC<DecoderRingProps> = ({ onSolve }) => {
         return;
       }
 
-      let target = e.target;
+      const target = e.target;
       if (target === hubCapRef.current) {
         return;
       }
@@ -252,7 +252,7 @@ const DecoderRing: React.FC<DecoderRingProps> = ({ onSolve }) => {
       const topOffset = -rect.top - rect.height / 2;
 
       // We're in the touch event case
-      let isTouch = !!(e as TouchEvent).touches;
+      const isTouch = !!(e as TouchEvent).touches;
       let startX = NaN;
       let startY = NaN;
       if (isTouch) {

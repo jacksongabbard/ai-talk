@@ -16,7 +16,7 @@ function populateMaze(m: Maze) {
       Make the chosen neighbour the current cell.
   */
 
-  let current = {
+  const current = {
     x: Math.round(Math.random() * (m.size - 1)),
     y: Math.round(Math.random() * (m.size - 1)),
   };
@@ -51,7 +51,7 @@ function populateMaze(m: Maze) {
     // find somewhere new to expand from.
     if (!eligibleNeighbors.length) {
       const visitedArray = shuffle(Array.from(visited));
-      for (let v of visitedArray) {
+      for (const v of visitedArray) {
         const [x, y] = v.split('_').map((s) => parseInt(s, 10));
         if (
           // Up

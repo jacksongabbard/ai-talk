@@ -100,7 +100,7 @@ const SimpleMaze: Puzzle = {
   ) => {
     const p = assertIsSimpleMazePuzzlePayload(cloneDeep(puzzlePayload));
 
-    for (let uuid in p.revealedLetterGrids) {
+    for (const uuid in p.revealedLetterGrids) {
       if (uuid !== user.id) {
         delete p.revealedLetterGrids[uuid];
       }
@@ -119,7 +119,7 @@ const SimpleMaze: Puzzle = {
       hasOwnProperty(p, 'revealedLetterGrids') &&
       typeof p.revealedLetterGrids === 'object'
     ) {
-      for (let uuid in p.revealedLetterGrids) {
+      for (const uuid in p.revealedLetterGrids) {
         if (uuid !== user.id && hasOwnProperty(p.revealedLetterGrids, uuid)) {
           delete p.revealedLetterGrids[uuid];
         }
@@ -157,7 +157,7 @@ const SimpleMaze: Puzzle = {
       const currentCoord = playerPositions[user.id];
       const grid = pi.maze.grid;
       const currentCoordStr = coord(currentCoord.x, currentCoord.y);
-      let revealedLetter: { [coord: string]: string } = {};
+      const revealedLetter: { [coord: string]: string } = {};
       if (ia.direction === 'up' && grid[currentCoordStr].up) {
         playerPositions = {
           [user.id]: { x: currentCoord.x, y: currentCoord.y - 1 },
@@ -194,7 +194,7 @@ const SimpleMaze: Puzzle = {
 
       // Then, if they're on center, check everyone else
       if (everyoneIsOnCenter) {
-        posCheck: for (let pp in pi.playerPositions) {
+        posCheck: for (const pp in pi.playerPositions) {
           if (pp === user.id) {
             continue posCheck;
           }

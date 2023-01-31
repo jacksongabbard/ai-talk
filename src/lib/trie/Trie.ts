@@ -25,7 +25,7 @@ const addWord = (node: TrieNode, letters: string) => {
 const has = (node: TrieNode, letters: string) => {
   let n = node;
   for (let ii = 0; ii < letters.length; ii++) {
-    let l = letters[ii];
+    const l = letters[ii];
     if (!n[l]) {
       return false;
     }

@@ -27,9 +27,7 @@ export const getCordClientAuthToken: RequestHandler = async (
     clientAuthToken = getCordClientToken(req.context.user);
   } else if (req.context.team) {
     clientAuthToken = getCordClientToken(req.context.user, req.context.team);
-  } else {
   }
-
   res.status(200);
   res.send({ success: true, clientAuthToken });
 };

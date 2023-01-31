@@ -26,12 +26,12 @@ export const status: RequestHandler = async (req: Request, res: Response) => {
   const teams = await Team.findAll();
 
   const userIdToName: { [uuid: string]: string } = {};
-  for (let user of users) {
+  for (const user of users) {
     userIdToName[user.id] = user.userName;
   }
 
   const teamIdToName: { [uuid: string]: string } = {};
-  for (let team of teams) {
+  for (const team of teams) {
     teamIdToName[team.id] = team.teamName;
   }
 
@@ -71,7 +71,7 @@ export const status: RequestHandler = async (req: Request, res: Response) => {
   output.push('Users: ' + users.length);
   output.push('-----------------------------');
   output.push('<table>');
-  for (let user of users) {
+  for (const user of users) {
     output.push(
       `<tr>
         <td>|${user.createdAt.toLocaleString()}</td>

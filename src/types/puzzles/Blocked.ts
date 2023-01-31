@@ -5,11 +5,9 @@ export type BlockedPuzzlePayload = Record<string, never>;
 
 const blockedPuzzleValidator = makeValidator({
   type: 'object',
-  properties: {
-  },
+  properties: {},
   additionalProperties: false,
-  required: [
-  ],
+  required: [],
 });
 
 export const assertIsBlockedPuzzledPayload = (
@@ -23,4 +21,3 @@ export const assertIsBlockedPuzzledPayload = (
       JSON.stringify(thing, null, 4),
   );
 };
-

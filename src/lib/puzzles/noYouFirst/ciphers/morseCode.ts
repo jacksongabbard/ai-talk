@@ -108,7 +108,7 @@ export function fromMorseCode(input: string): string {
   for (const part of parts) {
     const w: string[] = [];
     const chars = part.split(' ');
-    for (let subseq of chars) {
+    for (const subseq of chars) {
       if (hasOwnProperty(reverseMorseCodeMap, subseq)) {
         w.push(reverseMorseCodeMap[subseq]);
       } else {

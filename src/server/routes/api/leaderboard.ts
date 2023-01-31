@@ -48,7 +48,7 @@ export const fetchLeaderboard: RequestHandler = async (
   }
 
   const teamIds: Set<string> = new Set();
-  for (let pi of puzzleInstances) {
+  for (const pi of puzzleInstances) {
     teamIds.add(pi.teamId);
   }
   const teams = await Team.findAll({
@@ -71,7 +71,7 @@ export const fetchLeaderboard: RequestHandler = async (
     }
   }
   const leaderboard: LeaderboardData = {};
-  for (let slug in puzzles) {
+  for (const slug in puzzles) {
     if (!leaderboard[slug]) {
       leaderboard[slug] = {
         puzzleName: puzzles[slug].name,
@@ -81,14 +81,14 @@ export const fetchLeaderboard: RequestHandler = async (
   }
 
   const teamIdsToTeamName: { [teamId: string]: string } = {};
-  for (let t of teams) {
+  for (const t of teams) {
     if (!teamIdsToTeamName[t.id]) {
       teamIdsToTeamName[t.id] = t.teamName;
     }
   }
 
   try {
-    for (let pi of puzzleInstances) {
+    for (const pi of puzzleInstances) {
       if (leaderboard[pi.puzzleId]) {
         if (!pi.solvedAt) {
           throw new Error(
@@ -102,7 +102,7 @@ export const fetchLeaderboard: RequestHandler = async (
       }
     }
 
-    for (let puzzleSlug in leaderboard) {
+    for (const puzzleSlug in leaderboard) {
       leaderboard[puzzleSlug].leaders.sort((a, b) => {
         return a.solveTime - b.solveTime;
       });

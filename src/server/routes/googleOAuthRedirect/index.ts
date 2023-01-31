@@ -53,7 +53,7 @@ export const googleOAuthRedirect: RequestHandler = async (
         redirectUri: 'https://' + host + '/google-oauth-redirect',
       });
       // Get access and refresh tokens (if access_type is offline)
-      let { tokens } = await client.getToken(req.query.code);
+      const { tokens } = await client.getToken(req.query.code);
 
       client.setCredentials(tokens);
 

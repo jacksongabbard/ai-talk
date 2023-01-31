@@ -113,8 +113,8 @@ const PushTheButton: Puzzle = {
   },
 
   isSolved: (puzzlePayload, solutionPayload) => {
-    let p = assertIsPushTheButtonPuzzlePayload(puzzlePayload);
-    let s = assertIsPushTheButtonPuzzlePayload(solutionPayload);
+    const p = assertIsPushTheButtonPuzzlePayload(puzzlePayload);
+    const s = assertIsPushTheButtonPuzzlePayload(solutionPayload);
     return isEqual(p.pressed, s.pressed);
   },
 };

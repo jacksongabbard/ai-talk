@@ -94,7 +94,7 @@ const Puzzle: React.FC = () => {
   ]);
 
   const createInstance = useCallback(() => {
-    if (!!instance) {
+    if (instance) {
       throw new Error('Cannot start a puzzle that has already been started');
     }
     tickTimeoutRef.current && clearTimeout(tickTimeoutRef.current);

@@ -42,7 +42,7 @@ export function decryptBase(
 export function encryptBase(dataObject: JSONValue, arbitraryStringKey: string) {
   const jsonString = JSON.stringify(dataObject);
   const nonce = makeRandomBuffer(nonceSize);
-  let key = getHash(arbitraryStringKey);
+  const key = getHash(arbitraryStringKey);
   const encipher = crypto.createCipheriv('aes-256-gcm', key, nonce);
   let dataCiphertext: string;
   let dataCiphertextBuffer: Buffer;

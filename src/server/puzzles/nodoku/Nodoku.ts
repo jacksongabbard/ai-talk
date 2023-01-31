@@ -81,7 +81,7 @@ const Nodoku: Puzzle = {
     const { metacode, metavalues } = makeMeta(arrayGrid);
     const rowsPerUser: { [uuid: string]: number[] } = {};
     for (let i = 0; i < 9; i++) {
-      let u = members[i % members.length];
+      const u = members[i % members.length];
       if (!rowsPerUser[u.id]) {
         rowsPerUser[u.id] = [];
       }
@@ -115,7 +115,7 @@ const Nodoku: Puzzle = {
     const p = cloneDeep(assertIsNodokuPuzzlePayload(puzzlePayload));
     const s = assertIsNodokuSolutionPayload(solutionPayload);
     const metavalues = cloneDeep(p.metavalues);
-    for (let key in metavalues) {
+    for (const key in metavalues) {
       const [x, y] = key.split('_');
       if (!s.rowsPerUser[user.id].includes(parseInt(y, 10))) {
         delete metavalues[key];
@@ -136,7 +136,7 @@ const Nodoku: Puzzle = {
     const p = assertIsNodokuPuzzlePayload(payloadDiffValue);
     const s = assertIsNodokuSolutionPayload(solutionPayload);
     const metavalues = cloneDeep(p.metavalues);
-    for (let key in metavalues) {
+    for (const key in metavalues) {
       const [x, y] = key.split('_');
       if (!s.rowsPerUser[user.id].includes(parseInt(y, 10))) {
         delete metavalues[key];
@@ -181,7 +181,7 @@ const Nodoku: Puzzle = {
 
     grid[ia.coord] = ia.value;
     const isCorrect = ia.value === solutionPayload.grid[ia.coord];
-    let metavalues = oldPayload.metavalues;
+    const metavalues = oldPayload.metavalues;
     if (isCorrect && solutionPayload.metavalues[ia.coord]) {
       metavalues[ia.coord] = solutionPayload.metavalues[ia.coord];
     }

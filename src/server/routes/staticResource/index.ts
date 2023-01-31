@@ -9,7 +9,7 @@ export const staticResource: RequestHandler = (req, res, next) => {
     return;
   }
 
-  let match: RegExpMatchArray | null = req.path.match(
+  const match: RegExpMatchArray | null = req.path.match(
     /^\/static\/([a-zA-Z\-_]+)(\.js|\.js\.map)$/,
   );
   if (!match || match.length !== 3) {

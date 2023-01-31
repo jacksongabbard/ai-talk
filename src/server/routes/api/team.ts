@@ -284,7 +284,7 @@ export const listTeamMembers: RequestHandler = async (
 
     const clientUsers: ClientUser[] = [];
     let privateUsersOmitted = false;
-    for (let u of users) {
+    for (const u of users) {
       if (u.public || isOwnTeam) {
         clientUsers.push(userToClientUser(u));
       } else {

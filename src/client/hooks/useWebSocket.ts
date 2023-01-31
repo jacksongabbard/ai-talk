@@ -74,7 +74,7 @@ export function useWebSocket(
               throw new Error('Invalid WebSocket message');
             }
           } catch (e) {
-            let message = 'Unexpected error: ' + errorThingToString(e);
+            const message = 'Unexpected error: ' + errorThingToString(e);
             console.error('Ah, yeah, no... we fucked it. ' + message);
             onErrorRef.current(message);
           }

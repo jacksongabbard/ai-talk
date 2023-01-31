@@ -6,9 +6,9 @@ import { getRandomEntry } from 'src/lib/dict/utils';
 import { AppContext } from 'src/server/state/AppContext';
 import DecoderRing from './DecoderRing';
 
-declare var google: any;
-declare var GOOGLE_CLIENT_ID: string;
-declare var DTSG_TOKEN: string;
+declare let google: any;
+declare let GOOGLE_CLIENT_ID: string;
+declare let DTSG_TOKEN: string;
 
 const Auth: React.FC = () => {
   const appContext = useContext(AppContext);

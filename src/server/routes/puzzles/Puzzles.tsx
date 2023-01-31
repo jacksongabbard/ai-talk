@@ -46,7 +46,7 @@ const Puzzles: React.FC = () => {
         resp.solvedMap !== null
       ) {
         const pmap: PuzzleMap = {};
-        for (let slug in resp.puzzles) {
+        for (const slug in resp.puzzles) {
           if (hasOwnProperty(resp.puzzles, slug)) {
             const v = assertIsClientPuzzle(resp.puzzles[slug]);
             let solved: undefined | boolean = undefined;

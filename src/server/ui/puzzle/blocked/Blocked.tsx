@@ -2,17 +2,17 @@ import { useContext, useEffect, useState } from 'react';
 import type { SendInstanceAction } from 'src/client/hooks/useWebSocket';
 import { AppContext } from 'src/server/state/AppContext';
 import type { ClientPuzzleInstance } from 'src/types/ClientPuzzleInstance';
-import {assertIsBlockedPuzzledPayload, BlockedPuzzlePayload} from 'src/types/puzzles/Blocked';
+import {
+  assertIsBlockedPuzzledPayload,
+  BlockedPuzzlePayload,
+} from 'src/types/puzzles/Blocked';
 
 type BlockedProps = {
   instance: ClientPuzzleInstance;
   sendInstanceAction: SendInstanceAction;
 };
 
-const Blocked: React.FC<BlockedProps> = ({
-  instance,
-  sendInstanceAction,
-}) => {
+const Blocked: React.FC<BlockedProps> = ({ instance, sendInstanceAction }) => {
   const [payload, setPayload] = useState<BlockedPuzzlePayload>({});
 
   useEffect(() => {
@@ -38,7 +38,8 @@ const Blocked: React.FC<BlockedProps> = ({
         justifyContent: 'center',
         flexDirection: 'column',
       }}
-    >Future is coming!
+    >
+      Future is coming!
     </div>
   );
 };

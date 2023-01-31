@@ -55,7 +55,7 @@ const handleDecipher = (
   }
 
   const solution = assertIsNoYouFirstSolutionPayload(instance.solutionPayload);
-  let payloadDiffValue = {
+  const payloadDiffValue = {
     currentStates: [...payload.currentStates],
     solvedParts: [...payload.solvedParts],
   };
@@ -66,7 +66,7 @@ const handleDecipher = (
       solution.encipheredParts[action.partIndex];
   } else {
     const oldPart = payload.currentStates[action.partIndex];
-    let newPart = deciphers[action.cipherIndex](oldPart);
+    const newPart = deciphers[action.cipherIndex](oldPart);
     payloadDiffValue.currentStates[action.partIndex] = newPart;
 
     const numbersOnly = newPart.replace(/[^0-9]/g, '');

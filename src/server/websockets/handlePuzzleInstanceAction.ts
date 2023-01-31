@@ -53,7 +53,7 @@ export async function handlePuzzleInstanceAction(
     puzzleInstance.solutionPayload,
   );
 
-  let puzzleInstanceActionID = uuid();
+  const puzzleInstanceActionID = uuid();
   let pia: PuzzleInstanceAction | null;
   try {
     // Maybe there's a better way to do this. Or maybe

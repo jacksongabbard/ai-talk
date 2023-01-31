@@ -19,7 +19,7 @@ import { generateSudoku, printGrid } from './generateSudoku';
       }
 
       for (let x = 0; x < 9; x++) {
-        let ys = [];
+        const ys = [];
         for (let y = 0; y < 9; y++) {
           ys.push(grid[y][x]);
         }
@@ -33,7 +33,7 @@ import { generateSudoku, printGrid } from './generateSudoku';
 
       for (let gx = 0; gx <= 6; gx += 3) {
         for (let gy = 0; gy <= 6; gy += 3) {
-          let gridSet = new Set<number>();
+          const gridSet = new Set<number>();
           for (let x = 0; x < 3; x++) {
             for (let y = 0; y < 3; y++) {
               if (gridSet.has(grid[gy + y][gx + x])) {

@@ -178,10 +178,7 @@ const PuzzleShell: React.FC = () => {
         />
       )}
       {instance && instance.puzzleId === 'blocked' && (
-        <Blocked
-          instance={instance}
-          sendInstanceAction={sendInstanceAction}
-        />
+        <Blocked instance={instance} sendInstanceAction={sendInstanceAction} />
       )}
       {instance && instance.solvedAt && (
         <div

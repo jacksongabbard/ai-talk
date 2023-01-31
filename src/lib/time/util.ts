@@ -1,6 +1,6 @@
 export function leftPad(thing: number | string, padAmount: number): string {
   let str = thing.toString(); // make sure it's a string
-  let zeroCount = padAmount - str.length;
+  const zeroCount = padAmount - str.length;
   for (let ii = 0; ii < zeroCount; ii++) {
     str = '0' + str;
   }
@@ -11,7 +11,7 @@ export function leftPad(thing: number | string, padAmount: number): string {
 export function convertSecondsToTime(
   seconds: number,
   secondSeparator: string,
-  significantDigitsInMilliseconds: number = 3,
+  significantDigitsInMilliseconds = 3,
 ): string {
   const hrs = leftPad(Math.floor(seconds / (60 * 60)), 2);
   const mins = leftPad(Math.floor(seconds / 60) % 60, 2);

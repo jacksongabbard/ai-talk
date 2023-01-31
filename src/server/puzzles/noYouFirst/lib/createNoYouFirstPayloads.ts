@@ -42,7 +42,7 @@ export const createNoYouFirstPayloads = (users: User[]) => {
       msg = num + ' plus';
     }
     let enciphered = toWords(msg);
-    for (let cipher of randomCiphers) {
+    for (const cipher of randomCiphers) {
       enciphered = cipher(enciphered);
     }
     encipheredParts.push(enciphered);

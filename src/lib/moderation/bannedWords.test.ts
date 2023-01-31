@@ -23,13 +23,13 @@ import { isLikelyOffensive } from './bannedWords';
 
   const safeWordList = ['jewel', 'class', 'assassin'];
 
-  for (let word of badWordList) {
+  for (const word of badWordList) {
     test(word + ' is offensive', () => {
       expect(isLikelyOffensive(word)).toBe(true);
     });
   }
 
-  for (let word of safeWordList) {
+  for (const word of safeWordList) {
     test(word + ' is not offensive', () => {
       expect(isLikelyOffensive(word)).toBe(false);
     });

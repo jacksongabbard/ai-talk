@@ -6,8 +6,8 @@ type MessageBoxProps = {
 };
 
 const MessageBox: React.FC<MessageBoxProps> = ({ type, children }) => {
-  let background: string = 'white';
-  let color: string = 'black';
+  let background = 'white';
+  let color = 'black';
 
   if (type === 'success') {
     background = 'var(--theme-sea)';

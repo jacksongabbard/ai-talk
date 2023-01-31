@@ -88,7 +88,7 @@ export function makeHiddenMessage(): { secretWord: string; pairs: string[][] } {
   );
   const eightTrie = makeTrie();
   const eightReverseMap: { [sorted: string]: string } = {};
-  for (let eight of eightLetterWords) {
+  for (const eight of eightLetterWords) {
     const sorted = eight.split('').sort().join('');
     eightReverseMap[sorted] = eight;
     eightTrie.addWord(sorted);
@@ -105,8 +105,8 @@ export function makeHiddenMessage(): { secretWord: string; pairs: string[][] } {
 
   const randomWordLetters = randomWord.split('');
   const pairs = [];
-  sevenLoop: for (let seven of sevenLetterWords) {
-    for (let r of randomWordLetters) {
+  sevenLoop: for (const seven of sevenLetterWords) {
+    for (const r of randomWordLetters) {
       const sevenPlusOne = (seven + r).split('').sort().join('');
       if (eightTrie.has(sevenPlusOne)) {
         const eight = eightReverseMap[sevenPlusOne];

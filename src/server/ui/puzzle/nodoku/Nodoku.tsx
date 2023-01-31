@@ -80,7 +80,7 @@ const Nodoku: React.FC<NodokuProps> = ({ instance, sendInstanceAction }) => {
 
   const grid: React.ReactNode[] = [];
   for (let y = 0; y < 9; y++) {
-    let row: React.ReactNode[] = [];
+    const row: React.ReactNode[] = [];
     for (let x = 0; x < 9; x++) {
       const coord = x + '_' + y;
       const val = localGrid[coord] !== 0 ? localGrid[coord] : '';

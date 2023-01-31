@@ -143,7 +143,7 @@ const SimpleMaze: React.FC<SimpleMazeProps> = ({
     const playerRefs: { [uuid: string]: React.Ref<HTMLDivElement> } = {};
     const playerElements: React.ReactNode[] = [];
 
-    for (let uuid in payload.playerPositions) {
+    for (const uuid in payload.playerPositions) {
       const coordinate = payload.playerPositions[uuid];
       const ref = React.createRef<HTMLDivElement>();
       playerRefs[uuid] = ref;
@@ -215,7 +215,7 @@ const SimpleMaze: React.FC<SimpleMazeProps> = ({
 
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
-      let n: HTMLElement | null = e.currentTarget as HTMLElement;
+      const n: HTMLElement | null = e.currentTarget as HTMLElement;
 
       if (document.activeElement !== document.body) {
         return;
