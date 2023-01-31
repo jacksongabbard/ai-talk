@@ -14,12 +14,14 @@ import { Button, Input } from '@mui/material';
 import useRouterLink from 'src/server/ui/routerLink/useRouterLink';
 import callAPI from 'src/client/lib/callAPI';
 import { hasOwnProperty } from 'src/lib/hasOwnProperty';
+import MessageBox from 'src/server/ui/messageBox/MessageBox';
 
 const JoinTeam: React.FC = () => {
   const appContext = useContext(AppContext);
   const user = appContext?.user;
   const team = appContext?.team;
   const [joinCode, setJoinCode] = useState('');
+  const [errorMessage, setErrorMessage] = useState('');
 
   useEffect(() => {
     appContext?.setShowNavigation(true);
@@ -35,10 +37,21 @@ const JoinTeam: React.FC = () => {
 
   const tryJoinCode = useCallback(() => {
     (async () => {
-      const res = await callAPI('try-join-code', { joinCode });
-      if (res && hasOwnProperty(res, 'success')) {
-        window.location.pathname = '/team';
+      const resp = await callAPI('try-join-code', { joinCode });
+      if (hasOwnProperty(resp, 'error') && typeof resp.error === 'string') {
+        setErrorMessage(resp.error);
+        return;
       }
+
+      if (resp && hasOwnProperty(resp, 'success')) {
+        setErrorMessage('');
+        window.location.pathname = '/team';
+        return;
+      }
+
+      setErrorMessage(
+        `I'm a very helpful error message, unlike the classic "something went wrong". [Comedic pause] ... NOT`,
+      );
     })();
   }, [joinCode]);
 
@@ -74,6 +87,9 @@ const JoinTeam: React.FC = () => {
               Join!
             </Button>
           </>
+        )}
+        {errorMessage !== '' && (
+          <MessageBox type="error">{errorMessage}</MessageBox>
         )}
       </div>
     </Page>

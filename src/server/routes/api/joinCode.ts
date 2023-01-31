@@ -77,7 +77,10 @@ export const tryJoinCode: RequestHandler = async (
     });
 
     if (!joinCodeInstance) {
-      bail400('No such join code -- are you high?', res);
+      bail400(
+        `Someone already used this token, or you made it up. Ask your friends for a new one?`,
+        res,
+      );
       return;
     }
 
@@ -122,7 +125,7 @@ export const tryJoinCode: RequestHandler = async (
       req.context.user.id,
       team.id,
       `{{actor}} joined ${team?.teamName}!`,
-      req.baseUrl + '/team', // TODO: is there a better way of doing this?
+      req.baseUrl + '/team',
     );
 
     res.status(200);
