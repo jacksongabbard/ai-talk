@@ -15,6 +15,12 @@ const Auth: React.FC = () => {
   const [solved, setSolved] = useState(false);
 
   useEffect(() => {
+    if (window.localStorage.getItem('loginPuzzleSolved') === 'yes') {
+      setSolved(true);
+    }
+  }, [setSolved]);
+
+  useEffect(() => {
     appContext?.setShowNavigation(false);
     appContext?.setCordContext('team');
   }, [appContext?.setShowNavigation, appContext?.setCordContext]);
@@ -41,6 +47,7 @@ const Auth: React.FC = () => {
 
   const onSolve = useCallback(() => {
     setSolved(true);
+    window && window.localStorage.setItem('loginPuzzleSolved', 'yes');
   }, [setSolved]);
 
   return (
