@@ -1,6 +1,6 @@
 import { CordContext, PagePresence, Sidebar, Thread } from '@cord-sdk/react';
 import { Typography } from '@mui/material';
-import { useContext } from 'react';
+import { useCallback, useContext, useEffect, useRef, useState } from 'react';
 import { useLocation } from 'react-router-dom';
 import { AppContext } from 'src/server/state/AppContext';
 
@@ -9,19 +9,42 @@ const TeamChat = () => {
   const cordContext = useContext(CordContext);
   const location = useLocation();
 
-  if (
-    !cordContext.hasProvider ||
-    (!appContext?.team && !appContext?.globalCordContext)
-  ) {
+  const setTeamChatActive = useCallback(() => {
+    appContext?.setCordContext('team');
+  }, [appContext?.setCordContext]);
+
+  const setGlobalChatActive = useCallback(() => {
+    appContext?.setCordContext('global');
+  }, [appContext?.setCordContext]);
+
+  if (!appContext || !cordContext.hasProvider) {
     return null;
   }
 
-  const threadId =
-    't:' +
-    (appContext?.globalCordContext ? 'global' : appContext?.team?.id) +
+  // This is an insane and evil hack that I'm using to get around the fact that
+  // I can't know when the CordProvider will have re-initialised the SDK.  So,
+  // I'm just waiting a second and hoping for the best.
+  const [sleep, setSleep] = useState(false);
+  let isSleeping = sleep;
+  const prevTokenRef = useRef<string | undefined>(undefined);
+  const currTokenRef = useRef<string | undefined>(
+    appContext.cordClientAuthToken,
+  );
+  currTokenRef.current = appContext.cordClientAuthToken;
+  if (currTokenRef.current !== prevTokenRef.current) {
+    prevTokenRef.current = currTokenRef.current;
+    setSleep(true);
+    setTimeout(() => {
+      setSleep(false);
+    }, 1000);
+    isSleeping = true;
+  }
+
+  let threadId =
+    'n:' +
+    (appContext.cordContext === 'global' ? 'global' : appContext?.team?.id) +
     ':' +
     location.pathname;
-  console.log({ threadId });
 
   const innerWidth = 360;
   const margin = 8;
@@ -63,53 +86,86 @@ const TeamChat = () => {
         <div
           css={{
             display: 'flex',
+            flex: 1,
             flexDirection: 'column',
+            alignItems: 'stretch',
             justifyContent: 'space-between',
           }}
         >
-          <div
-            css={{
-              alignItems: 'center',
-              display: 'flex',
-              flexGrow: 0,
-              flex: 0,
-              flexDirection: 'row',
-              height: '40px',
-              justifyContent: 'space-between',
-            }}
-          >
-            <Typography variant="h6">
-              {!appContext.globalCordContext &&
-                appContext?.team &&
-                appContext.team.teamName}
-              {appContext.globalCordContext && 'Everyone'}
-            </Typography>
-            <PagePresence
-              location={{ route: location.pathname }}
-              durable={true}
-              maxUsers={6}
-            />
+          <div>
+            <div
+              css={{
+                display: 'flex',
+                flexDirection: 'row',
+                marginBottom: 8,
+                border: '1px #252 solid',
+                borderRadius: 2,
+              }}
+            >
+              <Typography
+                onClick={setTeamChatActive}
+                variant="h6"
+                css={{
+                  flex: 1,
+                  ...(appContext.cordContext === 'team'
+                    ? {
+                        background: '#3f3',
+                        color: '#000',
+                      }
+                    : {}),
+                  padding: '0 8px',
+                  cursor: 'pointer',
+                  '&:hover': {
+                    background: '#3f3',
+                    color: '#000',
+                  },
+                }}
+              >
+                {appContext.team?.teamName || 'Team'}
+              </Typography>
+              <Typography
+                onClick={setGlobalChatActive}
+                variant="h6"
+                css={{
+                  flex: 1,
+                  ...(appContext.cordContext === 'global'
+                    ? {
+                        background: '#3f3',
+                        color: '#000',
+                      }
+                    : {}),
+                  borderLeft: '1px #252 solid',
+                  padding: '0 8px',
+                  cursor: 'pointer',
+                  '&:hover': {
+                    background: '#3f3',
+                    color: '#000',
+                  },
+                }}
+              >
+                Everyone
+              </Typography>
+            </div>
+            {appContext.cordClientAuthToken && !isSleeping && (
+              <PagePresence
+                location={{ route: location.pathname }}
+                durable={true}
+                maxUsers={6}
+              />
+            )}
           </div>
-          <Thread
-            threadId={threadId}
-            css={{
-              width: innerWidth - padding * 2,
-              maxHeight: 'none',
-            }}
-          />
+
+          {appContext.cordClientAuthToken && !isSleeping && (
+            <Thread
+              threadId={threadId}
+              css={{
+                width: innerWidth - padding * 2,
+                maxHeight: 'none',
+              }}
+            />
+          )}
         </div>
-        {/*
-      <Sidebar
-        location={{ route: location.pathname }}
-        onOpen={(info) => {
-          document.body.style.paddingRight = info.width + 'px';
-        }}
-        onClose={() => {
-          document.body.style.paddingRight = '0';
-        }}
-      />
-      */}
-      </div>{' '}
+      </div>
     </div>
   );
 };

@@ -42,8 +42,8 @@ const Puzzle: React.FC = () => {
 
   useEffect(() => {
     appContext?.setShowNavigation(false);
-    appContext?.setGlobalCordContext(false);
-  }, [appContext?.setShowNavigation, appContext?.setGlobalCordContext]);
+    appContext?.setCordContext('team');
+  }, [appContext?.setShowNavigation, appContext?.setCordContext]);
 
   useEffect(() => {
     (async () => {

@@ -16,8 +16,8 @@ const Auth: React.FC = () => {
 
   useEffect(() => {
     appContext?.setShowNavigation(false);
-    appContext?.setGlobalCordContext(false);
-  }, [appContext?.setShowNavigation, appContext?.setGlobalCordContext]);
+    appContext?.setCordContext('team');
+  }, [appContext?.setShowNavigation, appContext?.setCordContext]);
 
   // Where did I leave off?
   //

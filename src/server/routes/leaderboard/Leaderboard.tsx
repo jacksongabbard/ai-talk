@@ -34,8 +34,8 @@ const LeaderboardPage: React.FC = () => {
 
   useEffect(() => {
     appContext?.setShowNavigation(true);
-    appContext?.setGlobalCordContext(true);
-  }, [appContext?.setShowNavigation, appContext?.setGlobalCordContext]);
+    appContext?.setCordContext('global');
+  }, [appContext?.setShowNavigation, appContext?.setCordContext]);
 
   useEffect(() => {
     (async () => {

@@ -15,8 +15,8 @@ const CreateTeam: React.FC = () => {
   useEffect(() => {
     appContext?.setShowNavigation(true);
 
-    appContext?.setGlobalCordContext(false);
-  }, [appContext?.setShowNavigation, appContext?.setGlobalCordContext]);
+    appContext?.setCordContext('team');
+  }, [appContext?.setShowNavigation, appContext?.setCordContext]);
 
   const navigate = useNavigate();
   const goBack = useCallback(() => {

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useCallback, useState } from 'react';
 import type { ClientUser } from 'src/types/ClientUser';
 import type { ClientTeam } from 'src/types/ClientTeam';
 
@@ -13,8 +13,8 @@ export type TAppContext = null | {
   setShowHeader: (b: boolean) => void;
   cordClientAuthToken?: string;
   setCordClientAuthToken: (s: string) => void;
-  globalCordContext?: boolean;
-  setGlobalCordContext: (b: boolean) => void;
+  cordContext?: 'team' | 'global';
+  setCordContext: (v: 'team' | 'global') => void;
 };
 
 export type TAppContextExport = {
@@ -23,7 +23,7 @@ export type TAppContextExport = {
   showNavigation?: boolean | undefined;
   showHeader?: boolean | undefined;
   cordClientAuthToken?: string | undefined;
-  globalCordContext: boolean | undefined;
+  cordContext: 'team' | 'global';
 };
 
 export const AppContext = React.createContext<TAppContext>(null);
@@ -34,7 +34,7 @@ type AppContextProviderProps = {
   showNavigation?: boolean;
   showHeader?: boolean;
   cordClientAuthToken?: string;
-  globalCordContext: boolean;
+  cordContext: boolean;
   children: React.ReactNode;
 };
 
@@ -56,7 +56,17 @@ export const AppContextProvider: React.FC<AppContextProviderProps> = ({
   const [cordClientAuthToken, setCordClientAuthToken] = useState<
     string | undefined
   >();
-  const [globalCordContext, setGlobalCordContext] = useState(false);
+
+  const [cordContext, _setCordContext] = useState<'team' | 'global'>('global');
+
+  const setCordContext = useCallback(
+    (v: 'team' | 'global') => {
+      setCordClientAuthToken(undefined);
+      _setCordContext(v);
+    },
+    [_setCordContext, setCordClientAuthToken],
+  );
+
   return (
     <AppContext.Provider
       value={{
@@ -70,8 +80,8 @@ export const AppContextProvider: React.FC<AppContextProviderProps> = ({
         setShowHeader,
         cordClientAuthToken,
         setCordClientAuthToken,
-        globalCordContext,
-        setGlobalCordContext,
+        cordContext,
+        setCordContext,
       }}
     >
       {children}

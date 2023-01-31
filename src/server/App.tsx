@@ -1,7 +1,6 @@
 import { CordProvider } from '@cord-sdk/react';
 import { Routes, Route } from 'react-router-dom';
 import { ThemeProvider, createTheme } from '@mui/material/styles';
-import CssBaseline from '@mui/material/CssBaseline';
 
 import Home from './routes/home/Home';
 import Profile from './routes/profile/Profile';
@@ -43,18 +42,16 @@ const darkTheme = createTheme({
 
 const App: React.FC = () => {
   const appContext = useContext(AppContext);
-  const cordToken = appContext?.cordClientAuthToken;
   useEffect(() => {
     appContext?.setCordClientAuthToken('');
     (async () => {
       if (
-        (appContext?.globalCordContext || appContext?.team) &&
+        (appContext?.cordContext || appContext?.team) &&
         appContext?.setCordClientAuthToken
       ) {
-        const resp = await callAPI(
-          'get-cord-client-auth-token',
-          appContext.globalCordContext ? { global: true } : {},
-        );
+        const resp = await callAPI('get-cord-client-auth-token', {
+          global: appContext.cordContext === 'global',
+        });
         if (
           hasOwnProperty(resp, 'clientAuthToken') &&
           typeof resp.clientAuthToken === 'string'
@@ -66,7 +63,7 @@ const App: React.FC = () => {
   }, [
     appContext?.team,
     appContext?.setCordClientAuthToken,
-    appContext?.globalCordContext,
+    appContext?.cordContext,
   ]);
 
   const shell = (
@@ -91,6 +88,7 @@ const App: React.FC = () => {
     </ThemeProvider>
   );
 
+  const cordToken = appContext?.cordClientAuthToken;
   return <CordProvider clientAuthToken={cordToken}>{shell}</CordProvider>;
 };
 

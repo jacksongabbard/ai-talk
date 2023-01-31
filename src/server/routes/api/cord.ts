@@ -9,7 +9,7 @@ export const getCordClientAuthToken: RequestHandler = async (
   res: Response,
 ) => {
   if (!req.context?.user) {
-    bail400('No can do -- no user, no team, no Cord.', res);
+    bail400('No can do -- no user, no Cord.', res);
     return;
   }
 
@@ -19,14 +19,16 @@ export const getCordClientAuthToken: RequestHandler = async (
   let clientAuthToken = '';
   if (
     hasOwnProperty(payload, 'global') &&
-    typeof payload.global === 'boolean'
+    typeof payload.global === 'boolean' &&
+    payload.global
   ) {
-    if (payload.global === false) {
-      throw new Error('Wtf are you doing? Are you anti-globalism?!');
-    }
     clientAuthToken = getCordClientToken(req.context.user);
   } else if (req.context.team) {
     clientAuthToken = getCordClientToken(req.context.user, req.context.team);
+  } else {
+    throw new Error(
+      'Something is rotten in the state of fetching cord client auth tokens',
+    );
   }
   res.status(200);
   res.send({ success: true, clientAuthToken });
