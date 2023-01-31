@@ -6,6 +6,7 @@ import JoinCode from 'src/lib/db/JoinCode';
 import { hasOwnProperty } from 'src/lib/hasOwnProperty';
 import Team from 'src/lib/db/Team';
 import User from 'src/lib/db/User';
+import { sendNotificationToTeam } from 'src/server/lib/cord';
 
 // Based on this: https://stackoverflow.com/a/27459196
 const dict = 'H M N 3 4 P 6 7 R 9 T W C X Y F'.split(' ');
@@ -116,6 +117,13 @@ export const tryJoinCode: RequestHandler = async (
       bail400("Failed to add you to the team. I'm sorry.", res);
       return;
     }
+
+    sendNotificationToTeam(
+      req.context.user.id,
+      team.id,
+      `{{actor}} joined ${team?.teamName}!`,
+      req.baseUrl + '/team', // TODO: is there a better way of doing this?
+    );
 
     res.status(200);
     res.send({
