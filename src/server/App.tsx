@@ -46,6 +46,7 @@ const App: React.FC = () => {
     appContext?.setCordClientAuthToken('');
     (async () => {
       if (
+        appContext?.user &&
         (appContext?.cordContext || appContext?.team) &&
         appContext?.setCordClientAuthToken
       ) {

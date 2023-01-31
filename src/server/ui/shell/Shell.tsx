@@ -6,6 +6,7 @@ import { NavSidebar } from '../nav/Nav';
 import { useContext } from 'react';
 import { AppContext } from 'src/server/state/AppContext';
 import TeamChat from '../cord/TeamChat';
+import { useLocation } from 'react-router-dom';
 
 type ShellProps = {
   title?: string;
@@ -15,7 +16,7 @@ type ShellProps = {
 const Shell: React.FC<ShellProps> = ({ title, children }) => {
   const appContext = useContext(AppContext);
   const showNavigation = appContext?.showNavigation;
-
+  const location = useLocation();
   return (
     <div css={{ background: 'var(--theme-bg-wash)' }}>
       <style
@@ -66,7 +67,7 @@ const Shell: React.FC<ShellProps> = ({ title, children }) => {
           )}
           {children}
         </div>
-        <TeamChat />
+        {location.pathname !== '/auth' && <TeamChat />}
       </Box>
     </div>
   );

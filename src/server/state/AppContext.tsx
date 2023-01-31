@@ -1,4 +1,4 @@
-import React, { useCallback, useState } from 'react';
+import React, { useCallback, useRef, useState } from 'react';
 import type { ClientUser } from 'src/types/ClientUser';
 import type { ClientTeam } from 'src/types/ClientTeam';
 
@@ -59,12 +59,31 @@ export const AppContextProvider: React.FC<AppContextProviderProps> = ({
 
   const [cordContext, _setCordContext] = useState<'team' | 'global'>('global');
 
+  // Don't want to explicitly depend on cordContext because changing it will
+  // cause re-renders and re-execution of useEffect() functions in many pages.
+  // Many pages explicitly set the cordContext to some value that makes sense on
+  // that page (i.e. leaderboard -> global by default). If I recreate the
+  // setCordContext function every time cordContext changes and then those pages
+  // depend on setCordContext in their useEffect, we end up in a state where you
+  // can't switch chat tabs because switching chat tabs causes the page to
+  // switch the tab back. Hence the ref.
+  const cordContextRef = useRef(cordContext);
+  cordContextRef.current = cordContext;
   const setCordContext = useCallback(
     (v: 'team' | 'global') => {
-      setCordClientAuthToken(undefined);
-      _setCordContext(v);
+      let value = v;
+      if (!_team) {
+        value = 'global';
+      }
+
+      if (cordContextRef.current !== value) {
+        setCordClientAuthToken(undefined);
+        setTimeout(() => {
+          _setCordContext(value);
+        }, 100);
+      }
     },
-    [_setCordContext, setCordClientAuthToken],
+    [_setCordContext, setCordClientAuthToken, _team],
   );
 
   return (
