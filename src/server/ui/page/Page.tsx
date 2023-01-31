@@ -17,7 +17,7 @@ const Page: React.FC<PageProps> = ({ title, children }) => {
   const location = useLocation();
   useEffect(() => {
     cordContext.setLocation({ route: location.pathname });
-  }, [cordContext.setLocation, location]);
+  }, [cordContext, cordContext.setLocation, location]);
 
   return (
     <div
