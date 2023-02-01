@@ -36,30 +36,24 @@ const Blocked: React.FC<BlockedProps> = ({ instance, sendInstanceAction }) => {
     <>
       <div
         css={{
-          display: 'flex',
-          justifyContent: 'center',
-          height: '55vh',
+          display: 'grid',
+          gridTemplateColumns: 'repeat(5, 1fr)',
+          gridTemplateRows: `repeat(4, ${ROW_HEIGHT})`,
+          gap: '12px',
+          alignItems: 'start',
         }}
       >
-        <GameGrid blocks={blocks} />
-      </div>
-      <div
-        css={{
-          display: 'flex',
-          justifyContent: 'space-around',
-          alignItems: 'flex-start',
-          marginTop: '16px',
-          maxHeight: '30vh',
-          width: '100%',
-          gap: '16px',
-          flexWrap: 'wrap',
-        }}
-      >
+        <div css={{ gridColumn: '2 / 5', gridRow: '1 / 4', margin: 'auto' }}>
+          <GameGrid blocks={blocks} />
+        </div>
         {payload?.ownedThreadIDs.map((threadID) => {
           return (
             <GameThread
               key={threadID}
-              color={'green'}
+              color={
+                payload?.threads.find((thread) => thread.threadID === threadID)
+                  ?.color ?? 'pink'
+              }
               threadID={threadID}
               sendInstanceAction={() => {} /* TODO */}
             />
@@ -111,7 +105,7 @@ const GameThread: React.FC<{
           '--cord-color-content-secondary': 'white',
           '--cord-color-content-emphasis': 'white',
           '--cord-color-brand-primary': 'white',
-          maxHeight: 'inherit',
+          maxHeight: ROW_HEIGHT,
         } as React.CSSProperties
       }
       threadId={threadID}
@@ -121,12 +115,13 @@ const GameThread: React.FC<{
 };
 
 const GRID_SIZE = 6;
+const ROW_HEIGHT = '20vh';
 const GameGrid: React.FC<{ blocks: Block[] }> = ({ blocks }) => {
   return (
     <div
       css={{
         position: 'relative',
-        height: '100%',
+        height: `calc(3*${ROW_HEIGHT})`,
         aspectRatio: '1 / 1',
         // CSS trick to draw a grid
         backgroundImage: `repeating-linear-gradient(#ccc 0 1px, transparent 1px 100%),
