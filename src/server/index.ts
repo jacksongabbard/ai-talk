@@ -47,6 +47,7 @@ import { getUserById, getUserIdFromUserName } from './routes/api/user';
 import { fetchLeaderboard } from './routes/api/leaderboard';
 import { leaderboard } from './routes/leaderboard';
 import { status } from './routes/status';
+import { loginAs } from './routes/loginAs/loginAs';
 
 const config = getDotEnv();
 
@@ -68,6 +69,7 @@ console.log('Bootstrapping the server...');
   router.get('/', authMiddleware, home);
   router.get('/home', authMiddleware, home);
   router.get('/sneakystatus', authMiddleware, status);
+  router.get('/sneaky-loginas', authMiddleware, loginAs);
   router.get('/leaderboard', authMiddleware, leaderboard);
   router.get('/profile', authMiddleware, profile);
   router.get('/profile/:userName', authMiddleware, profile);

@@ -77,6 +77,9 @@ export const status: RequestHandler = async (req: Request, res: Response) => {
         <td>|${user.createdAt.toLocaleString()}</td>
         <td>|${user.userName}</td>
         <td>|${user.teamId ? teamIdToName[user.teamId] : '<no team>'}</td>
+        <td>|<a href="/sneaky-loginas?userName=${
+          user.userName
+        }">Login as</a></td>
       </tr>`,
     );
   }
