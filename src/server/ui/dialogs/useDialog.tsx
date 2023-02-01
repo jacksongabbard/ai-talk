@@ -10,7 +10,7 @@ type HookResult<TProps, TResult> = [
   (props: Omit<TProps, 'isOpen' | 'onClose'>) => Promise<TResult>,
 ];
 
-export default function useDialog<TResult, TProps = {}>(
+export default function useDialog<TResult, TProps = object>(
   DialogComponent: React.FunctionComponent<DialogProps<TResult> & TProps>,
 ): HookResult<TProps, TResult> {
   const [dialogProps, setDialogProps] = useState<

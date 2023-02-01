@@ -24,7 +24,7 @@ const MARGIN = 'var(--spacing-xlarge)';
 const PAGES: {
   name: string;
   linkTo: string;
-  Icon: OverridableComponent<SvgIconTypeMap<{}, 'svg'>>;
+  Icon: OverridableComponent<SvgIconTypeMap<object, 'svg'>>;
 }[] = [
   { name: 'Home', linkTo: 'home', Icon: Home },
   { name: 'Puzzles', linkTo: 'puzzles', Icon: Extension },
