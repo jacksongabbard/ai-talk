@@ -1,4 +1,6 @@
-import { useContext, useEffect, useState } from 'react';
+import { Thread } from '@cord-sdk/react';
+import type { ThreadInfo } from '@cord-sdk/types';
+import { useCallback, useContext, useEffect, useRef, useState } from 'react';
 import type { SendInstanceAction } from 'src/client/hooks/useWebSocket';
 import { AppContext } from 'src/server/state/AppContext';
 import type { ClientPuzzleInstance } from 'src/types/ClientPuzzleInstance';
@@ -27,19 +29,7 @@ const Blocked: React.FC<BlockedProps> = ({ instance, sendInstanceAction }) => {
   if (!appContext?.user) {
     throw new Error('No user');
   }
-  return <GameGrid />;
-};
 
-type Block = {
-  color: string;
-  width: number;
-  height: number;
-  row: number;
-  col: number;
-};
-
-const GRID_SIZE = 6;
-const GameGrid: React.FC<unknown> = () => {
   const [blocks, setBlocks] = useState<Block[]>([
     {
       color: 'green',
@@ -57,41 +47,109 @@ const GameGrid: React.FC<unknown> = () => {
     },
   ]);
 
-  useEffect(() => {
-    const onArrowPress = (e: KeyboardEvent) => {
-      let [row_delta, col_delta] = [0, 0];
-      switch (e.key) {
-        case 'ArrowUp':
-          row_delta = -1;
-          break;
-        case 'ArrowDown':
-          row_delta = 1;
-          break;
-        case 'ArrowLeft':
-          col_delta = -1;
-          break;
-        case 'ArrowRight':
-          col_delta = 1;
-          break;
-      }
-      if (row_delta != 0 || col_delta != 0) {
-        e.preventDefault();
-        setBlocks((blocks) => {
-          blocks[0].row += row_delta;
-          blocks[0].col += col_delta;
-          return [...blocks];
-        });
-      }
-    };
-    window.addEventListener('keydown', onArrowPress);
-    return () => window.removeEventListener('keydown', onArrowPress);
+  const moveFirstBlock = useCallback(({ change }: { change: number }) => {
+    setBlocks((blocks) => {
+      blocks[0].row += change;
+      blocks[0] = { ...blocks[0] };
+      return [...blocks];
+    });
   }, []);
+
+  return (
+    <>
+      <div
+        css={{
+          display: 'flex',
+          justifyContent: 'center',
+          height: '55vh',
+        }}
+      >
+        <GameGrid blocks={blocks} />
+      </div>
+      <div
+        css={{
+          display: 'flex',
+          justifyContent: 'space-around',
+          alignItems: 'flex-start',
+          marginTop: '16px',
+          maxHeight: '30vh',
+          width: '100%',
+        }}
+      >
+        <GameThread
+          color={'green'}
+          threadID={'some_threadId_sfsdfsfsafs'}
+          sendInstanceAction={moveFirstBlock}
+        />
+        <GameThread
+          color={'blue'}
+          threadID={'some_threadId_sfsdfsfsafs_dsfdsfsa'}
+          sendInstanceAction={moveFirstBlock}
+        />
+      </div>
+    </>
+  );
+};
+
+type Block = {
+  color: string;
+  width: number;
+  height: number;
+  row: number;
+  col: number;
+};
+
+const GameThread: React.FC<{
+  threadID: string;
+  color: string;
+  sendInstanceAction: (action: any) => void;
+}> = ({ threadID, color, sendInstanceAction }) => {
+  const prevCount = useRef<number | null>(null);
+  const onThreadInfoChange = useCallback(
+    ({ messageCount }: ThreadInfo) => {
+      if (prevCount.current === null) {
+        prevCount.current = messageCount;
+        return;
+      }
+      if (prevCount.current > messageCount) {
+        sendInstanceAction({ threadID, change: 1 });
+      } else if (prevCount.current < messageCount) {
+        sendInstanceAction({ threadID, change: -1 });
+      }
+      prevCount.current = messageCount;
+    },
+    [sendInstanceAction, threadID],
+  );
+
+  return (
+    <Thread
+      style={
+        {
+          '--cord-color-base': color,
+          '--cord-color-base-strong': color,
+          '--cord-color-base-x-strong': color,
+          '--cord-color-content-primary': color,
+          '--cord-color-content-secondary': color,
+          '--cord-color-content-emphasis': color,
+          '--cord-color-brand-primary': color,
+        } as React.CSSProperties
+      }
+      threadId={threadID}
+      onThreadInfoChange={onThreadInfoChange}
+    />
+  );
+};
+
+const GRID_SIZE = 6;
+const GameGrid: React.FC<{ blocks: Block[] }> = ({ blocks }) => {
   return (
     <div
       css={{
-        width: '50%',
-        paddingTop: '50%', // make it square
+        // width: '50%',
+        // paddingTop: '50%', // make it square
         position: 'relative',
+        height: '100%',
+        aspectRatio: '1 / 1',
         // CSS trick to draw a grid
         backgroundImage: `repeating-linear-gradient(#ccc 0 1px, transparent 1px 100%),
                           repeating-linear-gradient(90deg, #ccc 0 1px, transparent 1px 100%)`,
@@ -115,7 +173,7 @@ const Block: React.FC<Block> = (props) => {
         width: `calc(100% * ${props.width} / ${GRID_SIZE})`,
         transition: '1s',
         position: 'absolute',
-        padding: '20px',
+        padding: '10px',
       }}
     >
       <div
