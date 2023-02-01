@@ -3,7 +3,7 @@ import type { Request, RequestHandler, Response } from 'express';
 import { puzzleMapFromList } from 'src/server/puzzles';
 import { bail400, error200 } from './util';
 import { hasOwnProperty } from 'src/lib/hasOwnProperty';
-import { ClientPuzzle, Puzzle, puzzleToClientPuzzle } from 'src/types/Puzzle';
+import { ClientPuzzle, puzzleToClientPuzzle } from 'src/types/Puzzle';
 import PuzzleInstance from 'src/lib/db/PuzzleInstance';
 import {
   ClientPuzzleInstance,
@@ -327,6 +327,60 @@ export const generatePuzzleInstance: RequestHandler = async (
     }
   } catch (e) {
     console.log('Failed to create puzzle list: ', e);
+    bail400('Unexpected error: ' + (e as Error).message, res);
+    return;
+  }
+};
+
+export const destroyPuzzleInstance: RequestHandler = async (
+  req: Request,
+  res: Response,
+) => {
+  try {
+    const requesterUserId = req.context?.user?.id;
+    if (!requesterUserId) {
+      error200('Cannot destroy a puzzle instance with no user', res);
+      return;
+    }
+
+    if (
+      hasOwnProperty(req.body, 'data') &&
+      typeof req.body.data === 'object' &&
+      hasOwnProperty(req.body.data, 'instanceId') &&
+      typeof req.body.data.instanceId === 'string'
+    ) {
+      const { instanceId } = req.body.data;
+      const pi = await PuzzleInstance.findOne({ where: { id: instanceId } });
+      if (!pi) {
+        error200('No puzzle found. Puzzling, to say the least.', res);
+        return;
+      }
+
+      const isDeletingOwnInstance = Boolean(
+        await PuzzleInstanceUser.findOne({
+          where: { userId: requesterUserId, puzzleInstanceId: instanceId },
+        }),
+      );
+      if (!isDeletingOwnInstance) {
+        error200(`Thee shouldst not destroyeth oth'r team's puzzles`, res);
+        return;
+      }
+
+      await pi.destroy();
+
+      res.status(200);
+      res.send(
+        JSON.stringify({
+          success: true,
+        }),
+      );
+      return;
+    }
+
+    bail400('Bad request', res);
+    return;
+  } catch (e) {
+    console.log('Failed to destroy puzzle: ', e);
     bail400('Unexpected error: ' + (e as Error).message, res);
     return;
   }

@@ -26,11 +26,15 @@ import SimpleMaze from './simpleMaze/SimpleMaze';
 import { ArrowBack } from '@mui/icons-material';
 import { useNavigate } from 'react-router-dom';
 import Blocked from 'src/server/ui/puzzle/blocked/Blocked';
+import ConfirmationDialog from 'src/server/ui/dialogs/ConfirmationDialog';
+import useDialog from 'src/server/ui/dialogs/useDialog';
+import { hasOwnProperty } from 'src/lib/hasOwnProperty';
+import callAPI from 'src/client/lib/callAPI';
 
 const PuzzleShell: React.FC = () => {
   const appContext = useContext(AppContext);
   const puzzleContext = useContext(PuzzleContext);
-  const { instance } = puzzleContext;
+  const { instance, setInstance, setSolved } = puzzleContext;
 
   useEffect(() => {
     appContext?.setShowHeader(false);
@@ -120,12 +124,43 @@ const PuzzleShell: React.FC = () => {
       console.log('ERROR', error);
       setErrorMessage(error);
     },
-    [connected, setErrorMessage],
+    [setErrorMessage],
   );
 
   const onErrorDialogClose = useCallback(() => {
     setErrorMessage('');
   }, [setErrorMessage]);
+
+  const [confirmationDialog, openConfirmationDialog] =
+    useDialog(ConfirmationDialog);
+  const handlePlayAgain = useCallback(() => {
+    (async () => {
+      if (!instance) {
+        return;
+      }
+
+      const isConfirmed = await openConfirmationDialog({
+        action: 'reset',
+        isActionDestructive: true,
+        object: 'puzzle',
+        additionalMessage: `No puzzles will be harmed during the process, except for this one.`,
+      });
+      if (!isConfirmed) {
+        return;
+      }
+
+      const resp = await callAPI('destroy-puzzle-instance', {
+        instanceId: instance.id,
+      });
+      if (hasOwnProperty(resp, 'error') && typeof resp.error === 'string') {
+        setErrorMessage(resp.error);
+        return;
+      }
+
+      setSolved(false);
+      setInstance(undefined);
+    })();
+  }, [instance, openConfirmationDialog, setInstance, setSolved]);
 
   const { sendInstanceAction, setPuzzle } = useWebSocket(
     onConnected,
@@ -211,8 +246,18 @@ const PuzzleShell: React.FC = () => {
           >
             SOLVED!
           </div>
+          <Button
+            onClick={handlePlayAgain}
+            css={{
+              borderRadius: 0,
+              marginLeft: 'var(--spacing-large)',
+            }}
+          >
+            Play again?
+          </Button>
         </div>
       )}
+      {confirmationDialog}
       <Dialog open={errorMessage !== ''} onClose={onErrorDialogClose}>
         <DialogTitle>Everything is ruined</DialogTitle>
         <DialogContent>

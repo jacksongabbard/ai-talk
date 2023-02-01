@@ -18,6 +18,7 @@ import { teams } from './routes/teams';
 import { createTeam } from './routes/createTeam';
 import { puzzles } from './routes/puzzles';
 import {
+  destroyPuzzleInstance,
   generatePuzzleInstance,
   getPuzzleInfo,
   listPuzzles,
@@ -107,6 +108,11 @@ console.log('Bootstrapping the server...');
     '/api/generate-puzzle-instance',
     authMiddleware,
     generatePuzzleInstance,
+  );
+  router.post(
+    '/api/destroy-puzzle-instance',
+    authMiddleware,
+    destroyPuzzleInstance,
   );
   router.post('/api/fetch-leaderboard', authMiddleware, fetchLeaderboard);
   router.post('/api/list-teams', authMiddleware, listTeams);
