@@ -15,7 +15,7 @@ type BlockedProps = {
 };
 
 const Blocked: React.FC<BlockedProps> = ({ instance, sendInstanceAction }) => {
-  const [payload, setPayload] = useState<BlockedPuzzlePayload | any>({});
+  const [payload, setPayload] = useState<BlockedPuzzlePayload | null>(null);
   useEffect(() => {
     if (!instance) {
       throw new Error('No instance of Blocked');
@@ -102,7 +102,7 @@ type Block = {
 const GameThread: React.FC<{
   threadID: string;
   color: string;
-  sendInstanceAction: (action: any) => void;
+  sendInstanceAction: (action: any /*TODO - type this */) => void;
 }> = ({ threadID, color, sendInstanceAction }) => {
   const prevCount = useRef<number | null>(null);
   const onThreadInfoChange = useCallback(
@@ -126,12 +126,12 @@ const GameThread: React.FC<{
       style={
         {
           '--cord-color-base': color,
-          '--cord-color-base-strong': color,
-          '--cord-color-base-x-strong': color,
-          '--cord-color-content-primary': color,
-          '--cord-color-content-secondary': color,
-          '--cord-color-content-emphasis': color,
-          '--cord-color-brand-primary': color,
+          '--cord-color-base-strong': 'black',
+          '--cord-color-base-x-strong': 'white',
+          '--cord-color-content-primary': 'white',
+          '--cord-color-content-secondary': 'white',
+          '--cord-color-content-emphasis': 'white',
+          '--cord-color-brand-primary': 'white',
         } as React.CSSProperties
       }
       threadId={threadID}
@@ -145,8 +145,6 @@ const GameGrid: React.FC<{ blocks: Block[] }> = ({ blocks }) => {
   return (
     <div
       css={{
-        // width: '50%',
-        // paddingTop: '50%', // make it square
         position: 'relative',
         height: '100%',
         aspectRatio: '1 / 1',
