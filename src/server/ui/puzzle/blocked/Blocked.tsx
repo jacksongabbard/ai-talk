@@ -30,30 +30,7 @@ const Blocked: React.FC<BlockedProps> = ({ instance, sendInstanceAction }) => {
     throw new Error('No user');
   }
 
-  const [blocks, setBlocks] = useState<Block[]>([
-    {
-      color: 'green',
-      width: 1,
-      height: 2,
-      row: 2,
-      col: 2,
-    },
-    {
-      color: 'red',
-      width: 2,
-      height: 1,
-      row: 0,
-      col: 0,
-    },
-  ]);
-
-  const moveFirstBlock = useCallback(({ change }: { change: number }) => {
-    setBlocks((blocks) => {
-      blocks[0].row += change;
-      blocks[0] = { ...blocks[0] };
-      return [...blocks];
-    });
-  }, []);
+  const blocks: Block[] = payload?.threads ?? [];
 
   return (
     <>
@@ -74,18 +51,20 @@ const Blocked: React.FC<BlockedProps> = ({ instance, sendInstanceAction }) => {
           marginTop: '16px',
           maxHeight: '30vh',
           width: '100%',
+          gap: '16px',
+          flexWrap: 'wrap',
         }}
       >
-        <GameThread
-          color={'green'}
-          threadID={'some_threadId_sfsdfsfsafs'}
-          sendInstanceAction={moveFirstBlock}
-        />
-        <GameThread
-          color={'blue'}
-          threadID={'some_threadId_sfsdfsfsafs_dsfdsfsa'}
-          sendInstanceAction={moveFirstBlock}
-        />
+        {payload?.ownedThreadIDs.map((threadID) => {
+          return (
+            <GameThread
+              key={threadID}
+              color={'green'}
+              threadID={threadID}
+              sendInstanceAction={() => {} /* TODO */}
+            />
+          );
+        }) ?? []}
       </div>
     </>
   );
@@ -96,7 +75,7 @@ type Block = {
   width: number;
   height: number;
   row: number;
-  col: number;
+  column: number;
 };
 
 const GameThread: React.FC<{
@@ -132,6 +111,7 @@ const GameThread: React.FC<{
           '--cord-color-content-secondary': 'white',
           '--cord-color-content-emphasis': 'white',
           '--cord-color-brand-primary': 'white',
+          maxHeight: 'inherit',
         } as React.CSSProperties
       }
       threadId={threadID}
@@ -165,8 +145,9 @@ const Block: React.FC<Block> = (props) => {
   return (
     <div
       css={{
-        top: `calc(100% * ${props.row} / ${GRID_SIZE})`,
-        left: `calc(100% * ${props.col} / ${GRID_SIZE})`,
+        // TODO: remove -1 from top and left
+        top: `calc(100% * ${props.row - 1} / ${GRID_SIZE})`,
+        left: `calc(100% * ${props.column - 1} / ${GRID_SIZE})`,
         height: `calc(100% * ${props.height} / ${GRID_SIZE})`,
         width: `calc(100% * ${props.width} / ${GRID_SIZE})`,
         transition: '1s',
