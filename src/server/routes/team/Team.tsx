@@ -189,8 +189,9 @@ const TeamPage: React.FC = () => {
         const isConfirmed = await openConfirmationDialog({
           action: isRemovingOneself ? 'leave' : 'yeet',
           isActionDestructive: true,
-          object: isRemovingOneself
-            ? 'team'
+          object: isRemovingOneself ? 'team' : 'team member',
+          specificObject: isRemovingOneself
+            ? team?.teamName ?? 'your team'
             : `${
                 members.find((m) => m.id === userId)?.userName ?? 'team member'
               }`,
