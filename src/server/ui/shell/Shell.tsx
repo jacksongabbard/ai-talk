@@ -31,6 +31,7 @@ const Shell: React.FC<ShellProps> = ({ title, children }) => {
           --cord-color-content-primary: #3f3;
           --cord-color-content-emphasis: #3f3;
           --cord-color-brand-primary: #3f3;
+          --cord-color-notification: #3f3;
         }
       `,
         }}
