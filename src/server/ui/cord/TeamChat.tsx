@@ -1,5 +1,15 @@
-import { CordContext, PagePresence, Sidebar, Thread } from '@cord-sdk/react';
-import { Typography } from '@mui/material';
+import {
+  beta,
+  CordContext,
+  PagePresence,
+  Sidebar,
+  Thread,
+} from '@cord-sdk/react';
+import { Badge, IconButton, Typography } from '@mui/material';
+import NotificationsIcon from '@mui/icons-material/Notifications';
+
+import Menu from '@mui/material/Menu';
+
 import { useCallback, useContext, useEffect, useRef, useState } from 'react';
 import { useLocation } from 'react-router-dom';
 import { AppContext } from 'src/server/state/AppContext';
@@ -20,6 +30,48 @@ const TeamChat = () => {
   if (!appContext || !cordContext.hasProvider) {
     return null;
   }
+
+  const [notificationAnchorEl, setNotificationAnchorEl] =
+    useState<null | HTMLElement>(null);
+
+  const showNotificationsMenu = (event: React.MouseEvent<HTMLElement>) => {
+    setNotificationAnchorEl(event.currentTarget);
+  };
+
+  // Cord Notifications API doesn't expose a way of knowing when
+  // there are new notifications, so we just hook into the DOM and get
+  // that info ourselves. "_Hacker voice_: I'm in"
+  const [newNotificationsCount, setNewNotificationsCount] = useState(0);
+  // NotificationList doesn't expose a `ref` prop, hence why attaching to the container.
+  const notificationsContainerRef = useRef<HTMLDivElement>(null);
+  useEffect(() => {
+    const listenForNewNotifications = setInterval(() => {
+      if (!notificationsContainerRef.current) {
+        return;
+      }
+
+      const notificationListComponent =
+        notificationsContainerRef.current.querySelector(
+          'cord-notification-list',
+        );
+      if (!notificationListComponent || !notificationListComponent.shadowRoot) {
+        return;
+      }
+
+      const unreadBadgeClassname = `badge-`; // Final dash to avoid clashes with `badgeContainer`
+      const unreadBadgesCount =
+        notificationListComponent.shadowRoot.querySelectorAll(
+          `[class*="${unreadBadgeClassname}"`,
+        ).length;
+      setNewNotificationsCount(unreadBadgesCount);
+    }, 100); // Cheap operation, can do often.
+
+    return () => clearInterval(listenForNewNotifications);
+  }, []);
+
+  const handleClose = () => {
+    setNotificationAnchorEl(null);
+  };
 
   // This is an insane and evil hack that I'm using to get around the fact that
   // I can't know when the CordProvider will have re-initialised the SDK.  So,
@@ -98,87 +150,138 @@ const TeamChat = () => {
               css={{
                 display: 'flex',
                 flexDirection: 'row',
-                marginBottom: 8,
-                border: '1px #252 solid',
-                borderRadius: 2,
-                maxWidth: innerWidth + 'px',
+                alignItems: 'center',
+                marginRight: '8px',
               }}
             >
               <div
-                onClick={setTeamChatActive}
                 css={{
                   display: 'flex',
-                  flexShrink: 0,
-                  flexGrow: 0,
-                  ...(appContext.cordContext === 'team'
-                    ? {
-                        background: '#3f3',
-                        color: '#000',
-                      }
-                    : {}),
-                  padding: '0 8px',
-                  cursor: 'pointer',
-                  '&:hover': {
-                    background: '#3f3',
-                    color: '#000',
-                  },
-                  width: 171,
-                  maxWidth: 171,
-                  boxSizing: 'border-box',
+                  flexDirection: 'row',
+                  border: '1px #252 solid',
+                  borderRadius: 2,
+                  marginRight: '8px',
+                  maxWidth: innerWidth + 'px',
+                  height: '32px',
                 }}
               >
-                <Typography
-                  variant="h6"
-                  component="span"
+                <div
+                  onClick={setTeamChatActive}
                   css={{
-                    flex: 1,
-                    overflow: 'hidden',
-                    minWidth: 0,
-                    whiteSpace: 'nowrap',
-                    textOverflow: 'ellipsis',
+                    display: 'flex',
+                    alignItems: 'center',
+                    flexShrink: 0,
+                    flexGrow: 0,
+                    ...(appContext.cordContext === 'team'
+                      ? {
+                          background: '#3f3',
+                          color: '#000',
+                        }
+                      : {}),
+                    padding: '0 8px',
+                    cursor: 'pointer',
+                    '&:hover': {
+                      background: '#3f3',
+                      color: '#000',
+                    },
+                    width: 134,
+                    maxWidth: 134,
+                    boxSizing: 'border-box',
                   }}
                 >
-                  {appContext.team?.teamName || 'Team'}
-                </Typography>
+                  <Typography
+                    variant="subtitle1"
+                    css={{
+                      flex: 1,
+                      overflow: 'hidden',
+                      minWidth: 0,
+                      whiteSpace: 'nowrap',
+                      textOverflow: 'ellipsis',
+                    }}
+                  >
+                    {appContext.team?.teamName || 'Team'}
+                  </Typography>
+                </div>
+                <div
+                  onClick={setGlobalChatActive}
+                  css={{
+                    display: 'flex',
+                    alignItems: 'center',
+                    flexShrink: 0,
+                    flexGrow: 0,
+                    ...(appContext.cordContext === 'global'
+                      ? {
+                          background: '#3f3',
+                          color: '#000',
+                        }
+                      : {}),
+                    borderLeft: '1px #252 solid',
+                    padding: '0 8px',
+                    cursor: 'pointer',
+                    '&:hover': {
+                      background: '#3f3',
+                      color: '#000',
+                    },
+                    width: 134,
+                    maxWidth: 134,
+                    boxSizing: 'border-box',
+                  }}
+                >
+                  <Typography
+                    variant="subtitle1"
+                    css={{
+                      flex: 1,
+                      minWidth: 0,
+                      overflow: 'hidden',
+                      whiteSpace: 'nowrap',
+                      textOverflow: 'ellipsis',
+                    }}
+                  >
+                    Everyone
+                  </Typography>
+                </div>
               </div>
-              <div
-                onClick={setGlobalChatActive}
-                css={{
-                  display: 'flex',
-                  flexShrink: 0,
-                  flexGrow: 0,
-                  ...(appContext.cordContext === 'global'
-                    ? {
-                        background: '#3f3',
-                        color: '#000',
-                      }
-                    : {}),
-                  borderLeft: '1px #252 solid',
-                  padding: '0 8px',
-                  cursor: 'pointer',
-                  '&:hover': {
-                    background: '#3f3',
-                    color: '#000',
-                  },
-                  width: 171,
-                  maxWidth: 171,
-                  boxSizing: 'border-box',
-                }}
+              <IconButton
+                sx={{ width: '64px', height: '64px' }}
+                color="inherit"
+                aria-label="menu"
+                edge="end"
+                onClick={showNotificationsMenu}
               >
-                <Typography
-                  variant="h6"
-                  component="span"
-                  css={{
-                    flex: 1,
-                    minWidth: 0,
-                    overflow: 'hidden',
-                    whiteSpace: 'nowrap',
-                    textOverflow: 'ellipsis',
+                <Badge badgeContent={newNotificationsCount}>
+                  <NotificationsIcon />
+                </Badge>
+              </IconButton>
+              <Menu
+                id="notifications"
+                anchorEl={notificationAnchorEl}
+                MenuListProps={{ sx: { py: 0 } }}
+                anchorOrigin={{
+                  vertical: 'bottom',
+                  horizontal: 'right',
+                }}
+                keepMounted
+                transformOrigin={{
+                  vertical: 'top',
+                  horizontal: 'right',
+                }}
+                open={Boolean(notificationAnchorEl)}
+                onClose={handleClose}
+                ref={notificationsContainerRef}
+              >
+                {/* TODO(am):
+                1. If you open notifications before page loads, they're rendered outside the viewport.
+              */}
+                <beta.NotificationList
+                  style={{
+                    height: '50vh',
+                    width: '350px',
+                    // Because of `keepMounted`, MUI renders this component invisible
+                    // on the page. Users can still click on it though. :clown_emoji:
+                    pointerEvents: notificationAnchorEl ? undefined : 'none',
                   }}
-                >
-                  Everyone
-                </Typography>
-              </div>
+                />
+              </Menu>
             </div>
             {appContext.cordClientAuthToken && !isSleeping && (
               <PagePresence
