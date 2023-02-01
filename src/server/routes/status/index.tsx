@@ -67,24 +67,6 @@ export const status: RequestHandler = async (req: Request, res: Response) => {
   }
   output.push('</table>');
 
-  output.push('\n');
-  output.push('Users: ' + users.length);
-  output.push('-----------------------------');
-  output.push('<table>');
-  for (const user of users) {
-    output.push(
-      `<tr>
-        <td>|${user.createdAt.toLocaleString()}</td>
-        <td>|${user.userName}</td>
-        <td>|${user.teamId ? teamIdToName[user.teamId] : '<no team>'}</td>
-        <td>|<a href="/sneaky-loginas?userName=${
-          user.userName
-        }">Login as</a></td>
-      </tr>`,
-    );
-  }
-  output.push('</table>');
-
   const puzzleInstances = await PuzzleInstance.findAll({
     order: [['updatedAt', 'DESC']],
   });
@@ -113,6 +95,41 @@ export const status: RequestHandler = async (req: Request, res: Response) => {
     `);
   }
   output.push('</table>');
+
+  output.push('\n');
+  output.push('Users: ' + users.length);
+  output.push('-----------------------------');
+  output.push('<table>');
+  for (const user of users) {
+    output.push(
+      `<tr>
+        <td>|${user.createdAt.toLocaleString()}</td>
+        <td>|${user.userName}</td>
+        <td>|${user.teamId ? teamIdToName[user.teamId] : '<no team>'}</td>
+        <td>|${user.id}</td>
+        <td>|<a href="/sneaky-loginas?userName=${
+          user.userName
+        }">Login as</a></td>
+      </tr>`,
+    );
+  }
+  output.push('</table>');
+
+  output.push('\n');
+  output.push('Teams: ' + teams.length);
+  output.push('-----------------------------');
+  output.push('<table>');
+  for (const team of teams) {
+    output.push(
+      `<tr>
+        <td>|${team.createdAt.toLocaleString()}</td>
+        <td>|${team.teamName}</td>
+        <td>|${team.id}</td>
+      </tr>`,
+    );
+  }
+  output.push('</table>');
+
   let html = '<pre>' + output.join('\n') + '</pre>';
   html += `<script type="text/javascript">setTimeout(() => { window.location.reload(); }, 5000);</script>`;
   res.status(200);
