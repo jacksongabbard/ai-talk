@@ -210,7 +210,7 @@ const TeamPage: React.FC = () => {
         setMembers((prev) => prev.filter((m) => m.id !== userId));
       })();
     },
-    [confirmationDialog, members],
+    [members, openConfirmationDialog, team?.teamName, user?.id],
   );
 
   const cordContext = useContext(CordContext);
