@@ -5,7 +5,7 @@ import type { ClientPuzzleInstance } from 'src/types/ClientPuzzleInstance';
 import {
   assertIsBlockedPuzzledPayload,
   BlockedPuzzlePayload,
-} from 'src/types/puzzles/Blocked';
+} from 'src/types/puzzles/BlockedTypes';
 
 type BlockedProps = {
   instance: ClientPuzzleInstance;
@@ -13,8 +13,7 @@ type BlockedProps = {
 };
 
 const Blocked: React.FC<BlockedProps> = ({ instance, sendInstanceAction }) => {
-  const [payload, setPayload] = useState<BlockedPuzzlePayload>({});
-
+  const [payload, setPayload] = useState<BlockedPuzzlePayload | any>({});
   useEffect(() => {
     if (!instance) {
       throw new Error('No instance of Blocked');
