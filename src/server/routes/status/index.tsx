@@ -17,7 +17,7 @@ export const status: RequestHandler = async (req: Request, res: Response) => {
   }
 
   const { user } = req.context;
-  if (user.userName.toLowerCase() !== 'jackson') {
+  if (!user.emailAddress.endsWith('@cord.com')) {
     bail500('nope.', res);
     return;
   }
