@@ -47,7 +47,7 @@ const TeamChat = () => {
     location.pathname;
 
   const innerWidth = 360;
-  const margin = 8;
+  const margin = 24;
   const padding = 8;
   const fullHeight = appContext.showHeader
     ? `calc(100vh - var(--header-height) - ${margin}px)`
@@ -56,7 +56,7 @@ const TeamChat = () => {
   return (
     <div
       css={{
-        width: innerWidth + 'px',
+        width: innerWidth + margin + 'px',
         height: appContext.showHeader
           ? `calc(100vh - var(--header-height) - ${margin}px)`
           : '100vh',
@@ -67,6 +67,7 @@ const TeamChat = () => {
           display: 'flex',
           alignItems: 'stretch',
           background: '#000',
+          borderRadius: 2,
           borderLeft: '1px #252 solid',
           borderRight: '1px #252 solid',
           borderTop: '1px #252 solid',
@@ -76,7 +77,7 @@ const TeamChat = () => {
           top: appContext.showHeader
             ? `calc(var(--header-height) + ${margin}px)`
             : margin + 'px',
-          right: 8,
+          right: margin + 'px',
           minHeight: fullHeight,
           maxHeight: fullHeight,
           width: innerWidth + 'px',
@@ -100,13 +101,15 @@ const TeamChat = () => {
                 marginBottom: 8,
                 border: '1px #252 solid',
                 borderRadius: 2,
+                maxWidth: innerWidth + 'px',
               }}
             >
-              <Typography
+              <div
                 onClick={setTeamChatActive}
-                variant="h6"
                 css={{
-                  flex: 1,
+                  display: 'flex',
+                  flexShrink: 0,
+                  flexGrow: 0,
                   ...(appContext.cordContext === 'team'
                     ? {
                         background: '#3f3',
@@ -119,15 +122,31 @@ const TeamChat = () => {
                     background: '#3f3',
                     color: '#000',
                   },
+                  width: 171,
+                  maxWidth: 171,
+                  boxSizing: 'border-box',
                 }}
               >
-                {appContext.team?.teamName || 'Team'}
-              </Typography>
-              <Typography
+                <Typography
+                  variant="h6"
+                  component="span"
+                  css={{
+                    flex: 1,
+                    overflow: 'hidden',
+                    minWidth: 0,
+                    whiteSpace: 'nowrap',
+                    textOverflow: 'ellipsis',
+                  }}
+                >
+                  {appContext.team?.teamName || 'Team'}
+                </Typography>
+              </div>
+              <div
                 onClick={setGlobalChatActive}
-                variant="h6"
                 css={{
-                  flex: 1,
+                  display: 'flex',
+                  flexShrink: 0,
+                  flexGrow: 0,
                   ...(appContext.cordContext === 'global'
                     ? {
                         background: '#3f3',
@@ -141,10 +160,25 @@ const TeamChat = () => {
                     background: '#3f3',
                     color: '#000',
                   },
+                  width: 171,
+                  maxWidth: 171,
+                  boxSizing: 'border-box',
                 }}
               >
-                Everyone
-              </Typography>
+                <Typography
+                  variant="h6"
+                  component="span"
+                  css={{
+                    flex: 1,
+                    minWidth: 0,
+                    overflow: 'hidden',
+                    whiteSpace: 'nowrap',
+                    textOverflow: 'ellipsis',
+                  }}
+                >
+                  Everyone
+                </Typography>
+              </div>
             </div>
             {appContext.cordClientAuthToken && !isSleeping && (
               <PagePresence
