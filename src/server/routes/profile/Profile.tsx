@@ -171,18 +171,22 @@ const Profile: React.FC = () => {
                     {user.public ? 'Public' : 'Private'}
                   </Typography>
                 </div>
-                <Divider />
-                <div
-                  css={{
-                    marginBottom: 'var(--spacing-large)',
-                    display: 'flex',
-                    justifyContent: 'end',
-                  }}
-                >
-                  <Button variant="text" onClick={startEditingProfile}>
-                    Edit profile
-                  </Button>
-                </div>
+                {(appContext?.user?.id === userId || !params.userName) && (
+                  <>
+                    <Divider />
+                    <div
+                      css={{
+                        marginBottom: 'var(--spacing-large)',
+                        display: 'flex',
+                        justifyContent: 'end',
+                      }}
+                    >
+                      <Button variant="text" onClick={startEditingProfile}>
+                        Edit profile
+                      </Button>
+                    </div>
+                  </>
+                )}
               </>
             )}
           </>
