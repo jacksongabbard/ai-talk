@@ -129,7 +129,7 @@ const Puzzles: React.FC = () => {
                   >
                     <PresenceFacepile location={{ route: '/puzzle/' + slug }} />
                   </div>
-                  {solved === true && (
+                  {solved !== undefined && (
                     <Typography
                       variant="subtitle2"
                       css={{
@@ -141,22 +141,7 @@ const Puzzles: React.FC = () => {
                         padding: 'var(--spacing-medium)',
                       }}
                     >
-                      SOLVED!
-                    </Typography>
-                  )}
-                  {solved === false && (
-                    <Typography
-                      variant="subtitle2"
-                      css={{
-                        position: 'absolute',
-                        bottom: 0,
-                        right: '16px',
-                        background: '#3f3',
-                        color: '#000',
-                        padding: 'var(--spacing-medium)',
-                      }}
-                    >
-                      STARTED
+                      {solved ? 'SOLVED!' : 'STARTED'}
                     </Typography>
                   )}
                 </div>
