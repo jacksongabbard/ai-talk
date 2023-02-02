@@ -165,7 +165,11 @@ export default function PuzzleFeedbackDialog(
       </DialogContent>
       <DialogActions data-test="confirmationDialogActions">
         <Button onClick={handleCancel}>Cancel</Button>
-        <Button onClick={handleSave} color="primary">
+        <Button
+          onClick={handleSave}
+          disabled={!rating || !difficulty}
+          color="primary"
+        >
           Save
         </Button>
       </DialogActions>
@@ -212,7 +216,11 @@ function PuzzleScoring({
         emptyIcon={<Icon style={{ opacity: 0.55 }} fontSize="inherit" />}
         icon={<Icon fontSize="inherit" />}
       />
-      <Box>{getLabel(hoveringIndex, score, labels)}</Box>
+      {score || hoveringIndex >= 0 ? (
+        <Box>{getLabel(hoveringIndex, score, labels)}</Box>
+      ) : (
+        <Box css={{ color: 'deeppink' }}>Required</Box>
+      )}
     </div>
   );
 }
