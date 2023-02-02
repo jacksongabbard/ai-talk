@@ -141,6 +141,21 @@ const GameGrid: React.FC<{ blocks: Block[]; wall: Block | null }> = ({
         <Block key={i} {...block} />
       ))}
       {wall && <Wall {...wall} />}
+      <div
+        css={{
+          // this is the little triangle marking exit
+          position: 'absolute',
+
+          // draw a triangle in CSS
+          borderColor: 'transparent transparent transparent #3f3',
+          borderStyle: 'solid',
+          borderWidth: '10px', // half of triangle size
+
+          left: 'calc(100% - 1px)',
+          // move down by 2.5 rows then offset up by half of the triangle size
+          top: `calc((100% - ${GRID_BORDER})/${GRID_SIZE}*2.5 + 0.5*${GRID_BORDER} - 10px)`,
+        }}
+      />
     </div>
   );
 };
