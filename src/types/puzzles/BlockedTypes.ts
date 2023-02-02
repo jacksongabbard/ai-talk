@@ -74,7 +74,7 @@ export const assertIsBlockedPuzzledPayload = (
 
 export type BlockedMoveInstanceAction = {
   actionType: 'move';
-  thread: thread;
+  threadID: string;
   direction: 1 | -1;
 };
 
@@ -85,8 +85,8 @@ export const blockedMoveInstanceActionValidator = makeValidator({
       type: 'string',
       pattern: '^move$',
     },
-    thread: {
-      type: 'object',
+    threadID: {
+      type: 'string',
     },
     direction: {
       type: 'number',
