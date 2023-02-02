@@ -98,6 +98,13 @@ const GameThread: React.FC<{
     [sendInstanceAction, threadID],
   );
 
+  const onResolved = useCallback(() => {
+    sendInstanceAction({ actionType: 'reset' });
+  }, [sendInstanceAction]);
+  const onClose = useCallback(() => {
+    sendInstanceAction({ threadID, direction: -1, actionType: 'move' });
+  }, [sendInstanceAction, threadID]);
+
   return (
     <Thread
       style={
@@ -112,6 +119,9 @@ const GameThread: React.FC<{
           maxHeight: ROW_HEIGHT,
         } as React.CSSProperties
       }
+      showHeader={true}
+      onResolved={onResolved}
+      onClose={onClose}
       threadId={threadID}
       onThreadInfoChange={onThreadInfoChange}
     />
