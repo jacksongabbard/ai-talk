@@ -190,39 +190,11 @@ const PuzzleShell: React.FC = () => {
         justifyContent: 'center',
       }}
     >
-      {!connected && <MessageBox type="info">Connecting...</MessageBox>}
-      {instance && instance.puzzleId === 'push_the_button' && (
-        <PushTheButton
-          instance={instance}
-          sendInstanceAction={sendInstanceAction}
-        />
-      )}
-      {instance && instance.puzzleId === 'nodoku' && (
-        <Nodoku instance={instance} sendInstanceAction={sendInstanceAction} />
-      )}
-      {instance && instance.puzzleId === 'no_you_first' && (
-        <NoYouFirst
-          instance={instance}
-          sendInstanceAction={sendInstanceAction}
-        />
-      )}
-      {instance && instance.puzzleId === 'simple_maze' && (
-        <SimpleMaze
-          instance={instance}
-          sendInstanceAction={sendInstanceAction}
-        />
-      )}
-      {instance && instance.puzzleId === 'blocked' && (
-        <Blocked instance={instance} sendInstanceAction={sendInstanceAction} />
-      )}
       {instance && instance.solvedAt && (
         <div
           css={{
-            alignItems: 'stretch',
             display: 'flex',
-            position: 'absolute',
-            top: '5vmin',
-            left: '5vmin',
+            alignSelf: 'flex-start',
             zIndex: 1000,
           }}
         >
@@ -256,6 +228,31 @@ const PuzzleShell: React.FC = () => {
             Play again?
           </Button>
         </div>
+      )}
+      {!connected && <MessageBox type="info">Connecting...</MessageBox>}
+      {instance && instance.puzzleId === 'push_the_button' && (
+        <PushTheButton
+          instance={instance}
+          sendInstanceAction={sendInstanceAction}
+        />
+      )}
+      {instance && instance.puzzleId === 'nodoku' && (
+        <Nodoku instance={instance} sendInstanceAction={sendInstanceAction} />
+      )}
+      {instance && instance.puzzleId === 'no_you_first' && (
+        <NoYouFirst
+          instance={instance}
+          sendInstanceAction={sendInstanceAction}
+        />
+      )}
+      {instance && instance.puzzleId === 'simple_maze' && (
+        <SimpleMaze
+          instance={instance}
+          sendInstanceAction={sendInstanceAction}
+        />
+      )}
+      {instance && instance.puzzleId === 'blocked' && (
+        <Blocked instance={instance} sendInstanceAction={sendInstanceAction} />
       )}
       {confirmationDialog}
       <Dialog open={errorMessage !== ''} onClose={onErrorDialogClose}>
