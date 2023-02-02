@@ -119,7 +119,7 @@ const GameThread: React.FC<{
 };
 
 const GRID_SIZE = 6;
-const GRID_BORDER = '10px';
+const GRID_BORDER = '5px';
 const ROW_HEIGHT = '20vh';
 const GameGrid: React.FC<{ blocks: Block[]; wall: Block | null }> = ({
   blocks,
@@ -132,8 +132,8 @@ const GameGrid: React.FC<{ blocks: Block[]; wall: Block | null }> = ({
         height: `calc(3*${ROW_HEIGHT})`,
         aspectRatio: '1 / 1',
         // CSS trick to draw a grid
-        backgroundImage: `repeating-linear-gradient(#ccc 0 ${GRID_BORDER}, transparent ${GRID_BORDER} 100%),
-                          repeating-linear-gradient(90deg, #ccc 0 ${GRID_BORDER}, transparent ${GRID_BORDER} 100%)`,
+        backgroundImage: `repeating-linear-gradient(#3f3 0 ${GRID_BORDER}, transparent ${GRID_BORDER} 100%),
+                          repeating-linear-gradient(90deg, #3f3 0 ${GRID_BORDER}, transparent ${GRID_BORDER} 100%)`,
         backgroundSize: `calc((100% - ${GRID_BORDER}) / ${GRID_SIZE}) calc((100% - ${GRID_BORDER}) / ${GRID_SIZE})`,
       }}
     >
@@ -162,7 +162,7 @@ const Block: React.FC<Block> = (props) => {
     >
       <div
         css={{
-          borderRadius: '10px',
+          borderRadius: '5px',
           background: props.color,
           width: '100%',
           height: '100%',
