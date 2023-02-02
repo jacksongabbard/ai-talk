@@ -75,20 +75,37 @@ export const assertIsBlockedPuzzledPayload = (
 export type BlockedSolutionPayload = {
   threads: thread[];
   exit: { row: number; column: number };
+  wall: boardPiece;
+  starterThreadSolvedState: thread;
+  boardState: string[][];
 };
 
 export const blockedSolutionPayloadValidator = makeValidator({
   type: 'object',
   properties: {
-    exit: { type: 'object' },
     threads: {
       type: 'array',
       items: {
         type: 'object',
       },
     },
+    wall: {
+      type: 'object',
+    },
+    exit: {
+      type: 'object',
+    },
+    starterThreadSolvedState: {
+      type: 'object',
+    },
+    boardState: {
+      type: 'array',
+      items: { type: 'array' },
+    },
   },
-  required: ['threads'],
+  additionalProperties: false,
+
+  required: ['threads', 'boardState', 'exit', 'starterThreadSolvedState'],
 });
 
 export const assertIsBlockedSolutionPayload = (
@@ -124,6 +141,8 @@ export const blockedMoveInstanceActionValidator = makeValidator({
       pattern: '^(1|-1)$',
     },
   },
+  additionalProperties: false,
+
   required: ['actionType', 'threadID', 'direction'],
 });
 
@@ -139,3 +158,20 @@ export const assertIsBlockedMoveInstanceAction = (
       JSON.stringify(thing, null, 4),
   );
 };
+
+export type BlockedResetInstanceAction = {
+  actionType: 'reset';
+};
+
+export const blockedResetInstanceActionValidator = makeValidator({
+  type: 'object',
+  properties: {
+    actionType: {
+      type: 'string',
+      pattern: '^reset$',
+    },
+  },
+  additionalProperties: false,
+
+  required: ['actionType'],
+});
