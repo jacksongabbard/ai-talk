@@ -12,6 +12,7 @@ import {
 import PuzzleInstanceUser from 'src/lib/db/PuzzleInstanceUser';
 import User from 'src/lib/db/User';
 import SequelizeInstance from 'src/lib/db/SequelizeInstance';
+import { sendNotificationToTeam } from 'src/server/lib/cord';
 
 export const listPuzzles: RequestHandler = async (
   req: Request,
@@ -297,6 +298,15 @@ export const generatePuzzleInstance: RequestHandler = async (
               instance.puzzlePayload,
               instance.solutionPayload,
             );
+
+            if (req.context.team) {
+              sendNotificationToTeam(
+                req.context.user.id,
+                req.context.team.id,
+                `{{actor}} started playing "${puzzle.name}". Click this notification to join them!`,
+                req.url,
+              );
+            }
 
             res.status(200);
             res.send(
