@@ -49,6 +49,10 @@ import { fetchLeaderboard } from './routes/api/leaderboard';
 import { leaderboard } from './routes/leaderboard';
 import { status } from './routes/status';
 import { loginAs } from './routes/loginAs/loginAs';
+import {
+  getPuzzlesFeedbackForUser,
+  savePuzzleFeedback,
+} from 'src/server/routes/api/puzzleFeedback';
 
 const config = getDotEnv();
 
@@ -137,6 +141,12 @@ console.log('Bootstrapping the server...');
     authMiddleware,
     getCordClientAuthToken,
   );
+  router.post(
+    '/api/get-puzzles-feedback',
+    authMiddleware,
+    getPuzzlesFeedbackForUser,
+  );
+  router.post('/api/save-puzzle-feedback', authMiddleware, savePuzzleFeedback);
 
   // Static resources
   router.get(/.*(\.js|\.js\.map)$/, staticResource);
