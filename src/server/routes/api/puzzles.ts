@@ -304,7 +304,7 @@ export const generatePuzzleInstance: RequestHandler = async (
                 req.context.user.id,
                 req.context.team.id,
                 `{{actor}} started playing "${puzzle.name}". Click this notification to join them!`,
-                req.url,
+                req.baseUrl + '/puzzle/' + puzzle.slug,
               );
             }
 
