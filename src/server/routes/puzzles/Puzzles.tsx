@@ -6,13 +6,17 @@ import callAPI from 'src/client/lib/callAPI';
 import Page from 'src/server/ui/page/Page';
 import { hasOwnProperty } from 'src/lib/hasOwnProperty';
 import MessageBox from 'src/server/ui/messageBox/MessageBox';
-import { Button, IconButton, Typography } from '@mui/material';
+import { IconButton, Tooltip, Typography } from '@mui/material';
 import FeedbackIcon from '@mui/icons-material/RateReview';
 import { ClientPuzzle, assertIsClientPuzzle } from 'src/types/Puzzle';
 import { CordContext, PresenceFacepile } from '@cord-sdk/react';
 import useDialog from 'src/server/ui/dialogs/useDialog';
-import PuzzleFeedbackDialog from 'src/server/ui/dialogs/PuzzleFeedbackDialog';
-import type PuzzleFeedback from 'src/lib/db/PuzzleFeedback';
+import PuzzleFeedbackDialog, {
+  AverageFeedbackByPuzzleId,
+  PuzzleFeedback,
+  PuzzleScoringViewOnly,
+} from 'src/server/ui/dialogs/PuzzleFeedbackDialog';
+import { Box } from '@mui/system';
 
 type PuzzleMap = {
   [slug: string]: { puzzle: ClientPuzzle; solved: boolean | undefined };
@@ -96,6 +100,34 @@ const Puzzles: React.FC = () => {
     })();
   }, [setErrorMessage]);
 
+  const [globalAverageFeedbackByPuzzleId, setGlobalAverageFeedbackByPuzzleId] =
+    useState<AverageFeedbackByPuzzleId | null>(null);
+
+  const updateGlobalAverageFeedback = useCallback(() => {
+    (async () => {
+      const resp = await callAPI('get-global-puzzles-feedback');
+      if (hasOwnProperty(resp, 'error') && typeof resp.error === 'string') {
+        // Intentionally not showing errors in the UI; we can live without ratings.
+        return;
+      }
+
+      if (
+        !hasOwnProperty(resp, 'globalFeedback') ||
+        typeof resp.globalFeedback !== 'object' ||
+        !resp.globalFeedback
+      ) {
+        return;
+      }
+
+      setGlobalAverageFeedbackByPuzzleId(
+        resp.globalFeedback as AverageFeedbackByPuzzleId,
+      );
+    })();
+  }, []);
+  useEffect(() => {
+    updateGlobalAverageFeedback();
+  }, [updateGlobalAverageFeedback]);
+
   const [puzzleFeedbackDialog, openPuzzleFeedbackDialog] =
     useDialog(PuzzleFeedbackDialog);
   const handleShareFeedback = useCallback(
@@ -117,9 +149,11 @@ const Puzzles: React.FC = () => {
           setErrorMessage(resp.error);
           return;
         }
+
+        updateGlobalAverageFeedback();
       })();
     },
-    [openPuzzleFeedbackDialog],
+    [openPuzzleFeedbackDialog, updateGlobalAverageFeedback],
   );
 
   return (
@@ -149,6 +183,7 @@ const Puzzles: React.FC = () => {
             }
             const solved = puzzleMap[slug].solved;
             const feedback = feedbackByPuzzleId?.[slug];
+            const globalFeedback = globalAverageFeedbackByPuzzleId?.[slug];
             return (
               <div key={slug} css={{ position: 'relative' }}>
                 {(solved === true || feedback) && (
@@ -179,7 +214,10 @@ const Puzzles: React.FC = () => {
                       border: '1px #3f3 solid',
                       borderRadius: 2,
                       width: '25vw',
-                      height: '200px',
+                      minHeight: '280px',
+                      display: 'flex',
+                      flexDirection: 'column',
+                      gap: 'var(--spacing-medium)',
                       flex: 0,
                       flexGrow: 0,
                       flexShrink: 0,
@@ -189,9 +227,7 @@ const Puzzles: React.FC = () => {
                       position: 'relative',
                       textDecoration: 'none',
                       '&:hover': {
-                        background: '#3f3',
-                        color: '#000',
-                        textDecoration: 'none',
+                        boxShadow: '#3f3 1px 1px 26px;',
                       },
                     }}
                   >
@@ -212,6 +248,31 @@ const Puzzles: React.FC = () => {
                         p.minPlayers !== p.maxPlayers &&
                         p.minPlayers + '-' + p.maxPlayers + ' players'}
                     </Typography>
+                    <Tooltip
+                      title={`How good (★) and difficult (🧩) people think this puzzle is`}
+                      componentsProps={{
+                        tooltip: {
+                          sx: { backgroundColor: '#3f3', color: '#000' },
+                        },
+                      }}
+                    >
+                      <Box
+                        css={{
+                          display: 'flex',
+                          flexDirection: 'column',
+                          alignSelf: 'flex-start',
+                        }}
+                      >
+                        <PuzzleScoringViewOnly
+                          score={globalFeedback?.avgRating ?? null}
+                          type="rating"
+                        />
+                        <PuzzleScoringViewOnly
+                          score={globalFeedback?.avgDifficulty ?? null}
+                          type="difficulty"
+                        />
+                      </Box>
+                    </Tooltip>
                     <div
                       css={{
                         marginTop: 'var(--spacing-medium)',

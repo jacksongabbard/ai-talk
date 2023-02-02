@@ -1,7 +1,9 @@
 import type { Request, RequestHandler, Response } from 'express';
+import { Sequelize } from 'sequelize';
 import PuzzleFeedback from 'src/lib/db/PuzzleFeedback';
 
 import { hasOwnProperty } from 'src/lib/hasOwnProperty';
+import { PuzzleList } from 'src/server/puzzles';
 import { bail400, bail500, error200 } from 'src/server/routes/api/util';
 
 export const savePuzzleFeedback: RequestHandler = async (
@@ -91,6 +93,61 @@ export const getPuzzlesFeedbackForUser: RequestHandler = async (
         JSON.stringify({
           success: true,
           feedback: feedbackByPuzzleId,
+        }),
+      );
+    } catch (e) {
+      console.log("Failed to get puzzles' feedback: ", e);
+      bail500('Unexpected error: ' + (e as Error).message, res);
+      return;
+    }
+  })();
+};
+
+export const getGlobalAveragePuzzlesFeedback: RequestHandler = async (
+  req: Request,
+  res: Response,
+) => {
+  (async () => {
+    try {
+      const pfs = await PuzzleFeedback.findAll({
+        attributes: [
+          'puzzle_id',
+          [
+            Sequelize.fn(
+              'AVG',
+              Sequelize.cast(Sequelize.col('difficulty'), 'smallint'),
+            ),
+            'avgDifficulty',
+          ],
+          [
+            Sequelize.fn(
+              'AVG',
+              Sequelize.cast(Sequelize.col('rating'), 'smallint'),
+            ),
+            'avgRating',
+          ],
+        ],
+        group: 'puzzle_id',
+      });
+
+      const globalFeedback: {
+        [slug: string]: { avgDifficulty: number; avgRating: number };
+      } = PuzzleList.reduce((prev, curr) => ({ ...prev, [curr.slug]: {} }), {});
+      for (const pf of pfs) {
+        const {
+          dataValues: { puzzle_id, avgDifficulty, avgRating },
+        } = pf;
+        globalFeedback[puzzle_id] = {
+          avgDifficulty: parseFloat(avgDifficulty),
+          avgRating: parseFloat(avgRating),
+        };
+      }
+
+      res.status(200);
+      res.send(
+        JSON.stringify({
+          success: true,
+          globalFeedback,
         }),
       );
     } catch (e) {

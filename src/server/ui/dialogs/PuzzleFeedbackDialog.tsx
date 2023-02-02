@@ -1,17 +1,18 @@
+import { useCallback, useEffect, useState } from 'react';
+
 import Dialog from '@mui/material/Dialog';
 import DialogTitle from '@mui/material/DialogTitle';
 import DialogContent from '@mui/material/DialogContent';
 import DialogActions from '@mui/material/DialogActions';
 import Button from '@mui/material/Button';
 import TextField from '@mui/material/TextField';
-import Rating from '@mui/material/Rating';
+import Rating, { RatingProps } from '@mui/material/Rating';
 import Box from '@mui/material/Box';
 import StarIcon from '@mui/icons-material/Star';
 import PuzzleIcon from '@mui/icons-material/Extension';
+import Typography from '@mui/material/Typography';
 
 import type { DialogProps } from 'src/server/ui/dialogs/useDialog';
-import { useCallback, useEffect, useState } from 'react';
-import { Typography } from '@mui/material';
 
 const DIFFICULTY_LABELS: { [index: string]: string } = {
   1: 'I could have done it with both hands tied behind my back',
@@ -33,6 +34,9 @@ export type PuzzleFeedback = {
   rating: number;
   difficulty: number;
   feedbackText: string | undefined;
+};
+export type AverageFeedbackByPuzzleId = {
+  [puzzleId: string]: { avgRating: number; avgDifficulty: number };
 };
 
 const getLabel = (
@@ -125,58 +129,23 @@ export default function PuzzleFeedbackDialog(
         >
           <Box>
             <Typography>How difficult was it?</Typography>
-            <div css={{ display: 'flex', gap: 'var(--spacing-xlarge)' }}>
-              <Rating
-                sx={{
-                  '& .MuiRating-iconFilled': {
-                    color: '#33ff3388',
-                  },
-                  '& .MuiRating-iconHover': {
-                    color: '#3f3',
-                  },
-                }}
-                value={difficulty}
-                onChange={(event, newValue) => {
-                  setDifficulty(newValue);
-                }}
-                onChangeActive={(event, newHover) => {
-                  setHoverOnDifficulty(newHover);
-                }}
-                emptyIcon={
-                  <PuzzleIcon style={{ opacity: 0.55 }} fontSize="inherit" />
-                }
-                icon={<PuzzleIcon fontSize="inherit" />}
-              />
-              <Box>
-                {getLabel(hoverOnDifficulty, difficulty, DIFFICULTY_LABELS)}
-              </Box>
-            </div>
+            <PuzzleScoring
+              hoveringIndex={hoverOnDifficulty}
+              setHoveringIndex={setHoverOnDifficulty}
+              score={difficulty}
+              setScore={setDifficulty}
+              type="difficulty"
+            />
           </Box>
           <Box>
             <Typography>How good was it?</Typography>
-            <div css={{ display: 'flex', gap: 'var(--spacing-xlarge)' }}>
-              <Rating
-                value={rating}
-                sx={{
-                  '& .MuiRating-iconFilled': {
-                    color: '#33ff3388',
-                  },
-                  '& .MuiRating-iconHover': {
-                    color: '#3f3',
-                  },
-                }}
-                onChange={(event, newValue) => {
-                  setRating(newValue);
-                }}
-                onChangeActive={(event, newHover) => {
-                  setHoverOnRating(newHover);
-                }}
-                emptyIcon={
-                  <StarIcon style={{ opacity: 0.55 }} fontSize="inherit" />
-                }
-              />
-              <Box>{getLabel(hoverOnRating, rating, RATING_LABELS)}</Box>
-            </div>
+            <PuzzleScoring
+              hoveringIndex={hoverOnRating}
+              setHoveringIndex={setHoverOnRating}
+              score={rating}
+              setScore={setRating}
+              type="rating"
+            />
           </Box>
 
           <TextField
@@ -201,5 +170,72 @@ export default function PuzzleFeedbackDialog(
         </Button>
       </DialogActions>
     </Dialog>
+  );
+}
+
+const CUSTOM_STYLE = {
+  '& .MuiRating-iconFilled': {
+    color: '#33ff3388',
+  },
+  '& .MuiRating-iconHover': {
+    color: '#3f3',
+  },
+};
+
+function PuzzleScoring({
+  type,
+  score,
+  setScore,
+  hoveringIndex,
+  setHoveringIndex,
+}: {
+  score: number | null;
+  setScore: (newScore: number | null) => void;
+  hoveringIndex: number;
+  setHoveringIndex: (index: number) => void;
+  type: 'difficulty' | 'rating';
+}) {
+  const labels = type === 'difficulty' ? DIFFICULTY_LABELS : RATING_LABELS;
+  const Icon = type === 'difficulty' ? PuzzleIcon : StarIcon;
+
+  return (
+    <div css={{ display: 'flex', gap: 'var(--spacing-xlarge)' }}>
+      <Rating
+        value={score}
+        sx={CUSTOM_STYLE}
+        onChange={(event, newValue) => {
+          setScore(newValue);
+        }}
+        onChangeActive={(event, newHover) => {
+          setHoveringIndex(newHover);
+        }}
+        emptyIcon={<Icon style={{ opacity: 0.55 }} fontSize="inherit" />}
+        icon={<Icon fontSize="inherit" />}
+      />
+      <Box>{getLabel(hoveringIndex, score, labels)}</Box>
+    </div>
+  );
+}
+
+export function PuzzleScoringViewOnly({
+  score,
+  type,
+  size = 'small',
+}: {
+  score: number | null;
+  type: 'difficulty' | 'rating';
+  size?: RatingProps['size'];
+}) {
+  const Icon = type === 'difficulty' ? PuzzleIcon : StarIcon;
+
+  return (
+    <Rating
+      value={score}
+      size={size}
+      sx={CUSTOM_STYLE}
+      emptyIcon={<Icon style={{ opacity: 0.55 }} fontSize="inherit" />}
+      icon={<Icon fontSize="inherit" />}
+      readOnly
+    />
   );
 }

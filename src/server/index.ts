@@ -50,6 +50,7 @@ import { leaderboard } from './routes/leaderboard';
 import { status } from './routes/status';
 import { loginAs } from './routes/loginAs/loginAs';
 import {
+  getGlobalAveragePuzzlesFeedback,
   getPuzzlesFeedbackForUser,
   savePuzzleFeedback,
 } from 'src/server/routes/api/puzzleFeedback';
@@ -147,6 +148,11 @@ console.log('Bootstrapping the server...');
     getPuzzlesFeedbackForUser,
   );
   router.post('/api/save-puzzle-feedback', authMiddleware, savePuzzleFeedback);
+  router.post(
+    '/api/get-global-puzzles-feedback',
+    authMiddleware,
+    getGlobalAveragePuzzlesFeedback,
+  );
 
   // Static resources
   router.get(/.*(\.js|\.js\.map)$/, staticResource);
