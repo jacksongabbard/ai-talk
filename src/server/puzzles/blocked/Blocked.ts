@@ -18,7 +18,7 @@ import { hasOwnProperty } from 'src/lib/hasOwnProperty';
 
 export const THREAD_COLORS = [
   '#297373',
-  '#0A1045',
+  '#416788',
   '#00C2D1',
   '#ED33B9',
   '#512D38',
