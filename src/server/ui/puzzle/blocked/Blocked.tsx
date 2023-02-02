@@ -185,12 +185,17 @@ const Block: React.FC<Block> = (props) => {
         padding: '10px',
       }}
     >
-      <div
-        css={{
-          borderRadius: '5px',
-          background: props.color,
-          width: '100%',
-          height: '100%',
+      <ThreadIcon
+        extraStyle={{
+          transform: [
+            props.width > props.height ? 'rotate(90deg)' : '',
+            `scaleY(${Math.max(props.width, props.height - 1)})`,
+          ].join(' '),
+          position: 'absolute',
+          inset: 0,
+          margin: 'auto',
+          color: props.color,
+          maxWidth: props.height > props.width ? '90%' : '100%',
         }}
       />
     </div>
@@ -236,5 +241,77 @@ function getBlockPositionCSS(
     height: `calc(${blockHeight}*${oneSquare} - ${GRID_BORDER})`,
   };
 }
+
+const ThreadIcon: React.FC<{ extraStyle: React.CSSProperties }> = (props) => {
+  const gray = 'rgb(30, 30, 30, 0.6)';
+  return (
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      xmlnsXlink="http://www.w3.org/1999/xlink"
+      version="1.1"
+      id="Layer_1"
+      xmlSpace="preserve"
+      viewBox="132.4 0 335.45 511.99"
+      style={props.extraStyle}
+      height="100%"
+      preserveAspectRatio="false"
+    >
+      <g>
+        <g>
+          <path
+            style={{ fill: '#CDCDCD' }}
+            d="M463.957,29.89l-66.719,58.386H203.031L136.304,29.89c-2.472-2.172-3.893-5.297-3.893-8.589v-9.887    C132.411,5.111,137.522,0,143.825,0h312.611c6.312,0,11.423,5.111,11.423,11.414v9.887    C467.859,24.594,466.438,27.719,463.957,29.89"
+          />
+          <path
+            style={{ fill: '#CDCDCD' }}
+            d="M136.307,482.101l66.719-58.386h194.207l66.728,58.386c2.472,2.172,3.893,5.297,3.893,8.589v9.887    c0,6.303-5.111,11.414-11.414,11.414H143.828c-6.312,0-11.423-5.111-11.423-11.414v-9.887    C132.405,487.398,133.827,484.273,136.307,482.101"
+          />
+        </g>
+        <path
+          style={{ fill: 'currentColor' }}
+          d="M203.029,423.72h194.207V88.271H203.029V423.72z"
+        />
+        <g>
+          <path
+            style={{ fill: gray }}
+            d="M203.029,154.168v21.222l119.658-79.775l-4.899-7.345h-15.916L203.029,154.168z"
+          />
+          <path
+            style={{ fill: gray }}
+            d="M203.029,228.943l194.207-120.541V88.267h-1.042L203.029,208.163V228.943z"
+          />
+          <path
+            style={{ fill: gray }}
+            d="M397.236,149.839l-136.907,80.896l8.987,15.21l127.921-75.591V149.839z"
+          />
+          <path
+            style={{ fill: gray }}
+            d="M397.236,203.328l-75.167,45.1l9.092,15.139l66.074-39.653V203.328z"
+          />
+          <path
+            style={{ fill: gray }}
+            d="M203.029,229.817l194.207,51.791v-18.264l-191.929-51.182l-2.278,8.519V229.817z"
+          />
+          <path
+            style={{ fill: gray }}
+            d="M257.318,423.72l139.917-78.707v-20.242L221.32,423.72H257.318z"
+          />
+          <path
+            style={{ fill: gray }}
+            d="M203.029,326.571l67.452,25.944l6.338-16.481l-73.79-28.39V326.571z"
+          />
+          <path
+            style={{ fill: gray }}
+            d="M203.029,274.823l125.034,44.659l5.932-16.622l-130.966-46.777V274.823z"
+          />
+          <path
+            style={{ fill: gray }}
+            d="M203.029,371.448v20.189l194.207-107.891v-10.099l-4.281-7.715L203.029,371.448z"
+          />
+        </g>
+      </g>
+    </svg>
+  );
+};
 
 export default Blocked;
