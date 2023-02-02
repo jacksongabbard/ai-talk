@@ -30,11 +30,10 @@ const Blocked: React.FC<BlockedProps> = ({ instance, sendInstanceAction }) => {
     throw new Error('No user');
   }
 
-  useEffect(() => {
-    console.log(payload);
-  }, [payload]);
-
-  const blocks: Block[] = payload?.threads ?? [];
+  // keep blocks in the same order
+  const blocks: Block[] = (payload?.threads ?? []).sort((a, b) =>
+    a.threadID < b.threadID ? -1 : a.threadID > b.threadID ? 1 : 0,
+  );
 
   return (
     <>
