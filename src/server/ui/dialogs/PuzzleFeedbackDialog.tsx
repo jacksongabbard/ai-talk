@@ -33,7 +33,7 @@ const RATING_LABELS: { [index: string]: string } = {
 export type PuzzleFeedback = {
   rating: number;
   difficulty: number;
-  feedbackText: string | undefined;
+  feedbackText: string | null;
 };
 export type AverageFeedbackByPuzzleId = {
   [puzzleId: string]: { avgRating: number; avgDifficulty: number };
@@ -68,8 +68,8 @@ export default function PuzzleFeedbackDialog(
   props: DialogProps<PuzzleFeedback | null> & Props,
 ) {
   const { puzzleId, isOpen, onClose, existingFeedback } = props;
-  const [feedbackText, setFeedbackText] = useState<string | undefined>(
-    existingFeedback?.feedbackText,
+  const [feedbackText, setFeedbackText] = useState<string>(
+    existingFeedback?.feedbackText ?? '',
   );
   const [rating, setRating] = useState<number | null>(
     existingFeedback?.rating ?? null,
@@ -84,7 +84,7 @@ export default function PuzzleFeedbackDialog(
     if (!existingFeedback) {
       return;
     }
-    setFeedbackText(existingFeedback.feedbackText);
+    setFeedbackText(existingFeedback?.feedbackText ?? '');
     setRating(existingFeedback.rating);
     setDifficulty(existingFeedback.difficulty);
   }, [existingFeedback]);
