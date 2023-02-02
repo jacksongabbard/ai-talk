@@ -30,6 +30,10 @@ const Blocked: React.FC<BlockedProps> = ({ instance, sendInstanceAction }) => {
     throw new Error('No user');
   }
 
+  useEffect(() => {
+    console.log(payload);
+  }, [payload]);
+
   const blocks: Block[] = payload?.threads ?? [];
 
   return (
@@ -55,7 +59,7 @@ const Blocked: React.FC<BlockedProps> = ({ instance, sendInstanceAction }) => {
                   ?.color ?? 'pink'
               }
               threadID={threadID}
-              sendInstanceAction={() => {} /* TODO */}
+              sendInstanceAction={sendInstanceAction}
             />
           );
         }) ?? []}
@@ -85,9 +89,12 @@ const GameThread: React.FC<{
         return;
       }
       if (prevCount.current > messageCount) {
-        sendInstanceAction({ threadID, change: 1 });
+        console.log('send move -1');
+        sendInstanceAction({ threadID, direction: -1, actionType: 'move' });
       } else if (prevCount.current < messageCount) {
-        sendInstanceAction({ threadID, change: -1 });
+        console.log('send move 1');
+
+        sendInstanceAction({ threadID, direction: 1, actionType: 'move' });
       }
       prevCount.current = messageCount;
     },
@@ -141,8 +148,8 @@ const Block: React.FC<Block> = (props) => {
     <div
       css={{
         // TODO: remove -1 from top and left
-        top: `calc(100% * ${props.row - 1} / ${GRID_SIZE})`,
-        left: `calc(100% * ${props.column - 1} / ${GRID_SIZE})`,
+        top: `calc(100% * ${props.row} / ${GRID_SIZE})`,
+        left: `calc(100% * ${props.column} / ${GRID_SIZE})`,
         height: `calc(100% * ${props.height} / ${GRID_SIZE})`,
         width: `calc(100% * ${props.width} / ${GRID_SIZE})`,
         transition: '1s',

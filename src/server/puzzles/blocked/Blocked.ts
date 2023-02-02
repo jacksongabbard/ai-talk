@@ -8,13 +8,13 @@ import type PuzzleInstance from 'src/lib/db/PuzzleInstance';
 import {
   assertIsBlockedMoveInstanceAction,
   assertIsBlockedPuzzledPayload,
+  assertIsBlockedSolutionPayload,
   BlockedPuzzlePayload,
   BlockedSolutionPayload,
   boardPiece,
   thread,
 } from 'src/types/puzzles/BlockedTypes';
 import { hasOwnProperty } from 'src/lib/hasOwnProperty';
-import { threadId } from 'worker_threads';
 
 export enum THREAD_COLORS {
   maroon = '#800000',
@@ -92,15 +92,14 @@ const placeholderThreadBoardPieces: boardPiece[] = [
     row: 4,
     column: 2,
   },
+  {
+    color: THREAD_COLORS.red,
+    width: 2,
+    height: 1,
+    row: 2,
+    column: 1,
+  },
 ];
-
-const placeholderStarterThreadBoardPiece: boardPiece = {
-  color: THREAD_COLORS.red,
-  width: 2,
-  height: 1,
-  row: 2,
-  column: 1,
-};
 
 const placeholderWallBoardPiece: boardPiece = {
   color: THREAD_COLORS.black,
@@ -137,19 +136,6 @@ const updateBoardState = (
 
   if (threadVertical) {
     if (direction === 1) {
-      // check for open space vertical up
-      if (updatedBoardState[updatedThread.row][updatedThread.column] !== 'o') {
-        return [currentBoardState, false];
-      }
-
-      updatedBoardState[updatedThread.row][updatedThread.column] = 't';
-
-      updatedBoardState[updatedThread.row + updatedThread.height][
-        updatedThread.column
-      ] = 'o';
-    }
-
-    if (direction === -1) {
       // check for oob tail end of block
       if (updatedThread.row + updatedThread.height - 1 > 5) {
         console.log('oob tailend of vert down');
@@ -161,6 +147,8 @@ const updateBoardState = (
           updatedThread.column
         ] !== 'o'
       ) {
+        console.log('no open space vert down');
+
         return [currentBoardState, false];
       }
 
@@ -170,10 +158,27 @@ const updateBoardState = (
 
       updatedBoardState[updatedThread.row - 1][updatedThread.column] = 'o';
     }
+
+    if (direction === -1) {
+      // check for open space vertical up
+      if (updatedBoardState[updatedThread.row][updatedThread.column] !== 'o') {
+        console.log('no open space vert up');
+
+        return [currentBoardState, false];
+      }
+
+      updatedBoardState[updatedThread.row][updatedThread.column] = 't';
+
+      updatedBoardState[updatedThread.row + updatedThread.height][
+        updatedThread.column
+      ] = 'o';
+    }
   } else {
     if (direction === 1) {
       // check for oob tail end of block
-      if (updatedThread.column + updatedThread.width > 5) {
+      if (updatedThread.column + updatedThread.width - 1 > 5) {
+        console.log('check for oob tail end of block');
+
         return [currentBoardState, false];
       }
 
@@ -183,6 +188,8 @@ const updateBoardState = (
           updatedThread.column + updatedThread.width - 1
         ] !== 'o'
       ) {
+        console.log('no space horiz right');
+
         return [currentBoardState, false];
       }
 
@@ -193,8 +200,10 @@ const updateBoardState = (
       updatedBoardState[updatedThread.row][updatedThread.column - 1] = 'o';
     }
     if (direction === -1) {
-      // check for open space horizontal lef
+      // check for open space horizontal left
       if (updatedBoardState[updatedThread.row][updatedThread.column] !== 'o') {
+        console.log('no space horiz left');
+
         return [currentBoardState, false];
       }
 
@@ -220,34 +229,38 @@ const Blocked: Puzzle = {
       throw new Error('Puzzle requires a team');
     }
 
-    const initialThreads = placeholderThreadBoardPieces.map((thread, i) => {
-      const ownerID = members[i % members.length].id;
+    const initialThreads = placeholderThreadBoardPieces
+      .filter((thread) => thread.color !== THREAD_COLORS.red)
+      .map((thread, i) => {
+        const ownerID = members[i % members.length].id;
 
-      return {
-        ...thread,
-        threadID: `blocked-puzzled-${team.id}-thread-${i}`,
-        ownerID,
-      };
-    });
+        return {
+          ...thread,
+          threadID: `blocked-puzzled-${team.id}-thread-${i}`,
+          ownerID,
+        };
+      });
+
+    const starterThreadData = placeholderThreadBoardPieces.find(
+      (thread) => thread.color === THREAD_COLORS.red,
+    );
+
+    if (!starterThreadData) {
+      throw new Error('No starter thread data provided');
+    }
+
+    const starterThread = {
+      ...starterThreadData,
+      threadID: `blocked-puzzle-${team.id}`,
+      ownerID: null,
+    };
 
     const solutionPayload: BlockedSolutionPayload = {
       exit: EXIT_POSITION,
-      starterThread: {
-        threadID: `blocked-puzzle-${team.id}`,
-        ownerID: null,
-        ...placeholderStarterThreadBoardPiece,
-        row: 2,
-        column: 3,
-      },
+      threads: [{ ...starterThread, ...EXIT_POSITION }],
     };
 
-    const starterThread = {
-      threadID: `blocked-puzzle-${team.id}`,
-      ownerID: null,
-      ...placeholderStarterThreadBoardPiece,
-    };
-
-    let initialBoardState = [
+    const initialBoardState = [
       ['o', 'o', 'o', 'o', 'o', 'o'],
       ['o', 'o', 'o', 'o', 'o', 'o'],
       ['o', 'o', 'o', 'o', 'o', 'o'],
@@ -256,7 +269,9 @@ const Blocked: Puzzle = {
       ['o', 'o', 'o', 'o', 'o', 'o'],
     ];
 
-    for (const thread of initialThreads) {
+    const allThreads = [...initialThreads, starterThread];
+
+    for (const thread of allThreads) {
       initialBoardState[thread.row][thread.column] = 't';
 
       if (thread.width > 1) {
@@ -272,28 +287,13 @@ const Blocked: Puzzle = {
       }
     }
 
-    initialBoardState[starterThread.row][starterThread.column] = 's';
-
-    if (starterThread.width > 1) {
-      for (let i = 1; i < starterThread.width; i++) {
-        initialBoardState[starterThread.row][starterThread.column + i] = 's';
-      }
-    }
-
-    if (starterThread.height > 1) {
-      for (let i = 1; i < starterThread.height; i++) {
-        initialBoardState[starterThread.row + i][starterThread.column] = 's';
-      }
-    }
-
     initialBoardState[placeholderWallBoardPiece.row][
       placeholderWallBoardPiece.column
     ] = 'w';
 
     const puzzlePayload: BlockedPuzzlePayload = {
-      threads: initialThreads,
+      threads: allThreads,
       wall: placeholderWallBoardPiece,
-      starterThread,
       exit: EXIT_POSITION,
       boardState: initialBoardState,
       ownedThreadIDs: [],
@@ -313,12 +313,15 @@ const Blocked: Puzzle = {
     const payload = assertIsBlockedPuzzledPayload(cloneDeep(puzzlePayload));
 
     const ownedThreadIDs = payload.threads
-      .filter((thread) => thread.ownerID === user.id)
+      .filter((thread) => thread.ownerID === user.id || thread.ownerID === null)
       .map((thread) => thread.threadID);
+
+    console.log({ ownedThreadIDs });
+    console.log('threads,', payload.threads);
 
     return {
       ...payload,
-      ownedThreadIDs: [...ownedThreadIDs, payload.starterThread.threadID],
+      ownedThreadIDs: [...ownedThreadIDs],
     };
   },
 
@@ -335,6 +338,7 @@ const Blocked: Puzzle = {
     puzzleInstance: PuzzleInstance,
     action: object,
   ): ActionResult => {
+    console.log('get action');
     if (
       !hasOwnProperty(action, 'actionType') ||
       typeof action.actionType !== 'string'
@@ -349,17 +353,15 @@ const Blocked: Puzzle = {
       );
       const { threadID, direction } = moveAction;
 
-      const threadToUpdate =
-        payload.threads.find((thread) => thread.threadID === threadID) ??
-        payload.starterThread.threadID === threadID
-          ? payload.starterThread
-          : null;
+      const threadToUpdate = payload.threads.find(
+        (thread) => thread.threadID === threadID,
+      );
+
+      // console.log('thead to update ??', threadToUpdate, direction);
 
       if (!threadToUpdate) {
         throw new Error('threadID not found');
       }
-
-      const isStarterThread = !threadToUpdate.threadID.includes('thread');
 
       if (
         threadToUpdate.ownerID !== null &&
@@ -372,7 +374,7 @@ const Blocked: Puzzle = {
 
       const updatedPosition = {
         row: threadVertical
-          ? threadToUpdate.row - direction
+          ? threadToUpdate.row + direction
           : threadToUpdate.row,
         column: threadVertical
           ? threadToUpdate.column
@@ -383,6 +385,8 @@ const Blocked: Puzzle = {
         ...threadToUpdate,
         ...updatedPosition,
       };
+
+      // console.log({ updatedThread });
 
       const [updatedBoardState, updated] = updateBoardState(
         updatedThread,
@@ -396,45 +400,41 @@ const Blocked: Puzzle = {
           payloadDiff: {
             value: {},
           },
-          puzzlePayload: puzzleInstance.puzzlePayload,
+          puzzlePayload: payload,
         };
       }
-
-      if (isStarterThread) {
-        const payloadDiffValue = {
-          boardState: updatedBoardState,
-          starterThread: updatedThread,
-        };
-
-        const puzzlePayload = merge(
-          puzzleInstance.puzzlePayload,
-          payloadDiffValue,
-        );
-
-        return {
-          payloadDiff: {
-            // seq number comes externally
-
-            value: payloadDiffValue,
-          },
-          puzzlePayload,
-        };
-      }
+      // console.log('og boardstate', payload.boardState);
+      // console.log('updated board state', updatedBoardState);
 
       const unchangedThreads = payload.threads.filter(
         (currentThread) => currentThread.threadID !== threadToUpdate.threadID,
       );
+
+      // console.log({ unchangedThreads });
 
       const payloadDiffValue = {
         threads: [...unchangedThreads, updatedThread],
         boardState: updatedBoardState,
       };
 
-      const puzzlePayload = merge(
-        puzzleInstance.puzzlePayload,
-        payloadDiffValue,
-      );
+      // const puzzlePayload = merge(payload, payloadDiffValue);
+      const puzzlePayload = {
+        ...payload,
+        ...payloadDiffValue,
+      };
 
+      const payloadThreadIDs = puzzlePayload.threads.map(
+        (thread) => thread.threadID,
+      );
+      console.log({ payloadThreadIDs });
+      // console.log({ puzzlePayload });
+      const diffThreadIDs = payloadDiffValue.threads.map(
+        (thread) => thread.threadID,
+      );
+      console.log({ diffThreadIDs });
+      console.log(JSON.stringify(payloadDiffValue, undefined, 3));
+
+      console.log('return payload diff', puzzlePayload);
       return {
         payloadDiff: {
           // seq number comes externally
@@ -449,7 +449,18 @@ const Blocked: Puzzle = {
   },
 
   isSolved: (puzzlePayload, solutionPayload) => {
-    return isEqual(puzzlePayload, solutionPayload);
+    const p = assertIsBlockedPuzzledPayload(puzzlePayload);
+    const s = assertIsBlockedSolutionPayload(solutionPayload);
+
+    // TODO: Check valid board state and minimum number of moves?
+
+    const pStarterThread = p.threads.find(
+      (thread) => !thread.threadID.includes('thread'),
+    );
+
+    const sStarterThread = s.threads[0];
+
+    return isEqual(pStarterThread, sStarterThread);
   },
 };
 

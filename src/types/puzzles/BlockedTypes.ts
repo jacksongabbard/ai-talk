@@ -17,17 +17,12 @@ export type thread = boardPiece & {
 export type BlockedPuzzlePayload = {
   threads: thread[];
   wall: boardPiece;
-  starterThread: thread;
   exit: { row: number; column: number };
   boardState: string[][];
   ownedThreadIDs: string[];
 };
-export type BlockedSolutionPayload = {
-  starterThread: thread;
-  exit: { row: number; column: number };
-};
 
-const blockedPuzzleValidator = makeValidator({
+const blockedPuzzlePayloadValidator = makeValidator({
   type: 'object',
   properties: {
     threads: {
@@ -37,9 +32,6 @@ const blockedPuzzleValidator = makeValidator({
       },
     },
     wall: {
-      type: 'object',
-    },
-    starterThread: {
       type: 'object',
     },
     exit: {
@@ -57,17 +49,49 @@ const blockedPuzzleValidator = makeValidator({
     },
   },
   additionalProperties: false,
-  required: ['threads', 'starterThread', 'exit', 'boardState'],
+  required: ['threads', 'exit', 'boardState'],
 });
 
 export const assertIsBlockedPuzzledPayload = (
   thing: any,
 ): BlockedPuzzlePayload => {
-  if (blockedPuzzleValidator(thing)) {
+  if (blockedPuzzlePayloadValidator(thing)) {
     return thing as BlockedPuzzlePayload;
   }
+
   throw new Error(
     'Provided object is not a BlockedPuzzlePayload: ' +
+      JSON.stringify(thing, null, 4),
+  );
+};
+
+export type BlockedSolutionPayload = {
+  threads: thread[];
+  exit: { row: number; column: number };
+};
+
+export const blockedSolutionPayloadValidator = makeValidator({
+  type: 'object',
+  properties: {
+    exit: { type: 'object' },
+    threads: {
+      type: 'array',
+      items: {
+        type: 'object',
+      },
+    },
+  },
+  required: ['threads'],
+});
+
+export const assertIsBlockedSolutionPayload = (
+  thing: any,
+): BlockedSolutionPayload => {
+  if (blockedSolutionPayloadValidator(thing)) {
+    return thing as BlockedSolutionPayload;
+  }
+  throw new Error(
+    'Provided object is not a BlockedSolutionPayload: ' +
       JSON.stringify(thing, null, 4),
   );
 };
@@ -93,6 +117,7 @@ export const blockedMoveInstanceActionValidator = makeValidator({
       pattern: '^(1|-1)$',
     },
   },
+  required: ['actionType', 'threadID', 'direction'],
 });
 
 export const assertIsBlockedMoveInstanceAction = (
