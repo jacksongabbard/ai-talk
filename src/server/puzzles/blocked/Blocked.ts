@@ -16,93 +16,89 @@ import {
 } from 'src/types/puzzles/BlockedTypes';
 import { hasOwnProperty } from 'src/lib/hasOwnProperty';
 
-export enum THREAD_COLORS {
-  maroon = '#800000',
-  purple = '#800080',
-  fuchsia = '#FF00FF',
-  green = '#008000',
-  lime = '#00FF00',
-  olive = '#808000',
-  yellow = '#FFFF00',
-  navy = '#000080',
-  blue = '#0000FF',
-  teal = '#008080',
-  aqua = '#00FFFF',
-  black = '#000000',
-  red = '#FF0000',
-  silver = '#C0C0C0',
-  white = '#FFFFFF',
-  grey = '#808080',
-}
+export const THREAD_COLORS = [
+  '#297373',
+  '#0A1045',
+  '#00C2D1',
+  '#ED33B9',
+  '#512D38',
+  '#B27092',
+  '#6457A6',
+  '#498467',
+  '#9E643C',
+  '#485696',
+] as const;
+export const SOLUTION_BLOCK_COLOR = '#FE5F55';
+export const WALL_COLOR = '#717568';
 
 const placeholderThreadBoardPieces: boardPiece[] = [
   {
-    color: THREAD_COLORS.maroon,
+    color: SOLUTION_BLOCK_COLOR,
+    width: 2,
+    height: 1,
+    row: 2,
+    column: 1,
+  },
+  {
+    color: THREAD_COLORS[0],
     width: 1,
     height: 2,
     row: 0,
     column: 2,
   },
   {
-    color: THREAD_COLORS.aqua,
+    color: THREAD_COLORS[1],
     width: 3,
     height: 1,
     row: 1,
     column: 3,
   },
   {
-    color: THREAD_COLORS.blue,
+    color: THREAD_COLORS[2],
     width: 1,
     height: 2,
     row: 2,
     column: 3,
   },
   {
-    color: THREAD_COLORS.fuchsia,
+    color: THREAD_COLORS[3],
     width: 1,
     height: 3,
     row: 2,
     column: 5,
   },
   {
-    color: THREAD_COLORS.navy,
+    color: THREAD_COLORS[4],
     width: 2,
     height: 1,
     row: 3,
     column: 1,
   },
   {
-    color: THREAD_COLORS.green,
+    color: THREAD_COLORS[5],
     width: 1,
     height: 2,
     row: 3,
     column: 4,
   },
   {
-    color: THREAD_COLORS.purple,
+    color: THREAD_COLORS[6],
     width: 1,
     height: 2,
     row: 4,
     column: 1,
   },
   {
-    color: THREAD_COLORS.yellow,
+    color: THREAD_COLORS[7],
     width: 2,
     height: 1,
     row: 4,
     column: 2,
   },
-  {
-    color: THREAD_COLORS.red,
-    width: 2,
-    height: 1,
-    row: 2,
-    column: 1,
-  },
 ];
 
 const placeholderWallBoardPiece: boardPiece = {
-  color: THREAD_COLORS.black,
+  color: WALL_COLOR,
   width: 1,
   height: 1,
   row: 1,
@@ -230,7 +226,7 @@ const Blocked: Puzzle = {
     }
 
     const initialThreads = placeholderThreadBoardPieces
-      .filter((thread) => thread.color !== THREAD_COLORS.red)
+      .filter((thread) => thread.color !== SOLUTION_BLOCK_COLOR)
       .map((thread, i) => {
         const ownerID = members[i % members.length].id;
 
@@ -242,7 +238,7 @@ const Blocked: Puzzle = {
       });
 
     const starterThreadData = placeholderThreadBoardPieces.find(
-      (thread) => thread.color === THREAD_COLORS.red,
+      (thread) => thread.color === SOLUTION_BLOCK_COLOR,
     );
 
     if (!starterThreadData) {

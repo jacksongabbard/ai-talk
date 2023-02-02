@@ -1,8 +1,15 @@
 import { makeValidator } from 'src/lib/ajv/makeValidator';
-import type { THREAD_COLORS } from 'src/server/puzzles/blocked/Blocked';
+import type {
+  SOLUTION_BLOCK_COLOR,
+  THREAD_COLORS,
+  WALL_COLOR,
+} from 'src/server/puzzles/blocked/Blocked';
 
 export type boardPiece = {
-  color: THREAD_COLORS;
+  color:
+    | typeof THREAD_COLORS[number]
+    | typeof SOLUTION_BLOCK_COLOR
+    | typeof WALL_COLOR;
   width: number;
   height: number;
   row: number;
