@@ -34,6 +34,7 @@ const Blocked: React.FC<BlockedProps> = ({ instance, sendInstanceAction }) => {
   const blocks: Block[] = (payload?.threads ?? []).sort((a, b) =>
     a.threadID < b.threadID ? -1 : a.threadID > b.threadID ? 1 : 0,
   );
+  const wall = payload?.wall ?? null;
 
   return (
     <>
@@ -47,7 +48,7 @@ const Blocked: React.FC<BlockedProps> = ({ instance, sendInstanceAction }) => {
         }}
       >
         <div css={{ gridColumn: '2 / 5', gridRow: '1 / 4', margin: 'auto' }}>
-          <GameGrid blocks={blocks} />
+          <GameGrid blocks={blocks} wall={wall} />
         </div>
         {payload?.ownedThreadIDs.map((threadID) => {
           return (
@@ -88,11 +89,8 @@ const GameThread: React.FC<{
         return;
       }
       if (prevCount.current > messageCount) {
-        console.log('send move -1');
         sendInstanceAction({ threadID, direction: -1, actionType: 'move' });
       } else if (prevCount.current < messageCount) {
-        console.log('send move 1');
-
         sendInstanceAction({ threadID, direction: 1, actionType: 'move' });
       }
       prevCount.current = messageCount;
@@ -121,8 +119,12 @@ const GameThread: React.FC<{
 };
 
 const GRID_SIZE = 6;
+const GRID_BORDER = '10px';
 const ROW_HEIGHT = '20vh';
-const GameGrid: React.FC<{ blocks: Block[] }> = ({ blocks }) => {
+const GameGrid: React.FC<{ blocks: Block[]; wall: Block | null }> = ({
+  blocks,
+  wall,
+}) => {
   return (
     <div
       css={{
@@ -130,14 +132,15 @@ const GameGrid: React.FC<{ blocks: Block[] }> = ({ blocks }) => {
         height: `calc(3*${ROW_HEIGHT})`,
         aspectRatio: '1 / 1',
         // CSS trick to draw a grid
-        backgroundImage: `repeating-linear-gradient(#ccc 0 1px, transparent 1px 100%),
-                          repeating-linear-gradient(90deg, #ccc 0 1px, transparent 1px 100%)`,
-        backgroundSize: `calc((100% - 1px) / ${GRID_SIZE}) calc((100% - 1px) / ${GRID_SIZE})`,
+        backgroundImage: `repeating-linear-gradient(#ccc 0 ${GRID_BORDER}, transparent ${GRID_BORDER} 100%),
+                          repeating-linear-gradient(90deg, #ccc 0 ${GRID_BORDER}, transparent ${GRID_BORDER} 100%)`,
+        backgroundSize: `calc((100% - ${GRID_BORDER}) / ${GRID_SIZE}) calc((100% - ${GRID_BORDER}) / ${GRID_SIZE})`,
       }}
     >
       {blocks.map((block, i) => (
         <Block key={i} {...block} />
       ))}
+      {wall && <Wall {...wall} />}
     </div>
   );
 };
@@ -146,12 +149,13 @@ const Block: React.FC<Block> = (props) => {
   return (
     <div
       css={{
-        // TODO: remove -1 from top and left
-        top: `calc(100% * ${props.row} / ${GRID_SIZE})`,
-        left: `calc(100% * ${props.column} / ${GRID_SIZE})`,
-        height: `calc(100% * ${props.height} / ${GRID_SIZE})`,
-        width: `calc(100% * ${props.width} / ${GRID_SIZE})`,
-        transition: '1s',
+        ...getBlockPositionCSS(
+          props.row,
+          props.column,
+          props.width,
+          props.height,
+        ),
+        transition: 'top 1s, left 1s',
         position: 'absolute',
         padding: '10px',
       }}
@@ -167,5 +171,45 @@ const Block: React.FC<Block> = (props) => {
     </div>
   );
 };
+
+const Wall: React.FC<Block> = (props) => {
+  return (
+    <div
+      css={{
+        ...getBlockPositionCSS(
+          props.row,
+          props.column,
+          props.width,
+          props.height,
+        ),
+        position: 'absolute',
+      }}
+    >
+      <div
+        css={{
+          background: 'gray',
+          width: '100%',
+          height: '100%',
+        }}
+      />
+    </div>
+  );
+};
+
+function getBlockPositionCSS(
+  row: number,
+  col: number,
+  blockWidth: number,
+  blockHeight: number,
+) {
+  // Beware of css floating point inaccuracies if changing this function
+  const oneSquare = `(100% - ${GRID_BORDER})/${GRID_SIZE}`;
+  return {
+    top: `calc(${row}*${oneSquare} + ${GRID_BORDER})`,
+    left: `calc(${col}*${oneSquare} + ${GRID_BORDER})`,
+    width: `calc(${blockWidth}*${oneSquare} - ${GRID_BORDER})`,
+    height: `calc(${blockHeight}*${oneSquare} - ${GRID_BORDER})`,
+  };
+}
 
 export default Blocked;
