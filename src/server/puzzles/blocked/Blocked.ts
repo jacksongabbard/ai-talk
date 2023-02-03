@@ -1,4 +1,4 @@
-import { cloneDeep, isEqual, merge } from 'lodash';
+import { cloneDeep, isEqual } from 'lodash';
 
 import type Team from 'src/lib/db/Team';
 import type User from 'src/lib/db/User';
@@ -122,36 +122,34 @@ const Blocked: Puzzle = {
       throw new Error('Puzzle requires a team');
     }
 
-    const initialThreads = placeholderThreadBoardPieces
-      .filter((thread) => thread.color !== SOLUTION_BLOCK_COLOR)
-      .map((thread, i) => {
-        const ownerID = members[i % members.length].id;
+    const initialThreads = placeholderThreadBoardPieces.map((thread, i) => {
+      const ownerID = members[i % members.length].id;
 
+      if (thread.color === SOLUTION_BLOCK_COLOR) {
         return {
           ...thread,
-          threadID: `blocked-puzzled-${team.id}-thread-${i}`,
+          threadID: `blocked-puzzle-${team.id}-starter-thread`,
           ownerID,
         };
-      });
+      }
 
-    const starterThreadData = placeholderThreadBoardPieces.find(
-      (thread) => thread.color === SOLUTION_BLOCK_COLOR,
+      return {
+        ...thread,
+        threadID: `blocked-puzzle-${team.id}-thread-${i}`,
+        ownerID,
+      };
+    });
+
+    const starterThread = initialThreads.find((thread) =>
+      thread.threadID.includes('starter'),
     );
 
-    if (!starterThreadData) {
-      throw new Error('No starter thread data provided');
+    if (!starterThread) {
+      throw new Error('No starter thread provided');
     }
 
-    const starterThread = {
-      ...starterThreadData,
-      threadID: `blocked-puzzle-${team.id}`,
-      ownerID: null,
-    };
-
-    const allThreads = [...initialThreads, starterThread];
-
     const initialBoardState = generateBoardState(
-      allThreads,
+      initialThreads,
       placeholderWallBoardPiece,
     );
 
@@ -160,7 +158,7 @@ const Blocked: Puzzle = {
     }
 
     const solutionPayload: BlockedSolutionPayload = {
-      threads: allThreads,
+      threads: initialThreads,
       wall: placeholderWallBoardPiece,
       starterThreadSolvedState: {
         ...starterThread,
@@ -171,7 +169,7 @@ const Blocked: Puzzle = {
     };
 
     const puzzlePayload: BlockedPuzzlePayload = {
-      threads: allThreads,
+      threads: initialThreads,
       wall: placeholderWallBoardPiece,
       exit: EXIT_POSITION,
       boardState: initialBoardState,
@@ -311,7 +309,6 @@ const Blocked: Puzzle = {
         (thread) => thread.threadID,
       );
       console.log({ diffThreadIDs });
-      console.log(JSON.stringify(payloadDiffValue, undefined, 3));
 
       console.log('return payload diff', puzzlePayload);
       return {
@@ -364,8 +361,8 @@ const Blocked: Puzzle = {
       return false;
     }
 
-    const pStarterThread = p.threads.find(
-      (thread) => !thread.threadID.includes('thread'),
+    const pStarterThread = p.threads.find((thread) =>
+      thread.threadID.includes('starter'),
     );
 
     if (!pStarterThread) {
