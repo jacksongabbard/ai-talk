@@ -6,6 +6,7 @@ import { AppContext } from 'src/server/state/AppContext';
 import type { ClientPuzzleInstance } from 'src/types/ClientPuzzleInstance';
 import {
   assertIsBlockedPuzzledPayload,
+  BlockedInstanceAction,
   BlockedPuzzlePayload,
 } from 'src/types/puzzles/BlockedTypes';
 
@@ -101,7 +102,7 @@ type Block = {
 const GameThread: React.FC<{
   threadID: string;
   color: string;
-  sendInstanceAction: (action: any /*TODO - type this */) => void;
+  sendInstanceAction: (action: BlockedInstanceAction) => void;
 }> = ({ threadID, color, sendInstanceAction }) => {
   const prevCount = useRef<number | null>(null);
   const [resolvedRecently, setResolvedRecently] = useState<boolean>(false);

@@ -163,6 +163,10 @@ export type BlockedResetInstanceAction = {
   actionType: 'reset';
 };
 
+export type BlockedInstanceAction =
+  | BlockedResetInstanceAction
+  | BlockedMoveInstanceAction;
+
 export const blockedResetInstanceActionValidator = makeValidator({
   type: 'object',
   properties: {
