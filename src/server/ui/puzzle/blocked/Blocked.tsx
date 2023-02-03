@@ -14,7 +14,10 @@ type BlockedProps = {
   sendInstanceAction: SendInstanceAction;
 };
 
-const Blocked: React.FC<BlockedProps> = ({ instance, sendInstanceAction }) => {
+const Blocked: React.FC<BlockedProps> = ({
+  instance,
+  sendInstanceAction: origSendInstanceAction,
+}) => {
   const [payload, setPayload] = useState<BlockedPuzzlePayload | null>(null);
   useEffect(() => {
     if (!instance) {
@@ -47,29 +50,41 @@ const Blocked: React.FC<BlockedProps> = ({ instance, sendInstanceAction }) => {
     <>
       <div
         css={{
-          display: 'grid',
-          gridTemplateColumns: 'repeat(5, 1fr)',
-          gridTemplateRows: `repeat(4, ${ROW_HEIGHT})`,
-          gap: '12px',
-          alignItems: 'start',
+          display: 'flex',
+          gap: '36px',
         }}
       >
-        <div css={{ gridColumn: '2 / 5', gridRow: '1 / 4', margin: 'auto' }}>
-          <GameGrid blocks={blocks} wall={wall} />
+        <GameGrid blocks={blocks} wall={wall} />
+        <div
+          css={{
+            display: 'flex',
+            flexWrap: 'wrap',
+            gap: '12px',
+          }}
+        >
+          {payload?.ownedThreadIDs.map((threadID) => {
+            return (
+              <div
+                key={threadID}
+                css={{
+                  display: 'flex',
+                  flexDirection: 'column',
+                  height: '250px',
+                }}
+              >
+                <GameThread
+                  color={
+                    payload?.threads.find(
+                      (thread) => thread.threadID === threadID,
+                    )?.color ?? 'pink'
+                  }
+                  threadID={threadID}
+                  sendInstanceAction={sendInstanceAction}
+                />
+              </div>
+            );
+          }) ?? []}
         </div>
-        {payload?.ownedThreadIDs.map((threadID) => {
-          return (
-            <GameThread
-              key={threadID}
-              color={
-                payload?.threads.find((thread) => thread.threadID === threadID)
-                  ?.color ?? 'pink'
-              }
-              threadID={threadID}
-              sendInstanceAction={sendInstanceAction}
-            />
-          );
-        }) ?? []}
       </div>
     </>
   );
@@ -129,7 +144,7 @@ const GameThread: React.FC<{
           '--cord-color-content-secondary': 'white',
           '--cord-color-content-emphasis': 'white',
           '--cord-color-brand-primary': 'white',
-          maxHeight: ROW_HEIGHT,
+          maxHeight: '100%',
         } as React.CSSProperties
       }
       showHeader={true}
