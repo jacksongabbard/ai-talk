@@ -98,12 +98,12 @@ export const googleOAuthRedirect: RequestHandler = async (
             return;
           }
 
-          res.redirect('/home');
+          res.redirect('/');
           return;
         } else {
           // Do a login + redirect
           await setDatrCookie(user, req, res);
-          res.redirect('/home');
+          res.redirect('/');
         }
 
         return;

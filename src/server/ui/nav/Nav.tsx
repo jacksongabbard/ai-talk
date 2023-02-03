@@ -1,6 +1,5 @@
 import { useCallback, useState } from 'react';
 
-import Home from '@mui/icons-material/Home';
 import ListItemIcon from '@mui/material/ListItemIcon';
 import ListItemText from '@mui/material/ListItemText';
 import Link from '@mui/material/Link';
@@ -26,7 +25,6 @@ const PAGES: {
   linkTo: string;
   Icon: OverridableComponent<SvgIconTypeMap<object, 'svg'>>;
 }[] = [
-  { name: 'Home', linkTo: 'home', Icon: Home },
   { name: 'Puzzles', linkTo: 'puzzles', Icon: Extension },
   { name: 'Profile', linkTo: 'profile', Icon: Person },
   { name: 'Team', linkTo: 'team', Icon: Group },

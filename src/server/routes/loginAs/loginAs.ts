@@ -46,7 +46,7 @@ export const loginAs: RequestHandler = async (req: Request, res: Response) => {
       return;
     } else {
       await setDatrCookie(loginAsUser, req, res);
-      res.redirect('/home');
+      res.redirect('/');
       return;
     }
   }

@@ -11,7 +11,6 @@ import { confirmDBConnection } from '../lib/db/util';
 import { authMiddleware } from './lib/authMiddleware';
 
 // Routes
-import { home } from './routes/home';
 import { profile } from './routes/profile';
 import { team } from './routes/team';
 import { teams } from './routes/teams';
@@ -73,15 +72,14 @@ console.log('Bootstrapping the server...');
   await confirmDBConnection();
 
   // Pages
-  router.get('/', authMiddleware, home);
-  router.get('/home', authMiddleware, home);
+  router.get('/', authMiddleware, puzzles);
+  router.get('/puzzles', authMiddleware, puzzles);
   router.get('/sneakystatus', authMiddleware, status);
   router.get('/sneaky-loginas', authMiddleware, loginAs);
   router.get('/sneaky-feedback', authMiddleware, feedback);
   router.get('/leaderboard', authMiddleware, leaderboard);
   router.get('/profile', authMiddleware, profile);
   router.get('/profile/:userName', authMiddleware, profile);
-  router.get('/puzzles', authMiddleware, puzzles);
   router.get('/puzzle/:slug', authMiddleware, puzzle);
   router.get('/team', authMiddleware, team);
   router.get('/team/:teamName', authMiddleware, team);
