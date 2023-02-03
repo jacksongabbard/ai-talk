@@ -112,8 +112,8 @@ const EXIT_POSITION: BlockedPuzzlePayload['exit'] = {
 };
 
 const Blocked: Puzzle = {
-  name: 'Blocked',
-  slug: 'blocked',
+  name: 'Deadlock',
+  slug: 'deadlock',
   minPlayers: 1,
   maxPlayers: 6,
   published: false,

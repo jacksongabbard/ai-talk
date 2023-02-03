@@ -251,7 +251,7 @@ const PuzzleShell: React.FC = () => {
           sendInstanceAction={sendInstanceAction}
         />
       )}
-      {instance && instance.puzzleId === 'blocked' && (
+      {instance && instance.puzzleId === 'deadlock' && (
         <Blocked instance={instance} sendInstanceAction={sendInstanceAction} />
       )}
       {confirmationDialog}
