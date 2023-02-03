@@ -1,6 +1,6 @@
 #!/bin/bash -eu
 
-PATHS=`find . -name "hydrate.tsx" | tr "\n" " "`
+PATHS=`find . -name "hydrate*.tsx" | tr "\n" " "`
 
 echo "$PATHS"
 

@@ -54,6 +54,7 @@ import {
   getPuzzlesFeedbackForUser,
   savePuzzleFeedback,
 } from 'src/server/routes/api/puzzleFeedback';
+import { feedback } from 'src/server/routes/feedback';
 
 const config = getDotEnv();
 
@@ -76,6 +77,7 @@ console.log('Bootstrapping the server...');
   router.get('/home', authMiddleware, home);
   router.get('/sneakystatus', authMiddleware, status);
   router.get('/sneaky-loginas', authMiddleware, loginAs);
+  router.get('/sneaky-feedback', authMiddleware, feedback);
   router.get('/leaderboard', authMiddleware, leaderboard);
   router.get('/profile', authMiddleware, profile);
   router.get('/profile/:userName', authMiddleware, profile);
