@@ -1,5 +1,5 @@
 import { Thread } from '@cord-sdk/react';
-import type { ThreadInfo } from '@cord-sdk/types';
+import type { ThreadInfo, UserLocationData } from '@cord-sdk/types';
 import { useCallback, useContext, useEffect, useRef, useState } from 'react';
 import type { SendInstanceAction } from 'src/client/hooks/useWebSocket';
 import { AppContext } from 'src/server/state/AppContext';
@@ -160,10 +160,39 @@ const GameThread: React.FC<{
 const GRID_SIZE = 6;
 const GRID_BORDER = '5px';
 const ROW_HEIGHT = '20vh';
+const CURSOR_SIZE = '50px';
 const GameGrid: React.FC<{ blocks: Block[]; wall: Block | null }> = ({
   blocks,
   wall,
 }) => {
+  const mousePosition = useRef<{ x: number; y: number } | null>(null);
+  const prevMousePosition = useRef<typeof mousePosition.current>(null);
+  const profilePic = useContext(AppContext)?.user?.profilePic ?? '';
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      if (prevMousePosition.current === mousePosition.current) {
+        return;
+      }
+      window.CordSDK?.presence.setPresent(
+        {
+          ...GAME_LOCATION,
+          ...(mousePosition.current === null
+            ? prevMousePosition.current
+            : mousePosition.current),
+          profilePic,
+        },
+        {
+          durable: false,
+          exclusive_within: GAME_LOCATION,
+          absent: mousePosition.current === null,
+        },
+      );
+      prevMousePosition.current = mousePosition.current;
+    }, 100);
+    return () => clearInterval(interval);
+  }, [profilePic]);
+
   return (
     <div
       css={{
@@ -174,6 +203,17 @@ const GameGrid: React.FC<{ blocks: Block[]; wall: Block | null }> = ({
         backgroundImage: `repeating-linear-gradient(#3f3 0 ${GRID_BORDER}, transparent ${GRID_BORDER} 100%),
                           repeating-linear-gradient(90deg, #3f3 0 ${GRID_BORDER}, transparent ${GRID_BORDER} 100%)`,
         backgroundSize: `calc((100% - ${GRID_BORDER}) / ${GRID_SIZE}) calc((100% - ${GRID_BORDER}) / ${GRID_SIZE})`,
+      }}
+      onMouseMove={(e) => {
+        const rect = e.currentTarget.getBoundingClientRect();
+        const x = e.clientX - rect.left;
+        const y = e.clientY - rect.top;
+        const relativeX = x / rect.width;
+        const relativeY = y / rect.height;
+        mousePosition.current = { x: relativeX, y: relativeY };
+      }}
+      onMouseLeave={() => {
+        mousePosition.current = null;
       }}
     >
       {blocks.map((block, i) => (
@@ -195,6 +235,7 @@ const GameGrid: React.FC<{ blocks: Block[]; wall: Block | null }> = ({
           top: `calc((100% - ${GRID_BORDER})/${GRID_SIZE}*2.5 + 0.5*${GRID_BORDER} - 10px)`,
         }}
       />
+      <LiveCursors />
     </div>
   );
 };
@@ -346,6 +387,76 @@ const ThreadIcon: React.FC<{
         </g>
       </g>
     </svg>
+  );
+};
+
+const GAME_LOCATION = {
+  game: 'Blocked',
+};
+const LiveCursors: React.FC<unknown> = () => {
+  type Cursor = {
+    x: number;
+    y: number;
+    profilePic: string;
+  };
+  const [cursors, setCursors] = useState<Map<string, Cursor>>(new Map());
+  const [sdkCheck, forceRerender] = useState<number>(0);
+
+  useEffect(() => {
+    const onUpdate = ({ id: userID, ephemeral }: UserLocationData) => {
+      setCursors((cursors) => {
+        if (!ephemeral || !ephemeral.locations?.length) {
+          cursors.delete(userID);
+        } else {
+          cursors.set(userID, ephemeral.locations[0] as Cursor);
+        }
+        return new Map(cursors);
+      });
+    };
+    // sigh Cord. Let's give you 2 seconds, hopefully by that time you will be
+    // initialized
+    setTimeout(() => {
+      try {
+        const listenerRef = window.CordSDK!.presence.addListener(
+          onUpdate,
+          GAME_LOCATION,
+          {
+            exact_match: false,
+          },
+        );
+        console.log('listening...', GAME_LOCATION);
+        return () => {
+          listenerRef && window.CordSDK?.presence.removeListener(listenerRef);
+        };
+      } catch (_) {
+        // SDK was not ready
+        setTimeout(() => forceRerender((x) => x + 1), 100);
+        return () => {};
+      }
+    }, 2000);
+  }, [sdkCheck]);
+
+  return (
+    <>
+      {[...cursors.entries()].map(([userID, cursor]) => {
+        return (
+          <img
+            key={userID}
+            src={cursor.profilePic}
+            css={{
+              position: 'absolute',
+              top: `calc(${cursor.y * 100}% - ${CURSOR_SIZE} / 2)`,
+              left: `calc(${cursor.x * 100}% - ${CURSOR_SIZE} / 2)`,
+              width: CURSOR_SIZE,
+              height: CURSOR_SIZE,
+              borderRadius: '100%',
+              background: '#3f3',
+              transition: '0.1s',
+            }}
+          />
+        );
+      })}
+    </>
   );
 };
 
