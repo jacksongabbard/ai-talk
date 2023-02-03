@@ -82,8 +82,12 @@ const GameThread: React.FC<{
   sendInstanceAction: (action: any /*TODO - type this */) => void;
 }> = ({ threadID, color, sendInstanceAction }) => {
   const prevCount = useRef<number | null>(null);
+  const [resolvedRecently, setResolvedRecently] = useState<boolean>(false);
   const onThreadInfoChange = useCallback(
     ({ messageCount }: ThreadInfo) => {
+      if (resolvedRecently) {
+        return;
+      }
       if (prevCount.current === null) {
         prevCount.current = messageCount;
         return;
@@ -95,11 +99,13 @@ const GameThread: React.FC<{
       }
       prevCount.current = messageCount;
     },
-    [sendInstanceAction, threadID],
+    [resolvedRecently, sendInstanceAction, threadID],
   );
 
   const onResolved = useCallback(() => {
     sendInstanceAction({ actionType: 'reset' });
+    setResolvedRecently(true);
+    setTimeout(() => setResolvedRecently(false), 100);
   }, [sendInstanceAction]);
   const onClose = useCallback(() => {
     sendInstanceAction({ threadID, direction: -1, actionType: 'move' });
