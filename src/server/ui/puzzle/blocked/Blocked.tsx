@@ -25,6 +25,13 @@ const Blocked: React.FC<BlockedProps> = ({ instance, sendInstanceAction }) => {
     setPayload(pp);
   }, [instance, setPayload]);
 
+  const sendInstanceAction: SendInstanceAction = useCallback(
+    (action) => {
+      setTimeout(() => origSendInstanceAction(action), 0);
+    },
+    [origSendInstanceAction],
+  );
+
   const appContext = useContext(AppContext);
   if (!appContext?.user) {
     throw new Error('No user');
