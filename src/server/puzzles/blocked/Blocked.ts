@@ -1,4 +1,5 @@
 import { cloneDeep, isEqual } from 'lodash';
+import { v4 as uuid } from 'uuid';
 
 import type Team from 'src/lib/db/Team';
 import type User from 'src/lib/db/User';
@@ -128,14 +129,14 @@ const Blocked: Puzzle = {
       if (thread.color === SOLUTION_BLOCK_COLOR) {
         return {
           ...thread,
-          threadID: `blocked-puzzle-${team.id}-starter-thread`,
+          threadID: `starter-${uuid()}`,
           ownerID,
         };
       }
 
       return {
         ...thread,
-        threadID: `blocked-puzzle-${team.id}-thread-${i}`,
+        threadID: uuid(),
         ownerID,
       };
     });
