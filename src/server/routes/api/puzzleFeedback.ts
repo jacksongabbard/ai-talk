@@ -112,20 +112,8 @@ export const getGlobalAveragePuzzlesFeedback: RequestHandler = async (
       const pfs = await PuzzleFeedback.findAll({
         attributes: [
           'puzzle_id',
-          [
-            Sequelize.fn(
-              'AVG',
-              Sequelize.cast(Sequelize.col('difficulty'), 'smallint'),
-            ),
-            'avgDifficulty',
-          ],
-          [
-            Sequelize.fn(
-              'AVG',
-              Sequelize.cast(Sequelize.col('rating'), 'smallint'),
-            ),
-            'avgRating',
-          ],
+          [Sequelize.fn('AVG', Sequelize.col('difficulty')), 'avgDifficulty'],
+          [Sequelize.fn('AVG', Sequelize.col('rating')), 'avgRating'],
         ],
         group: 'puzzle_id',
       });
