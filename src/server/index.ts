@@ -9,6 +9,7 @@ import path from 'path';
 import getDotEnv from '../lib/dotenv';
 import { confirmDBConnection } from '../lib/db/util';
 import { authMiddleware } from './lib/authMiddleware';
+import { apiMiddleware } from './lib/apiMiddleware';
 
 // Routes
 import { profile } from './routes/profile';
@@ -92,65 +93,109 @@ console.log('Bootstrapping the server...');
   router.get('/health-check', healthCheck);
 
   // API endpoints
-  router.post('/api/save-profile', authMiddleware, saveProfile);
+  router.post('/api/save-profile', authMiddleware, apiMiddleware, saveProfile);
   router.post(
     '/api/check-user-name-is-available',
     authMiddleware,
+    apiMiddleware,
     checkUserNameIsAvailable,
   );
 
   router.post(
     '/api/check-team-name-is-available',
     authMiddleware,
+    apiMiddleware,
     checkTeamNameIsAvailable,
   );
 
-  router.post('/api/create-team', authMiddleware, createTeamAPI);
-  router.post('/api/update-team', authMiddleware, updateTeamAPI);
-  router.post('/api/list-puzzles', authMiddleware, listPuzzles);
-  router.post('/api/puzzle-info', authMiddleware, getPuzzleInfo);
+  router.post('/api/create-team', authMiddleware, apiMiddleware, createTeamAPI);
+  router.post('/api/update-team', authMiddleware, apiMiddleware, updateTeamAPI);
+  router.post('/api/list-puzzles', authMiddleware, apiMiddleware, listPuzzles);
+  router.post('/api/puzzle-info', authMiddleware, apiMiddleware, getPuzzleInfo);
   router.post(
     '/api/generate-puzzle-instance',
     authMiddleware,
+    apiMiddleware,
     generatePuzzleInstance,
   );
   router.post(
     '/api/destroy-puzzle-instance',
     authMiddleware,
+    apiMiddleware,
     destroyPuzzleInstance,
   );
-  router.post('/api/fetch-leaderboard', authMiddleware, fetchLeaderboard);
-  router.post('/api/list-teams', authMiddleware, listTeams);
-  router.post('/api/list-team-members', authMiddleware, listTeamMembers);
+  router.post(
+    '/api/fetch-leaderboard',
+    authMiddleware,
+    apiMiddleware,
+    fetchLeaderboard,
+  );
+  router.post('/api/list-teams', authMiddleware, apiMiddleware, listTeams);
+  router.post(
+    '/api/list-team-members',
+    authMiddleware,
+    apiMiddleware,
+    listTeamMembers,
+  );
   router.post(
     '/api/get-team-id-for-team-name',
     authMiddleware,
+    apiMiddleware,
     getTeamIdForTeamName,
   );
-  router.post('/api/get-team-by-id', authMiddleware, getTeamById);
-  router.post('/api/generate-join-code', authMiddleware, generateJoinCode);
-  router.post('/api/try-join-code', authMiddleware, tryJoinCode);
-  router.post('/api/remove-user-from-team', authMiddleware, removeUserFromTeam);
+  router.post(
+    '/api/get-team-by-id',
+    authMiddleware,
+    apiMiddleware,
+    getTeamById,
+  );
+  router.post(
+    '/api/generate-join-code',
+    authMiddleware,
+    apiMiddleware,
+    generateJoinCode,
+  );
+  router.post('/api/try-join-code', authMiddleware, apiMiddleware, tryJoinCode);
+  router.post(
+    '/api/remove-user-from-team',
+    authMiddleware,
+    apiMiddleware,
+    removeUserFromTeam,
+  );
   router.post(
     '/api/get-user-id-for-user-name',
     authMiddleware,
+    apiMiddleware,
     getUserIdFromUserName,
   );
-  router.post('/api/get-user-by-id', authMiddleware, getUserById);
+  router.post(
+    '/api/get-user-by-id',
+    authMiddleware,
+    apiMiddleware,
+    getUserById,
+  );
   router.post(
     '/api/get-cord-client-auth-token',
     authMiddleware,
+    apiMiddleware,
     getCordClientAuthToken,
   );
   router.post(
     '/api/get-puzzles-feedback',
     authMiddleware,
+    apiMiddleware,
     getPuzzlesFeedbackForUser,
   );
-  router.post('/api/save-puzzle-feedback', authMiddleware, savePuzzleFeedback);
+  router.post(
+    '/api/save-puzzle-feedback',
+    authMiddleware,
+    apiMiddleware,
+    savePuzzleFeedback,
+  );
   router.post(
     '/api/get-global-puzzles-feedback',
     authMiddleware,
+    apiMiddleware,
     getGlobalAveragePuzzlesFeedback,
   );
 

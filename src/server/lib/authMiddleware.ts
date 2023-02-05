@@ -2,7 +2,6 @@ import User from 'src/lib/db/User';
 import AuthToken from 'src/lib/db/AuthToken';
 import type { RequestHandler, Request, Response, NextFunction } from 'express';
 import Team from 'src/lib/db/Team';
-import { nextTick } from 'process';
 
 export async function authFromDatr(datr: string) {
   if (!datr) {
