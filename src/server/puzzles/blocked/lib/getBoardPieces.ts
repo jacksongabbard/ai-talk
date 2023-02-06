@@ -78,5 +78,9 @@ export const getBoardPieces = () => {
   }
   // TODO maybe return number of moves and cluster size and
   // save into solution payload as difficulty gauge?
-  return boardPieces;
+  return {
+    boardPieces,
+    moves: randomPuzzle.moves,
+    clusterSize: randomPuzzle.clusterSize,
+  };
 };

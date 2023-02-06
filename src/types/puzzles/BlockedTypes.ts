@@ -2,20 +2,20 @@ import { makeValidator } from 'src/lib/ajv/makeValidator';
 
 export const THREAD_COLORS = [
   '#297373',
-  '#416788',
-  '#00C2D1',
-  '#ED33B9',
-  '#512D38',
-  '#B27092',
+  '#313715',
+  '#cc3363',
+  '#9c528b',
   '#6457A6',
-  '#498467',
+  '#822e81',
+  '#004e89',
+  '#3aaed8',
+  '#f18f01',
+  '#FE5F55',
   '#9E643C',
-  '#485696',
-  '#931621',
-  '#042a2b',
   '#8d775f',
+  '#512D38',
 ] as const;
-export const SOLUTION_BLOCK_COLOR = '#FE5F55';
+export const SOLUTION_BLOCK_COLOR = '#931621';
 export const WALL_COLOR = '#717568';
 
 export type boardPiece = {
@@ -94,6 +94,8 @@ export type BlockedSolutionPayload = {
   walls: boardPiece[];
   starterThreadSolvedState: thread;
   boardState: string[][];
+  moves: string;
+  clusterSize: string;
 };
 
 export const blockedSolutionPayloadValidator = makeValidator({
@@ -121,10 +123,19 @@ export const blockedSolutionPayloadValidator = makeValidator({
       type: 'array',
       items: { type: 'array' },
     },
+    moves: { type: 'string' },
+    clusterSize: { type: 'string' },
   },
   additionalProperties: false,
 
-  required: ['threads', 'boardState', 'exit', 'starterThreadSolvedState'],
+  required: [
+    'threads',
+    'boardState',
+    'exit',
+    'starterThreadSolvedState',
+    'moves',
+    'clusterSize',
+  ],
 });
 
 export const assertIsBlockedSolutionPayload = (

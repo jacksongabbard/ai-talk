@@ -36,7 +36,7 @@ const Blocked: Puzzle = {
       throw new Error('Puzzle requires a team');
     }
 
-    const boardPieces = getBoardPieces();
+    const { boardPieces, moves, clusterSize } = getBoardPieces();
 
     const wallPieces = boardPieces.filter(
       (boardPiece) => boardPiece.color === WALL_COLOR,
@@ -86,6 +86,8 @@ const Blocked: Puzzle = {
       },
       exit: EXIT_POSITION,
       boardState: initialBoardState,
+      moves,
+      clusterSize,
     };
 
     const puzzlePayload: BlockedPuzzlePayload = {
