@@ -444,6 +444,7 @@ const LiveCursors: React.FC<unknown> = () => {
             key={userID}
             src={cursor.profilePic}
             css={{
+              pointerEvents: 'none',
               position: 'absolute',
               top: `calc(${cursor.y * 100}% - ${CURSOR_SIZE} / 2)`,
               left: `calc(${cursor.x * 100}% - ${CURSOR_SIZE} / 2)`,
