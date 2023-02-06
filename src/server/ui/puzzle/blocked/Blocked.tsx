@@ -252,7 +252,7 @@ const Block: React.FC<Block> = (props) => {
         ),
         transition: 'top 1s, left 1s',
         position: 'absolute',
-        padding: '10px',
+        padding: '2%',
         display: 'flex',
       }}
     >
