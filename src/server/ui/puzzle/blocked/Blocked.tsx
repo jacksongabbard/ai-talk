@@ -45,7 +45,7 @@ const Blocked: React.FC<BlockedProps> = ({
   const blocks: Block[] = (payload?.threads ?? []).sort((a, b) =>
     a.threadID < b.threadID ? -1 : a.threadID > b.threadID ? 1 : 0,
   );
-  const wall = payload?.wall ?? null;
+  const walls = payload?.walls ?? null;
 
   return (
     <>
@@ -55,7 +55,7 @@ const Blocked: React.FC<BlockedProps> = ({
           gap: '36px',
         }}
       >
-        <GameGrid blocks={blocks} wall={wall} />
+        <GameGrid blocks={blocks} walls={walls} />
         <div
           css={{
             display: 'flex',
@@ -161,9 +161,9 @@ const GRID_SIZE = 6;
 const GRID_BORDER = '5px';
 const ROW_HEIGHT = '20vh';
 const CURSOR_SIZE = '50px';
-const GameGrid: React.FC<{ blocks: Block[]; wall: Block | null }> = ({
+const GameGrid: React.FC<{ blocks: Block[]; walls: Block[] | null }> = ({
   blocks,
-  wall,
+  walls,
 }) => {
   const mousePosition = useRef<{ x: number; y: number } | null>(null);
   const prevMousePosition = useRef<typeof mousePosition.current>(null);
@@ -219,7 +219,7 @@ const GameGrid: React.FC<{ blocks: Block[]; wall: Block | null }> = ({
       {blocks.map((block, i) => (
         <Block key={i} {...block} />
       ))}
-      {wall && <Wall {...wall} />}
+      {walls && walls.map((wall, i) => <Wall key={i} {...wall} />)}
       <div
         css={{
           // this is the little triangle marking exit

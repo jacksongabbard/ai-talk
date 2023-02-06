@@ -1,9 +1,22 @@
 import { makeValidator } from 'src/lib/ajv/makeValidator';
-import type {
-  SOLUTION_BLOCK_COLOR,
-  THREAD_COLORS,
-  WALL_COLOR,
-} from 'src/server/puzzles/blocked/Blocked';
+
+export const THREAD_COLORS = [
+  '#297373',
+  '#416788',
+  '#00C2D1',
+  '#ED33B9',
+  '#512D38',
+  '#B27092',
+  '#6457A6',
+  '#498467',
+  '#9E643C',
+  '#485696',
+  '#931621',
+  '#042a2b',
+  '#8d775f',
+] as const;
+export const SOLUTION_BLOCK_COLOR = '#FE5F55';
+export const WALL_COLOR = '#717568';
 
 export type boardPiece = {
   color:
@@ -23,7 +36,7 @@ export type thread = boardPiece & {
 
 export type BlockedPuzzlePayload = {
   threads: thread[];
-  wall: boardPiece;
+  walls: boardPiece[];
   exit: { row: number; column: number };
   boardState: string[][];
   ownedThreadIDs: string[];
@@ -38,8 +51,11 @@ const blockedPuzzlePayloadValidator = makeValidator({
         type: 'object',
       },
     },
-    wall: {
-      type: 'object',
+    walls: {
+      type: 'array',
+      items: {
+        type: 'object',
+      },
     },
     exit: {
       type: 'object',
@@ -75,7 +91,7 @@ export const assertIsBlockedPuzzledPayload = (
 export type BlockedSolutionPayload = {
   threads: thread[];
   exit: { row: number; column: number };
-  wall: boardPiece;
+  walls: boardPiece[];
   starterThreadSolvedState: thread;
   boardState: string[][];
 };
@@ -89,8 +105,11 @@ export const blockedSolutionPayloadValidator = makeValidator({
         type: 'object',
       },
     },
-    wall: {
-      type: 'object',
+    walls: {
+      type: 'array',
+      items: {
+        type: 'object',
+      },
     },
     exit: {
       type: 'object',

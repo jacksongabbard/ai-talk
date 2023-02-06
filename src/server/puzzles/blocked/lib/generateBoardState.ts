@@ -2,7 +2,7 @@ import type { boardPiece, thread } from 'src/types/puzzles/BlockedTypes';
 
 export const generateBoardState = (
   threads: thread[],
-  wall: boardPiece,
+  walls: boardPiece[],
 ): string[][] | undefined => {
   const initialBoardState = [
     ['o', 'o', 'o', 'o', 'o', 'o'],
@@ -38,7 +38,12 @@ export const generateBoardState = (
     }
   }
 
-  initialBoardState[wall.row][wall.column] = 'w';
+  for (const wall of walls) {
+    if (initialBoardState[wall.row][wall.column] !== 'o') {
+      return;
+    }
+    initialBoardState[wall.row][wall.column] = 'w';
+  }
 
   return initialBoardState;
 };

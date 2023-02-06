@@ -12,100 +12,13 @@ import {
   assertIsBlockedSolutionPayload,
   BlockedPuzzlePayload,
   BlockedSolutionPayload,
-  boardPiece,
+  SOLUTION_BLOCK_COLOR,
+  WALL_COLOR,
 } from 'src/types/puzzles/BlockedTypes';
 import { hasOwnProperty } from 'src/lib/hasOwnProperty';
 import { updateBoardState } from 'src/server/puzzles/blocked/lib/updateBoardState';
 import { generateBoardState } from 'src/server/puzzles/blocked/lib/generateBoardState';
-
-export const THREAD_COLORS = [
-  '#297373',
-  '#416788',
-  '#00C2D1',
-  '#ED33B9',
-  '#512D38',
-  '#B27092',
-  '#6457A6',
-  '#498467',
-  '#9E643C',
-  '#485696',
-] as const;
-export const SOLUTION_BLOCK_COLOR = '#FE5F55';
-export const WALL_COLOR = '#717568';
-
-const placeholderThreadBoardPieces: boardPiece[] = [
-  {
-    color: SOLUTION_BLOCK_COLOR,
-    width: 2,
-    height: 1,
-    row: 2,
-    column: 1,
-  },
-  {
-    color: THREAD_COLORS[0],
-    width: 1,
-    height: 2,
-    row: 0,
-    column: 2,
-  },
-  {
-    color: THREAD_COLORS[1],
-    width: 3,
-    height: 1,
-    row: 1,
-    column: 3,
-  },
-  {
-    color: THREAD_COLORS[2],
-    width: 1,
-    height: 2,
-    row: 2,
-    column: 3,
-  },
-  {
-    color: THREAD_COLORS[3],
-    width: 1,
-    height: 3,
-    row: 2,
-    column: 5,
-  },
-  {
-    color: THREAD_COLORS[4],
-    width: 2,
-    height: 1,
-    row: 3,
-    column: 1,
-  },
-  {
-    color: THREAD_COLORS[5],
-    width: 1,
-    height: 2,
-    row: 3,
-    column: 4,
-  },
-  {
-    color: THREAD_COLORS[6],
-    width: 1,
-    height: 2,
-    row: 4,
-    column: 1,
-  },
-  {
-    color: THREAD_COLORS[7],
-    width: 2,
-    height: 1,
-    row: 4,
-    column: 2,
-  },
-];
-
-const placeholderWallBoardPiece: boardPiece = {
-  color: WALL_COLOR,
-  width: 1,
-  height: 1,
-  row: 1,
-  column: 0,
-};
+import { getBoardPieces } from 'src/server/puzzles/blocked/lib/getBoardPieces';
 
 const EXIT_POSITION: BlockedPuzzlePayload['exit'] = {
   row: 2,
@@ -123,23 +36,32 @@ const Blocked: Puzzle = {
       throw new Error('Puzzle requires a team');
     }
 
-    const initialThreads = placeholderThreadBoardPieces.map((thread, i) => {
-      const ownerID = members[i % members.length].id;
+    const boardPieces = getBoardPieces();
 
-      if (thread.color === SOLUTION_BLOCK_COLOR) {
+    const wallPieces = boardPieces.filter(
+      (boardPiece) => boardPiece.color === WALL_COLOR,
+    );
+
+    // console.log({ wallPieces });
+    const initialThreads = boardPieces
+      .filter((boardPiece) => boardPiece.color !== WALL_COLOR)
+      .map((thread, i) => {
+        const ownerID = members[i % members.length].id;
+
+        if (thread.color === SOLUTION_BLOCK_COLOR) {
+          return {
+            ...thread,
+            threadID: `starter-${uuid()}`,
+            ownerID,
+          };
+        }
+
         return {
           ...thread,
-          threadID: `starter-${uuid()}`,
+          threadID: uuid(),
           ownerID,
         };
-      }
-
-      return {
-        ...thread,
-        threadID: uuid(),
-        ownerID,
-      };
-    });
+      });
 
     const starterThread = initialThreads.find((thread) =>
       thread.threadID.includes('starter'),
@@ -149,10 +71,7 @@ const Blocked: Puzzle = {
       throw new Error('No starter thread provided');
     }
 
-    const initialBoardState = generateBoardState(
-      initialThreads,
-      placeholderWallBoardPiece,
-    );
+    const initialBoardState = generateBoardState(initialThreads, wallPieces);
 
     if (!initialBoardState) {
       throw new Error('Invalid board state generated');
@@ -160,7 +79,7 @@ const Blocked: Puzzle = {
 
     const solutionPayload: BlockedSolutionPayload = {
       threads: initialThreads,
-      wall: placeholderWallBoardPiece,
+      walls: wallPieces,
       starterThreadSolvedState: {
         ...starterThread,
         column: EXIT_POSITION.column - starterThread.width + 1,
@@ -171,7 +90,7 @@ const Blocked: Puzzle = {
 
     const puzzlePayload: BlockedPuzzlePayload = {
       threads: initialThreads,
-      wall: placeholderWallBoardPiece,
+      walls: wallPieces,
       exit: EXIT_POSITION,
       boardState: initialBoardState,
       ownedThreadIDs: [],
@@ -194,8 +113,8 @@ const Blocked: Puzzle = {
       .filter((thread) => thread.ownerID === user.id || thread.ownerID === null)
       .map((thread) => thread.threadID);
 
-    console.log({ ownedThreadIDs });
-    console.log('threads,', payload.threads);
+    // console.log({ ownedThreadIDs });
+    // console.log('threads,', payload.threads);
 
     return {
       ...payload,
@@ -356,7 +275,7 @@ const Blocked: Puzzle = {
 
     // TODO: Check minimum number of moves?
 
-    const validBoardState = generateBoardState(p.threads, p.wall);
+    const validBoardState = generateBoardState(p.threads, p.walls);
 
     if (!validBoardState) {
       return false;
