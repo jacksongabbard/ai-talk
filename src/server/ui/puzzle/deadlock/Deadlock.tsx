@@ -5,27 +5,27 @@ import type { SendInstanceAction } from 'src/client/hooks/useWebSocket';
 import { AppContext } from 'src/server/state/AppContext';
 import type { ClientPuzzleInstance } from 'src/types/ClientPuzzleInstance';
 import {
-  assertIsBlockedPuzzledPayload,
-  BlockedInstanceAction,
-  BlockedPuzzlePayload,
-} from 'src/types/puzzles/BlockedTypes';
+  assertIsDeadlockPuzzledPayload,
+  DeadlockInstanceAction,
+  DeadlockPuzzlePayload,
+} from 'src/types/puzzles/DeadlockTypes';
 
-type BlockedProps = {
+type DeadlockProps = {
   instance: ClientPuzzleInstance;
   sendInstanceAction: SendInstanceAction;
 };
 
-const Blocked: React.FC<BlockedProps> = ({
+const Deadlock: React.FC<DeadlockProps> = ({
   instance,
   sendInstanceAction: origSendInstanceAction,
 }) => {
-  const [payload, setPayload] = useState<BlockedPuzzlePayload | null>(null);
+  const [payload, setPayload] = useState<DeadlockPuzzlePayload | null>(null);
   useEffect(() => {
     if (!instance) {
-      throw new Error('No instance of Blocked');
+      throw new Error('No instance of Deadlock');
     }
 
-    const pp = assertIsBlockedPuzzledPayload(instance.puzzlePayload);
+    const pp = assertIsDeadlockPuzzledPayload(instance.puzzlePayload);
     setPayload(pp);
   }, [instance, setPayload]);
 
@@ -102,7 +102,7 @@ type Block = {
 const GameThread: React.FC<{
   threadID: string;
   color: string;
-  sendInstanceAction: (action: BlockedInstanceAction) => void;
+  sendInstanceAction: (action: DeadlockInstanceAction) => void;
 }> = ({ threadID, color, sendInstanceAction }) => {
   const prevCount = useRef<number | null>(null);
   const [resolvedRecently, setResolvedRecently] = useState<boolean>(false);
@@ -387,7 +387,7 @@ const ThreadIcon: React.FC<{
 };
 
 const GAME_LOCATION = {
-  game: 'Blocked',
+  game: 'Deadlock',
 };
 const LiveCursors: React.FC<unknown> = () => {
   type Cursor = {
@@ -490,4 +490,4 @@ const NeedleIcon: React.FC<unknown> = () => {
   );
 };
 
-export default Blocked;
+export default Deadlock;

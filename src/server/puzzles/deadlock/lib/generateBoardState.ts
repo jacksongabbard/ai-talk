@@ -1,4 +1,4 @@
-import type { boardPiece, thread } from 'src/types/puzzles/BlockedTypes';
+import type { boardPiece, thread } from 'src/types/puzzles/DeadlockTypes';
 
 export const generateBoardState = (
   threads: thread[],

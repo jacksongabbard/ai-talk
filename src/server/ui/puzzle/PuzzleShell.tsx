@@ -25,7 +25,7 @@ import NoYouFirst from './noYouFirst/NoYouFirst';
 import SimpleMaze from './simpleMaze/SimpleMaze';
 import { ArrowBack } from '@mui/icons-material';
 import { useNavigate } from 'react-router-dom';
-import Blocked from 'src/server/ui/puzzle/blocked/Blocked';
+import Deadlock from 'src/server/ui/puzzle/deadlock/Deadlock';
 import ConfirmationDialog from 'src/server/ui/dialogs/ConfirmationDialog';
 import useDialog from 'src/server/ui/dialogs/useDialog';
 import { hasOwnProperty } from 'src/lib/hasOwnProperty';
@@ -252,7 +252,7 @@ const PuzzleShell: React.FC = () => {
         />
       )}
       {instance && instance.puzzleId === 'deadlock' && (
-        <Blocked instance={instance} sendInstanceAction={sendInstanceAction} />
+        <Deadlock instance={instance} sendInstanceAction={sendInstanceAction} />
       )}
       {confirmationDialog}
       <Dialog open={errorMessage !== ''} onClose={onErrorDialogClose}>

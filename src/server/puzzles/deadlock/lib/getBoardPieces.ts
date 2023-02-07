@@ -1,21 +1,20 @@
-import { blockedThreadPuzzles } from 'src/server/puzzles/blocked/lib/puzzledb';
+import { deadlockThreadPuzzles } from 'src/server/puzzles/deadlock/lib/puzzledb';
 import {
   boardPiece,
   SOLUTION_BLOCK_COLOR,
   THREAD_COLORS,
   WALL_COLOR,
-} from 'src/types/puzzles/BlockedTypes';
+} from 'src/types/puzzles/DeadlockTypes';
 
 export const getBoardPieces = () => {
   const randomPuzzle =
-    blockedThreadPuzzles[
-      Math.floor(Math.random() * blockedThreadPuzzles.length)
+    deadlockThreadPuzzles[
+      Math.floor(Math.random() * deadlockThreadPuzzles.length)
     ];
 
   const rawPuzzleData: Record<string, Omit<boardPiece, 'color'>> = {};
-  console.log({ randomPuzzle });
+
   randomPuzzle.puzzleString.split('').forEach((char, i) => {
-    // console.log(char);
     if (char === 'x') {
       if (!rawPuzzleData[char + 1]) {
         rawPuzzleData[char + 1] = {
@@ -55,7 +54,6 @@ export const getBoardPieces = () => {
       }
     }
   });
-  console.log({ rawPuzzleData });
 
   const boardPieces: boardPiece[] = [];
   let counter = 0;
@@ -76,8 +74,7 @@ export const getBoardPieces = () => {
       counter++;
     }
   }
-  // TODO maybe return number of moves and cluster size and
-  // save into solution payload as difficulty gauge?
+
   return {
     boardPieces,
     moves: randomPuzzle.moves,

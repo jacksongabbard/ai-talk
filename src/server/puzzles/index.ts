@@ -3,14 +3,14 @@ import PushTheButton from './pushTheButton/PushTheButton';
 import Nodoku from './nodoku/Nodoku';
 import NoYouFirst from './noYouFirst/NoYouFirst';
 import SimpleMaze from './simpleMaze/SimpleMaze';
-import Blocked from './blocked/Blocked';
+import Deadlock from './deadlock/Deadlock';
 
 export const PuzzleList = [
   PushTheButton,
   Nodoku,
   NoYouFirst,
   SimpleMaze,
-  Blocked,
+  Deadlock,
 ];
 
 export function puzzleMapFromList(): { [slug: string]: Puzzle } {

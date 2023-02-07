@@ -34,7 +34,7 @@ export type thread = boardPiece & {
   ownerID: string | null;
 };
 
-export type BlockedPuzzlePayload = {
+export type DeadlockPuzzlePayload = {
   threads: thread[];
   walls: boardPiece[];
   exit: { row: number; column: number };
@@ -42,7 +42,7 @@ export type BlockedPuzzlePayload = {
   ownedThreadIDs: string[];
 };
 
-const blockedPuzzlePayloadValidator = makeValidator({
+const deadlockPuzzlePayloadValidator = makeValidator({
   type: 'object',
   properties: {
     threads: {
@@ -75,20 +75,20 @@ const blockedPuzzlePayloadValidator = makeValidator({
   required: ['threads', 'exit', 'boardState'],
 });
 
-export const assertIsBlockedPuzzledPayload = (
+export const assertIsDeadlockPuzzledPayload = (
   thing: any,
-): BlockedPuzzlePayload => {
-  if (blockedPuzzlePayloadValidator(thing)) {
-    return thing as BlockedPuzzlePayload;
+): DeadlockPuzzlePayload => {
+  if (deadlockPuzzlePayloadValidator(thing)) {
+    return thing as DeadlockPuzzlePayload;
   }
 
   throw new Error(
-    'Provided object is not a BlockedPuzzlePayload: ' +
+    'Provided object is not a DeadlockPuzzlePayload: ' +
       JSON.stringify(thing, null, 4),
   );
 };
 
-export type BlockedSolutionPayload = {
+export type DeadlockSolutionPayload = {
   threads: thread[];
   exit: { row: number; column: number };
   walls: boardPiece[];
@@ -98,7 +98,7 @@ export type BlockedSolutionPayload = {
   clusterSize: string;
 };
 
-export const blockedSolutionPayloadValidator = makeValidator({
+export const deadlockSolutionPayloadValidator = makeValidator({
   type: 'object',
   properties: {
     threads: {
@@ -138,25 +138,25 @@ export const blockedSolutionPayloadValidator = makeValidator({
   ],
 });
 
-export const assertIsBlockedSolutionPayload = (
+export const assertIsDeadlockSolutionPayload = (
   thing: any,
-): BlockedSolutionPayload => {
-  if (blockedSolutionPayloadValidator(thing)) {
-    return thing as BlockedSolutionPayload;
+): DeadlockSolutionPayload => {
+  if (deadlockSolutionPayloadValidator(thing)) {
+    return thing as DeadlockSolutionPayload;
   }
   throw new Error(
-    'Provided object is not a BlockedSolutionPayload: ' +
+    'Provided object is not a DeadlockSolutionPayload: ' +
       JSON.stringify(thing, null, 4),
   );
 };
 
-export type BlockedMoveInstanceAction = {
+export type DeadlockMoveInstanceAction = {
   actionType: 'move';
   threadID: string;
   direction: 1 | -1;
 };
 
-export const blockedMoveInstanceActionValidator = makeValidator({
+export const deadlockMoveInstanceActionValidator = makeValidator({
   type: 'object',
   properties: {
     actionType: {
@@ -176,28 +176,28 @@ export const blockedMoveInstanceActionValidator = makeValidator({
   required: ['actionType', 'threadID', 'direction'],
 });
 
-export const assertIsBlockedMoveInstanceAction = (
+export const assertIsDeadlockMoveInstanceAction = (
   thing: any,
-): BlockedMoveInstanceAction => {
-  if (blockedMoveInstanceActionValidator(thing)) {
-    return thing as BlockedMoveInstanceAction;
+): DeadlockMoveInstanceAction => {
+  if (deadlockMoveInstanceActionValidator(thing)) {
+    return thing as DeadlockMoveInstanceAction;
   }
 
   throw new Error(
-    'Provided object is not a BlockedMoveInstanceAction: ' +
+    'Provided object is not a DeadlockMoveInstanceAction: ' +
       JSON.stringify(thing, null, 4),
   );
 };
 
-export type BlockedResetInstanceAction = {
+export type DeadlockResetInstanceAction = {
   actionType: 'reset';
 };
 
-export type BlockedInstanceAction =
-  | BlockedResetInstanceAction
-  | BlockedMoveInstanceAction;
+export type DeadlockInstanceAction =
+  | DeadlockResetInstanceAction
+  | DeadlockMoveInstanceAction;
 
-export const blockedResetInstanceActionValidator = makeValidator({
+export const deadlockResetInstanceActionValidator = makeValidator({
   type: 'object',
   properties: {
     actionType: {

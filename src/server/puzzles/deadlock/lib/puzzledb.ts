@@ -1,4 +1,4 @@
-export const blockedThreadPuzzles = [
+export const deadlockThreadPuzzles = [
   {
     moves: '35',
     puzzleString: 'ooJBBxDDJoLMHIAALMHIEELMHooKFFGGoKoo',

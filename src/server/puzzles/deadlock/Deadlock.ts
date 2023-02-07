@@ -7,25 +7,25 @@ import type { Puzzle } from 'src/types/Puzzle';
 import type { ActionResult } from 'src/types/Puzzle';
 import type PuzzleInstance from 'src/lib/db/PuzzleInstance';
 import {
-  assertIsBlockedMoveInstanceAction,
-  assertIsBlockedPuzzledPayload,
-  assertIsBlockedSolutionPayload,
-  BlockedPuzzlePayload,
-  BlockedSolutionPayload,
+  assertIsDeadlockMoveInstanceAction,
+  assertIsDeadlockPuzzledPayload,
+  assertIsDeadlockSolutionPayload,
+  DeadlockPuzzlePayload,
+  DeadlockSolutionPayload,
   SOLUTION_BLOCK_COLOR,
   WALL_COLOR,
-} from 'src/types/puzzles/BlockedTypes';
+} from 'src/types/puzzles/DeadlockTypes';
 import { hasOwnProperty } from 'src/lib/hasOwnProperty';
-import { updateBoardState } from 'src/server/puzzles/blocked/lib/updateBoardState';
-import { generateBoardState } from 'src/server/puzzles/blocked/lib/generateBoardState';
-import { getBoardPieces } from 'src/server/puzzles/blocked/lib/getBoardPieces';
+import { updateBoardState } from 'src/server/puzzles/deadlock/lib/updateBoardState';
+import { generateBoardState } from 'src/server/puzzles/deadlock/lib/generateBoardState';
+import { getBoardPieces } from 'src/server/puzzles/deadlock/lib/getBoardPieces';
 
-const EXIT_POSITION: BlockedPuzzlePayload['exit'] = {
+const EXIT_POSITION: DeadlockPuzzlePayload['exit'] = {
   row: 2,
   column: 5,
 };
 
-const Blocked: Puzzle = {
+const Deadlock: Puzzle = {
   name: 'Deadlock',
   slug: 'deadlock',
   minPlayers: 1,
@@ -42,7 +42,6 @@ const Blocked: Puzzle = {
       (boardPiece) => boardPiece.color === WALL_COLOR,
     );
 
-    // console.log({ wallPieces });
     const initialThreads = boardPieces
       .filter((boardPiece) => boardPiece.color !== WALL_COLOR)
       .map((thread, i) => {
@@ -77,7 +76,7 @@ const Blocked: Puzzle = {
       throw new Error('Invalid board state generated');
     }
 
-    const solutionPayload: BlockedSolutionPayload = {
+    const solutionPayload: DeadlockSolutionPayload = {
       threads: initialThreads,
       walls: wallPieces,
       starterThreadSolvedState: {
@@ -90,7 +89,7 @@ const Blocked: Puzzle = {
       clusterSize,
     };
 
-    const puzzlePayload: BlockedPuzzlePayload = {
+    const puzzlePayload: DeadlockPuzzlePayload = {
       threads: initialThreads,
       walls: wallPieces,
       exit: EXIT_POSITION,
@@ -109,14 +108,11 @@ const Blocked: Puzzle = {
     puzzlePayload: object,
     solutionPayload: object,
   ) => {
-    const payload = assertIsBlockedPuzzledPayload(cloneDeep(puzzlePayload));
+    const payload = assertIsDeadlockPuzzledPayload(cloneDeep(puzzlePayload));
 
     const ownedThreadIDs = payload.threads
       .filter((thread) => thread.ownerID === user.id || thread.ownerID === null)
       .map((thread) => thread.threadID);
-
-    // console.log({ ownedThreadIDs });
-    // console.log('threads,', payload.threads);
 
     return {
       ...payload,
@@ -137,7 +133,6 @@ const Blocked: Puzzle = {
     puzzleInstance: PuzzleInstance,
     action: object,
   ): ActionResult => {
-    console.log('get action');
     if (
       !hasOwnProperty(action, 'actionType') ||
       typeof action.actionType !== 'string'
@@ -146,8 +141,8 @@ const Blocked: Puzzle = {
     }
 
     if (action.actionType === 'move') {
-      const moveAction = assertIsBlockedMoveInstanceAction(action);
-      const payload = assertIsBlockedPuzzledPayload(
+      const moveAction = assertIsDeadlockMoveInstanceAction(action);
+      const payload = assertIsDeadlockPuzzledPayload(
         puzzleInstance.puzzlePayload,
       );
       const { threadID, direction } = moveAction;
@@ -155,8 +150,6 @@ const Blocked: Puzzle = {
       const threadToUpdate = payload.threads.find(
         (thread) => thread.threadID === threadID,
       );
-
-      // console.log('thead to update ??', threadToUpdate, direction);
 
       if (!threadToUpdate) {
         throw new Error('threadID not found');
@@ -185,8 +178,6 @@ const Blocked: Puzzle = {
         ...updatedPosition,
       };
 
-      // console.log({ updatedThread });
-
       const [updatedBoardState, updated] = updateBoardState(
         updatedThread,
         threadVertical,
@@ -202,41 +193,24 @@ const Blocked: Puzzle = {
           puzzlePayload: payload,
         };
       }
-      // console.log('og boardstate', payload.boardState);
-      // console.log('updated board state', updatedBoardState);
 
       const unchangedThreads = payload.threads.filter(
         (currentThread) => currentThread.threadID !== threadToUpdate.threadID,
       );
-
-      // console.log({ unchangedThreads });
 
       const payloadDiffValue = {
         threads: [...unchangedThreads, updatedThread],
         boardState: updatedBoardState,
       };
 
-      // const puzzlePayload = merge(payload, payloadDiffValue);
       const puzzlePayload = {
         ...payload,
         ...payloadDiffValue,
       };
 
-      const payloadThreadIDs = puzzlePayload.threads.map(
-        (thread) => thread.threadID,
-      );
-      console.log({ payloadThreadIDs });
-      // console.log({ puzzlePayload });
-      const diffThreadIDs = payloadDiffValue.threads.map(
-        (thread) => thread.threadID,
-      );
-      console.log({ diffThreadIDs });
-
-      console.log('return payload diff', puzzlePayload);
       return {
         payloadDiff: {
           // seq number comes externally
-
           value: payloadDiffValue,
         },
         puzzlePayload,
@@ -244,7 +218,7 @@ const Blocked: Puzzle = {
     }
 
     if (action.actionType === 'reset') {
-      const solutionPayload = assertIsBlockedSolutionPayload(
+      const solutionPayload = assertIsDeadlockSolutionPayload(
         puzzleInstance.solutionPayload,
       );
 
@@ -255,7 +229,7 @@ const Blocked: Puzzle = {
         ...restOfPayload
       } = solutionPayload;
 
-      const payloadDiffValue = assertIsBlockedPuzzledPayload({
+      const payloadDiffValue = assertIsDeadlockPuzzledPayload({
         ...restOfPayload,
       });
 
@@ -263,7 +237,7 @@ const Blocked: Puzzle = {
         ...payloadDiffValue,
         ownedThreadIDs: [],
       };
-      console.log('reset', puzzlePayload);
+
       return {
         payloadDiff: {
           // seq number comes externally
@@ -277,10 +251,8 @@ const Blocked: Puzzle = {
   },
 
   isSolved: (puzzlePayload, solutionPayload) => {
-    const p = assertIsBlockedPuzzledPayload(puzzlePayload);
-    const s = assertIsBlockedSolutionPayload(solutionPayload);
-
-    // TODO: Check minimum number of moves?
+    const p = assertIsDeadlockPuzzledPayload(puzzlePayload);
+    const s = assertIsDeadlockSolutionPayload(solutionPayload);
 
     const validBoardState = generateBoardState(p.threads, p.walls);
 
@@ -306,4 +278,4 @@ const Blocked: Puzzle = {
   },
 };
 
-export default Blocked;
+export default Deadlock;
