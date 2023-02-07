@@ -248,11 +248,16 @@ const Blocked: Puzzle = {
         puzzleInstance.solutionPayload,
       );
 
-      const { starterThreadSolvedState: _, ...restOfPayload } = solutionPayload;
+      const {
+        starterThreadSolvedState: _starterThreadSolvedState,
+        moves: _moves,
+        clusterSize: _clusterSize,
+        ...restOfPayload
+      } = solutionPayload;
 
-      const payloadDiffValue = {
+      const payloadDiffValue = assertIsBlockedPuzzledPayload({
         ...restOfPayload,
-      };
+      });
 
       const puzzlePayload = {
         ...payloadDiffValue,
