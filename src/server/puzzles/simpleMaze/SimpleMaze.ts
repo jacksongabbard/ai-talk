@@ -21,6 +21,18 @@ import {
 } from './lib/generateLetterGrids';
 import { hasOwnProperty } from 'src/lib/hasOwnProperty';
 
+// Improvements:
+//   - The scroll follow the player
+//   - Cord annotations should work here, bound to the x/y of the cell
+//   - The maze should fill the screen, not hide behind cord
+//   - The dictionary sucks -- so many non-word words
+//   - The final anagram mechanism is a bit of a let down
+//   - Word splits across players are kinda janky -- splitting evenly on word
+//     boundaries would be better
+//   - Add a hint if the players compare their grids -- have their overlapping
+//     letters say something like "READ LOWER CASE LETTERS"
+//   - Set tabIndex to -1 on the input so people can't easily hack the puzzle
+
 const SimpleMaze: Puzzle = {
   name: 'A Simple Maze',
   slug: 'simple_maze',
