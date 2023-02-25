@@ -1,6 +1,3 @@
-import fs from 'fs';
-import path from 'path';
-import process from 'process';
 import getDotEnv from 'src/lib/dotenv';
 
 const env = getDotEnv();
@@ -9,12 +6,6 @@ const host =
   'https://' +
   env.SERVER_HOST +
   (env.SERVER_HOST.includes('local') ? ':' + env.SERVER_PORT : '');
-
-const css = fs
-  .readFileSync(
-    path.join(process.cwd(), 'src', 'server', 'ui', 'css', 'chrome.css'),
-  )
-  .toString();
 
 interface ChromeProps {
   children: React.ReactNode;
@@ -44,8 +35,8 @@ const Chrome = ({ children, title }: ChromeProps): JSX.Element => {
           property="og:description"
           content="Devilish puzzles to delight and infuratiate. Real-time, multiplayer."
         />
+        <link href="/static/css/chrome.css" rel="stylesheet" type="text/css" />
       </head>
-      <style type="text/css" dangerouslySetInnerHTML={{ __html: css }}></style>
       <body>{children}</body>
     </html>
   );

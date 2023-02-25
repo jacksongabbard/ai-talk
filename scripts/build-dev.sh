@@ -9,5 +9,8 @@
       --minify=false \
       --outfile=build/server.js \
     && \
-      ./scripts/build-hydrate-files.sh && \
+      ./scripts/build-hydrate-files.sh \
+    && \
+      ./scripts/copy-static-resources.sh \
+    && \
       NODE_PATH=./build node ./build/server.js;"
