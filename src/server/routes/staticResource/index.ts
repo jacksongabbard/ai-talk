@@ -2,15 +2,24 @@ import type { RequestHandler } from 'express';
 import fs from 'fs';
 import path from 'path';
 
-export const staticResource: RequestHandler = (req, res, next) => {
-  if (!req.path.match(/(?:\.js|\.js\.map)$/)) {
-    res.status(500);
-    res.send('Bad request');
-    return;
-  }
+const extToMime = new Map<string, string>();
+extToMime.set('.css', 'text/css');
+extToMime.set('.js', 'text/javascript');
+extToMime.set('.js.map', 'text/javascript');
+extToMime.set('.svg', 'image/svg+xml');
+extToMime.set('.png', 'image/png');
+extToMime.set('.jpg', 'image/jpeg');
+extToMime.set('.jpeg', 'image/jpeg');
+extToMime.set('.gif', 'image/gif');
+extToMime.set('.woff', 'font/woff');
+extToMime.set('.woff2', 'font/woff2');
 
+export const staticResourcePathRegexp =
+  /^\/static\/([a-zA-Z\-_0-9/]+)(\.css|\.js|\.js\.map|\.png|\.jpg|\.jpeg|\.svg|\.woff|\.woff2)$/;
+
+export const staticResource: RequestHandler = (req, res, next) => {
   const match: RegExpMatchArray | null = req.path.match(
-    /^\/static\/([a-zA-Z\-_]+)(\.js|\.js\.map)$/,
+    staticResourcePathRegexp,
   );
   if (!match || match.length !== 3) {
     console.log('No match: ' + req.path);
@@ -29,16 +38,15 @@ export const staticResource: RequestHandler = (req, res, next) => {
   );
 
   try {
-    const bytes = fs.readFileSync(filePath).toString();
+    const buf = fs.readFileSync(filePath);
     res.status(200);
-    if (fileExt === '.js' || fileExt === '.js.map') {
-      res.type('text/javascript');
-    }
-    res.send(bytes);
+    const mime = extToMime.get(fileExt) || 'application/octet-stream';
+    res.type(mime);
+    res.send(buf);
   } catch (e) {
     console.log(e);
     res.status(500);
-    res.send('Bad hydration request');
+    res.send('Bad request');
     return;
   }
 };

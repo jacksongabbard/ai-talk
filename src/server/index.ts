@@ -26,7 +26,10 @@ import {
 import { puzzle } from './routes/puzzle';
 import { auth } from './routes/auth';
 import { logout } from './routes/logout';
-import { staticResource } from './routes/staticResource';
+import {
+  staticResource,
+  staticResourcePathRegexp,
+} from './routes/staticResource';
 import { googleOAuthRedirect } from './routes/googleOAuthRedirect';
 import { saveProfile, checkUserNameIsAvailable } from './routes/api/profile';
 import {
@@ -200,7 +203,7 @@ console.log('Bootstrapping the server...');
   );
 
   // Static resources
-  router.get(/.*(\.js|\.js\.map)$/, staticResource);
+  router.get(staticResourcePathRegexp, staticResource);
 
   let server: https.Server | http.Server;
   if (config.HTTPS) {
