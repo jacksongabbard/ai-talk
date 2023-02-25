@@ -15,7 +15,7 @@ extToMime.set('.woff', 'font/woff');
 extToMime.set('.woff2', 'font/woff2');
 
 export const staticResourcePathRegexp =
-  /^\/static\/([a-zA-Z\-_0-9/]+)(\.css|\.js|\.js\.map|\.png|\.jpg|\.jpeg|\.svg|\.woff|\.woff2)$/;
+  /^\/static\/([a-zA-Z\-_0-9/.]+)(\.css|\.js|\.js\.map|\.png|\.jpg|\.jpeg|\.svg|\.woff|\.woff2)$/;
 
 export const staticResource: RequestHandler = (req, res, next) => {
   const match: RegExpMatchArray | null = req.path.match(
