@@ -30,7 +30,7 @@ const Deadlock: Puzzle = {
   slug: 'deadlock',
   minPlayers: 1,
   maxPlayers: 6,
-  published: false,
+  published: true,
   createInstance: (user: User, members: User[], team?: Team) => {
     if (!team) {
       throw new Error('Puzzle requires a team');
