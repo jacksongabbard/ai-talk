@@ -168,7 +168,7 @@ export const deadlockMoveInstanceActionValidator = makeValidator({
     },
     direction: {
       type: 'number',
-      pattern: '^(1|-1)$',
+      enum: [1, -1],
     },
   },
   additionalProperties: false,

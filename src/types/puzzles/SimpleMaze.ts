@@ -83,13 +83,14 @@ const lightsOutPuzzlePayloadValidator = makeValidator({
       },
     },
     revealedLetterGrids: {
+      type: 'object',
       patternProperties: {
         [UUIDRegexString]: {
           type: 'object',
+          additionalProperties: false,
           patternProperties: {
             [CoordRegexp]: {
               type: 'string',
-              additionalProperties: false,
             },
           },
         },
@@ -149,13 +150,14 @@ export const lightsOutSolutionPayloadValidator = makeValidator({
       },
     },
     letterGrids: {
+      type: 'object',
       patternProperties: {
         [UUIDRegexString]: {
           type: 'object',
+          additionalProperties: false,
           patternProperties: {
             [CoordRegexp]: {
               type: 'string',
-              additionalProperties: false,
             },
           },
         },
