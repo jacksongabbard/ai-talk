@@ -37,7 +37,21 @@ const Chrome = ({ children, title }: ChromeProps): JSX.Element => {
         />
         <link href="/static/css/chrome.css" rel="stylesheet" type="text/css" />
       </head>
-      <body>{children}</body>
+      <body>
+        <script
+          async
+          src="https://www.googletagmanager.com/gtag/js?id=G-9P7S14H7Y0"
+        ></script>
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `window.dataLayer = window.dataLayer || [];
+function gtag(){dataLayer.push(arguments);}
+gtag('js', new Date());
+gtag('config', 'G-9P7S14H7Y0');`,
+          }}
+        ></script>
+        {children}
+      </body>
     </html>
   );
 };
