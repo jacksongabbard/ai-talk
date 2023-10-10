@@ -10,6 +10,7 @@ import DTSGToken from './DTSGToken';
 import PuzzleInstanceUser from './PuzzleInstanceUser';
 import JoinCode from './JoinCode';
 import PuzzleFeedback from 'src/lib/db/PuzzleFeedback';
+import CordDotComEvent from 'src/lib/db/CordDotComEvent';
 
 const config = getDotEnv();
 
@@ -44,6 +45,7 @@ SequelizeInstance.addModels([
   DTSGToken,
   JoinCode,
   PuzzleFeedback,
+  CordDotComEvent,
 ]);
 
 export default SequelizeInstance;

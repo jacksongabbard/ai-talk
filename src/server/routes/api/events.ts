@@ -11,54 +11,56 @@ export const logEvent: RequestHandler = async (req: Request, res: Response) => {
 
   if (
     req.body &&
-    hasOwnProperty(req.body, 'data') &&
-    typeof req.body.data === 'object' &&
+    typeof req.body === 'object' &&
     // Secret
-    hasOwnProperty(req.body.data, 'secret') &&
-    typeof req.body.data.secret === 'string' &&
-    req.body.data.secret === secret &&
+    hasOwnProperty(req.body, 'secret') &&
+    typeof req.body.secret === 'string' &&
+    req.body.secret === secret &&
     // Session ID
-    hasOwnProperty(req.body.data, 'sessid') &&
-    typeof req.body.data.session_id === 'string' &&
+    hasOwnProperty(req.body, 'session_id') &&
+    typeof req.body.session_id === 'string' &&
     // Event Type
-    hasOwnProperty(req.body.data, 'event_type') &&
-    typeof req.body.data.event_type === 'string' &&
+    hasOwnProperty(req.body, 'event_type') &&
+    typeof req.body.event_type === 'string' &&
     // Current Page
-    hasOwnProperty(req.body.data, 'current_page') &&
-    typeof req.body.data.current_page === 'string' &&
+    hasOwnProperty(req.body, 'current_page') &&
+    typeof req.body.current_page === 'string' &&
     // User Agent
-    hasOwnProperty(req.body.data, 'user_agent') &&
-    typeof req.body.data.user_agent === 'string' &&
+    hasOwnProperty(req.body, 'user_agent') &&
+    typeof req.body.user_agent === 'string' &&
     // IP
-    hasOwnProperty(req.body.data, 'ip') &&
-    typeof req.body.data.ip === 'string' &&
+    hasOwnProperty(req.body, 'ip') &&
+    typeof req.body.ip === 'string' &&
     // City
-    hasOwnProperty(req.body.data, 'ip_city') &&
-    typeof req.body.data.ip_city === 'string' &&
+    hasOwnProperty(req.body, 'ip_city') &&
+    typeof req.body.ip_city === 'string' &&
     // Region
-    hasOwnProperty(req.body.data, 'ip_region') &&
-    typeof req.body.data.ip_region === 'string' &&
+    hasOwnProperty(req.body, 'ip_region') &&
+    typeof req.body.ip_region === 'string' &&
     // Country
-    hasOwnProperty(req.body.data, 'ip_country') &&
-    typeof req.body.data.ip_country === 'string' &&
+    hasOwnProperty(req.body, 'ip_country') &&
+    typeof req.body.ip_country === 'string' &&
     // Payload
-    hasOwnProperty(req.body.data, 'payload') &&
-    typeof req.body.data.payload === 'object'
+    hasOwnProperty(req.body, 'payload') &&
+    typeof req.body.payload === 'object'
   ) {
     const {
       session_id,
       event_type,
+      current_page,
       ip,
       ip_city,
       ip_region,
       ip_country,
       payload,
-    } = req.body.data;
+    } = req.body;
 
     await CordDotComEvent.create({
       id: uuid(),
       sessionID: session_id,
       eventType: event_type,
+      createdAt: new Date(),
+      currentPage: current_page,
       ip,
       ipCity: ip_city,
       ipRegion: ip_region,
@@ -70,6 +72,7 @@ export const logEvent: RequestHandler = async (req: Request, res: Response) => {
     return;
   }
 
+  console.log('Not logging');
   res.status(204);
   res.send({ 'no-op': 'no-op' });
 };

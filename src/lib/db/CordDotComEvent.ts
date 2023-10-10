@@ -7,7 +7,7 @@ import {
 } from 'sequelize-typescript';
 
 @Table({
-  timestamps: true,
+  timestamps: false,
   tableName: 'cord_dot_com_events',
 })
 class CordDotComEvent extends Model {
@@ -41,7 +41,7 @@ class CordDotComEvent extends Model {
     type: DataType.TEXT,
     field: 'current_page',
   })
-  current_page!: string;
+  currentPage!: string;
 
   @Column({
     type: DataType.TEXT,
