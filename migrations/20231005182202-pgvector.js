@@ -4,7 +4,7 @@
 module.exports = {
   async up(queryInterface, Sequelize) {
     await queryInterface.sequelize.query(`
-    CREATE EXTENSION IF NOT EXISTS "pgvector";
+    CREATE EXTENSION IF NOT EXISTS "vector";
 
     CREATE TABLE vectors (
       hash TEXT NOT NULL PRIMARY KEY,
@@ -16,7 +16,7 @@ module.exports = {
 
   async down(queryInterface, Sequelize) {
     await queryInterface.sequelize.query(`
-      CREATE EXTENSION IF NOT EXISTS "pgvector";
+      CREATE EXTENSION IF NOT EXISTS "vector";
 
       DROP TABLE vectors;
     `);

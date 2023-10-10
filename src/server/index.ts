@@ -58,6 +58,7 @@ import {
   savePuzzleFeedback,
 } from 'src/server/routes/api/puzzleFeedback';
 import { feedback } from 'src/server/routes/feedback';
+import { logEvent } from 'src/server/routes/api/events';
 
 const config = getDotEnv();
 
@@ -201,6 +202,7 @@ console.log('Bootstrapping the server...');
     apiMiddleware,
     getGlobalAveragePuzzlesFeedback,
   );
+  router.post('/api/events', apiMiddleware, logEvent);
 
   // Static resources
   router.get(staticResourcePathRegexp, staticResource);

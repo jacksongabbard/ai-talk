@@ -20,7 +20,7 @@ if ! docker container inspect \
     -e "POSTGRES_PASSWORD=$DOCKER_POSTGRES_CONTAINER_PASSWORD" \
     -e "POSTGRES_USER=$DOCKER_POSTGRES_CONTAINER_USER" \
     -e "POSTGRES_DB=$DOCKER_POSTGRES_CONTAINER_DB" \
-    -d postgres
+    -d "ankane/pgvector"
 
 
 elif [ "$( docker container inspect -f '{{.State.Status}}' \
