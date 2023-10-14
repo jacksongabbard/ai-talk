@@ -11,6 +11,15 @@ module.exports = {
       index TEXT,
       embedding vector(1536)
     );
+
+    CREATE TABLE page_chunks (
+      hash TEXT NOT NULL PRIMARY KEY,
+      index TEXT NOT NULL,
+      chunk TEXT NOT NULL,
+      url TEXT NOT NULL,
+      title TEXT NOT NULL
+    );
+
     `);
   },
 
@@ -19,6 +28,7 @@ module.exports = {
       CREATE EXTENSION IF NOT EXISTS "vector";
 
       DROP TABLE vectors;
+      DROP TABLE page_chunks;
     `);
   },
 };

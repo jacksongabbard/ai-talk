@@ -59,6 +59,8 @@ import {
 } from 'src/server/routes/api/puzzleFeedback';
 import { feedback } from 'src/server/routes/feedback';
 import { logEvent } from 'src/server/routes/api/events';
+import { storeVector } from 'src/server/routes/api/storeVector';
+import { storeChunk } from 'src/server/routes/api/storeChunk';
 
 const config = getDotEnv();
 
@@ -203,6 +205,8 @@ console.log('Bootstrapping the server...');
     getGlobalAveragePuzzlesFeedback,
   );
   router.post('/api/events', apiMiddleware, logEvent);
+  router.post('/api/storeVector', apiMiddleware, storeVector);
+  router.post('/api/storeChunk', apiMiddleware, storeChunk);
 
   // Static resources
   router.get(staticResourcePathRegexp, staticResource);
