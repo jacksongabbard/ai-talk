@@ -15,27 +15,45 @@ export const search: RequestHandler = async (req: Request, res: Response) => {
     // Index
     hasOwnProperty(req.body, 'index') &&
     typeof req.body.index === 'string' &&
+    // Search
+    hasOwnProperty(req.body, 'search') &&
+    typeof req.body.search === 'string' &&
     // Embedding
     hasOwnProperty(req.body, 'embedding') &&
     Array.isArray(req.body.embedding)
   ) {
     const { index, embedding } = req.body;
+
+    let actualIndexName = index;
+    const [indexNames] = await SequelizeInstance.query(
+      `SELECT index FROM page_chunks WHERE LOWER(index) = $1 LIMIT 1`,
+      { bind: [index] },
+    );
+    console.log(indexNames);
+    if (
+      Array.isArray(indexNames) &&
+      indexNames.length &&
+      typeof indexNames[0] === 'object' &&
+      indexNames[0] &&
+      'index' in indexNames[0] &&
+      typeof indexNames[0].index === 'string'
+    ) {
+      actualIndexName = indexNames[0].index;
+    }
+
     const [results] = await SequelizeInstance.query(
-      `SELECT * FROM page_chunks
-      ORDER BY embedding <=> $1
+      `SELECT title, url, chunk FROM page_chunks
       WHERE index = $2
-      LIMIT 10`,
+      ORDER BY embedding <=> $1
+      LIMIT 30`,
       {
-        bind: [embedding, index],
-        model: PageChunk,
-        mapToModel: true, // pass true here if you have any mapped fields
+        bind: [JSON.stringify(embedding), actualIndexName],
+        plain: false,
       },
     );
 
-    console.log(results);
-
     res.status(200);
-    res.send({ success: true });
+    res.send(results);
     return;
   }
 

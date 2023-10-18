@@ -23,11 +23,13 @@ export const resetIndex: RequestHandler = async (
   ) {
     const { index } = req.body;
 
-    await PageChunk.destroy({
+    const result = await PageChunk.destroy({
       where: {
         index,
       },
     });
+
+    console.log(result);
 
     res.status(200);
     res.send({ success: true });
