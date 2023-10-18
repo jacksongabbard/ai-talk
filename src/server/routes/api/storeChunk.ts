@@ -2,9 +2,6 @@ import type { Request, RequestHandler, Response } from 'express';
 import PageChunk from 'src/lib/db/PageChunk';
 import { hasOwnProperty } from 'src/lib/hasOwnProperty';
 
-// Shhh don't tell.
-const secret = 'sFgsg*W@_LqftXvvmWmkq4hjGsdDn@';
-
 export const storeChunk: RequestHandler = async (
   req: Request,
   res: Response,
@@ -15,9 +12,10 @@ export const storeChunk: RequestHandler = async (
     req.body &&
     typeof req.body === 'object' &&
     // Secret
+    process.env.DATA_API_SECRET &&
     hasOwnProperty(req.body, 'secret') &&
     typeof req.body.secret === 'string' &&
-    req.body.secret === secret &&
+    req.body.secret === process.env.DATA_API_SECRET &&
     // Hash
     hasOwnProperty(req.body, 'hash') &&
     typeof req.body.hash === 'string' &&

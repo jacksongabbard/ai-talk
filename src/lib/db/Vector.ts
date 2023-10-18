@@ -18,10 +18,10 @@ class Vector extends Model {
   index!: string;
 
   @Column({
-    type: DataType.ARRAY(DataType.NUMBER),
+    type: DataType.STRING,
     field: 'embedding',
   })
-  embedding!: Array<Number>;
+  embedding!: string;
 }
 
 export default Vector;

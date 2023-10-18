@@ -61,6 +61,8 @@ import { feedback } from 'src/server/routes/feedback';
 import { logEvent } from 'src/server/routes/api/events';
 import { storeVector } from 'src/server/routes/api/storeVector';
 import { storeChunk } from 'src/server/routes/api/storeChunk';
+import { resetIndex } from 'src/server/routes/api/resetIndex';
+import { search } from 'src/server/routes/api/search';
 
 const config = getDotEnv();
 
@@ -207,6 +209,8 @@ console.log('Bootstrapping the server...');
   router.post('/api/events', apiMiddleware, logEvent);
   router.post('/api/storeVector', apiMiddleware, storeVector);
   router.post('/api/storeChunk', apiMiddleware, storeChunk);
+  router.post('/api/resetIndex', apiMiddleware, resetIndex);
+  router.post('/api/search', apiMiddleware, search);
 
   // Static resources
   router.get(staticResourcePathRegexp, staticResource);
