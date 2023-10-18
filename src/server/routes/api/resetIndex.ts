@@ -1,6 +1,5 @@
 import type { Request, RequestHandler, Response } from 'express';
 import PageChunk from 'src/lib/db/PageChunk';
-import Vector from 'src/lib/db/Vector';
 import { hasOwnProperty } from 'src/lib/hasOwnProperty';
 import dotenv from 'dotenv';
 
@@ -24,11 +23,6 @@ export const resetIndex: RequestHandler = async (
   ) {
     const { index } = req.body;
 
-    await Vector.destroy({
-      where: {
-        index,
-      },
-    });
     await PageChunk.destroy({
       where: {
         index,

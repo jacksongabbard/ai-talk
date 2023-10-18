@@ -24,6 +24,12 @@ class PageChunk extends Model {
   chunk!: string;
 
   @Column({
+    type: DataType.STRING,
+    field: 'embedding',
+  })
+  embedding!: string;
+
+  @Column({
     type: DataType.TEXT,
     field: 'url',
   })

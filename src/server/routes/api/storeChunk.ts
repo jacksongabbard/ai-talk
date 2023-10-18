@@ -6,8 +6,6 @@ export const storeChunk: RequestHandler = async (
   req: Request,
   res: Response,
 ) => {
-  console.log(req.body);
-
   if (
     req.body &&
     typeof req.body === 'object' &&
@@ -25,6 +23,9 @@ export const storeChunk: RequestHandler = async (
     // Chunk
     hasOwnProperty(req.body, 'chunk') &&
     typeof req.body.chunk === 'string' &&
+    // Embedding
+    hasOwnProperty(req.body, 'embedding') &&
+    Array.isArray(req.body.embedding) &&
     // URL
     hasOwnProperty(req.body, 'url') &&
     typeof req.body.url === 'string' &&
@@ -32,12 +33,13 @@ export const storeChunk: RequestHandler = async (
     hasOwnProperty(req.body, 'title') &&
     typeof req.body.title === 'string'
   ) {
-    const { hash, index, chunk, url, title } = req.body;
+    const { hash, index, chunk, embedding, url, title } = req.body;
 
     await PageChunk.upsert({
       hash,
       index,
       chunk,
+      embedding: JSON.stringify(embedding),
       url,
       title,
     });

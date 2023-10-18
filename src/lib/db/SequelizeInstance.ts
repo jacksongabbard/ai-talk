@@ -11,7 +11,6 @@ import PuzzleInstanceUser from './PuzzleInstanceUser';
 import JoinCode from './JoinCode';
 import PuzzleFeedback from 'src/lib/db/PuzzleFeedback';
 import CordDotComEvent from 'src/lib/db/CordDotComEvent';
-import Vector from 'src/lib/db/Vector';
 import PageChunk from 'src/lib/db/PageChunk';
 
 const config = getDotEnv();
@@ -48,7 +47,6 @@ SequelizeInstance.addModels([
   JoinCode,
   PuzzleFeedback,
   CordDotComEvent,
-  Vector,
   PageChunk,
 ]);
 
