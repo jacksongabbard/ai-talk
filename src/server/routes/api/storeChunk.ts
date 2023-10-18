@@ -14,9 +14,6 @@ export const storeChunk: RequestHandler = async (
     hasOwnProperty(req.body, 'secret') &&
     typeof req.body.secret === 'string' &&
     req.body.secret === process.env.DATA_API_SECRET &&
-    // Hash
-    hasOwnProperty(req.body, 'hash') &&
-    typeof req.body.hash === 'string' &&
     // Index
     hasOwnProperty(req.body, 'index') &&
     typeof req.body.index === 'string' &&
@@ -33,10 +30,9 @@ export const storeChunk: RequestHandler = async (
     hasOwnProperty(req.body, 'title') &&
     typeof req.body.title === 'string'
   ) {
-    const { hash, index, chunk, embedding, url, title } = req.body;
+    const { index, chunk, embedding, url, title } = req.body;
 
     await PageChunk.upsert({
-      hash,
       index,
       chunk,
       embedding: JSON.stringify(embedding),

@@ -7,6 +7,7 @@ module.exports = {
     CREATE EXTENSION IF NOT EXISTS "vector";
 
     CREATE TABLE page_chunks (
+      id SERIAL PRIMARY KEY,
       index TEXT NOT NULL,
       chunk TEXT NOT NULL,
       embedding vector(1536),

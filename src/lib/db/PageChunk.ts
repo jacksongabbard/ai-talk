@@ -6,10 +6,10 @@ import { Column, Table, Model, DataType } from 'sequelize-typescript';
 })
 class PageChunk extends Model {
   @Column({
-    type: DataType.TEXT,
+    type: DataType.INTEGER,
     primaryKey: true,
   })
-  hash!: string;
+  id!: number;
 
   @Column({
     type: DataType.TEXT,
