@@ -63,6 +63,7 @@ import { storeChunk } from 'src/server/routes/api/storeChunk';
 import { resetIndex } from 'src/server/routes/api/resetIndex';
 import { search } from 'src/server/routes/api/search';
 import { getIndexes } from 'src/server/routes/api/getIndexes';
+import { chatContext } from 'src/server/routes/api/chatContext';
 
 const config = getDotEnv();
 
@@ -211,6 +212,7 @@ console.log('Bootstrapping the server...');
   router.post('/api/resetIndex', apiMiddleware, resetIndex);
   router.post('/api/search', apiMiddleware, search);
   router.post('/api/getIndexes', apiMiddleware, getIndexes);
+  router.post('/api/chatContext', apiMiddleware, chatContext);
 
   // Static resources
   router.get(staticResourcePathRegexp, staticResource);

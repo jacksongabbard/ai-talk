@@ -1,9 +1,11 @@
 import type { Request, RequestHandler, Response } from 'express';
 import { hasOwnProperty } from 'src/lib/hasOwnProperty';
 import SequelizeInstance from 'src/lib/db/SequelizeInstance';
-import PageChunk from 'src/lib/db/PageChunk';
 
-export const search: RequestHandler = async (req: Request, res: Response) => {
+export const chatContext: RequestHandler = async (
+  req: Request,
+  res: Response,
+) => {
   if (
     req.body &&
     typeof req.body === 'object' &&
@@ -15,17 +17,16 @@ export const search: RequestHandler = async (req: Request, res: Response) => {
     // Index
     hasOwnProperty(req.body, 'index') &&
     typeof req.body.index === 'string' &&
-    // Search
-    hasOwnProperty(req.body, 'search') &&
-    typeof req.body.search === 'string' &&
     // Embedding
     hasOwnProperty(req.body, 'embedding') &&
-    Array.isArray(req.body.embedding)
+    Array.isArray(req.body.embedding) &&
+    // Limit
+    hasOwnProperty(req.body, 'limit') &&
+    typeof req.body.limit === 'number'
   ) {
-    const { index, embedding } = req.body;
+    const { index, embedding, limit } = req.body;
 
     let actualIndexName = index;
-
     // This is probably shockingly inefficient. Also... cool story! We
     // can fix this a dozen different ways if any of this work comes to
     // matter.
@@ -33,6 +34,7 @@ export const search: RequestHandler = async (req: Request, res: Response) => {
       `SELECT index FROM page_chunks WHERE LOWER(index) = $1 LIMIT 1`,
       { bind: [index] },
     );
+
     if (
       Array.isArray(indexNames) &&
       indexNames.length &&
@@ -43,16 +45,16 @@ export const search: RequestHandler = async (req: Request, res: Response) => {
     ) {
       actualIndexName = indexNames[0].index;
     } else {
-      throw new Error('No such index');
+      throw new Error('No such index: ' + index);
     }
 
     const [results] = await SequelizeInstance.query(
-      `SELECT title, url, chunk FROM page_chunks
+      `SELECT id, chunk, url, 1 - (embedding <=> $1) AS score FROM page_chunks
       WHERE index = $2
-      ORDER BY embedding <=> $1
-      LIMIT 30`,
+      ORDER BY score DESC
+      LIMIT $3`,
       {
-        bind: [JSON.stringify(embedding), actualIndexName],
+        bind: [JSON.stringify(embedding), actualIndexName, limit],
         plain: false,
       },
     );
