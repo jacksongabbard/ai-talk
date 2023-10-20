@@ -32,6 +32,8 @@ export const storeChunk: RequestHandler = async (
   ) {
     const { index, chunk, embedding, url, title } = req.body;
 
+    console.log('Storing chunk for index ' + index + ': ' + chunk);
+
     await PageChunk.upsert({
       index,
       chunk,
