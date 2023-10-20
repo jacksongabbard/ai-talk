@@ -17,6 +17,13 @@ module.exports = {
     port: env.POSTGRES_PORT,
     dialect: 'postgres',
     logging: true,
+    ssl: true,
+    dialectOptions: {
+      ssl: {
+        require: true,
+        rejectUnauthorized: false,
+      },
+    },
   },
   production: {
     username: env.POSTGRES_USER,
@@ -26,6 +33,13 @@ module.exports = {
     port: env.POSTGRES_PORT,
     dialect: 'postgres',
     logging: true,
+    ssl: true,
+    dialectOptions: {
+      ssl: {
+        require: true,
+        rejectUnauthorized: false,
+      },
+    },
   },
 };
 

@@ -33,6 +33,12 @@ const SequelizeInstance = new Sequelize(
     port: parseInt(POSTGRES_PORT, 10),
     logging: () => {},
     // logging: (...msg) => console.log(JSON.stringify(msg, null, 4)), // log everything
+    dialectOptions: {
+      ssl: {
+        require: true,
+        rejectUnauthorized: false
+      }
+    },
   },
 );
 
