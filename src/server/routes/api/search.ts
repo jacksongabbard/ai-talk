@@ -43,7 +43,9 @@ export const search: RequestHandler = async (req: Request, res: Response) => {
     ) {
       actualIndexName = indexNames[0].index;
     } else {
-      throw new Error('No such index');
+      res.status(400);
+      res.send({ error: 'No such index' + index });
+      return;
     }
 
     const [results] = await SequelizeInstance.query(
