@@ -16,6 +16,7 @@ import PageChunk from 'src/lib/db/PageChunk';
 const config = getDotEnv();
 
 const {
+  IS_PROD,
   POSTGRES_HOST,
   POSTGRES_DB,
   POSTGRES_PASSWORD,
@@ -33,12 +34,16 @@ const SequelizeInstance = new Sequelize(
     port: parseInt(POSTGRES_PORT, 10),
     logging: () => {},
     // logging: (...msg) => console.log(JSON.stringify(msg, null, 4)), // log everything
-    dialectOptions: {
-      ssl: {
-        require: true,
-        rejectUnauthorized: false
-      }
-    },
+    ...(IS_PROD
+      ? {
+          dialectOptions: {
+            ssl: {
+              require: true,
+              rejectUnauthorized: false,
+            },
+          },
+        }
+      : {}),
   },
 );
 

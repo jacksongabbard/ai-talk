@@ -64,6 +64,7 @@ import { resetIndex } from 'src/server/routes/api/resetIndex';
 import { search } from 'src/server/routes/api/search';
 import { getIndexes } from 'src/server/routes/api/getIndexes';
 import { chatContext } from 'src/server/routes/api/chatContext';
+import { deleteURLFromIndex } from 'src/server/routes/api/deleteURLFromIndex';
 
 const config = getDotEnv();
 
@@ -209,6 +210,7 @@ console.log('Bootstrapping the server...');
   );
   router.post('/api/events', apiMiddleware, logEvent);
   router.post('/api/storeChunk', apiMiddleware, storeChunk);
+  router.post('/api/deleteURLFromIndex', apiMiddleware, deleteURLFromIndex);
   router.post('/api/resetIndex', apiMiddleware, resetIndex);
   router.post('/api/search', apiMiddleware, search);
   router.post('/api/getIndexes', apiMiddleware, getIndexes);
