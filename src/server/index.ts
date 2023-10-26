@@ -65,6 +65,9 @@ import { search } from 'src/server/routes/api/search';
 import { getIndexes } from 'src/server/routes/api/getIndexes';
 import { chatContext } from 'src/server/routes/api/chatContext';
 import { deleteURLFromIndex } from 'src/server/routes/api/deleteURLFromIndex';
+import { storeURL } from 'src/server/routes/api/storeURL';
+import { getURLs } from 'src/server/routes/api/getURLs';
+import { logScrape } from 'src/server/routes/api/logScrape';
 
 const config = getDotEnv();
 
@@ -215,6 +218,9 @@ console.log('Bootstrapping the server...');
   router.post('/api/search', apiMiddleware, search);
   router.post('/api/getIndexes', apiMiddleware, getIndexes);
   router.post('/api/chatContext', apiMiddleware, chatContext);
+  router.post('/api/storeURL', apiMiddleware, storeURL);
+  router.post('/api/getURLs', apiMiddleware, getURLs);
+  router.post('/api/logScrape', apiMiddleware, logScrape);
 
   // Static resources
   router.get(staticResourcePathRegexp, staticResource);
