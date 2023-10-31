@@ -24,7 +24,7 @@ export const storeURL: RequestHandler = async (req: Request, res: Response) => {
 
     const count = await URL.count({ where: { index, url } });
     if (!count) {
-      await URL.upsert({
+      await URL.create({
         index,
         url,
       });

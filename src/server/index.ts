@@ -68,6 +68,7 @@ import { deleteURLFromIndex } from 'src/server/routes/api/deleteURLFromIndex';
 import { storeURL } from 'src/server/routes/api/storeURL';
 import { getURLs } from 'src/server/routes/api/getURLs';
 import { logScrape } from 'src/server/routes/api/logScrape';
+import { getEvents } from 'src/server/routes/api/getEvents';
 
 const config = getDotEnv();
 
@@ -212,6 +213,7 @@ console.log('Bootstrapping the server...');
     getGlobalAveragePuzzlesFeedback,
   );
   router.post('/api/events', apiMiddleware, logEvent);
+  router.post('/api/getEvents', apiMiddleware, getEvents);
   router.post('/api/storeChunk', apiMiddleware, storeChunk);
   router.post('/api/deleteURLFromIndex', apiMiddleware, deleteURLFromIndex);
   router.post('/api/resetIndex', apiMiddleware, resetIndex);
